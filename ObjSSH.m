@@ -163,7 +163,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
     const char *username = [_username cStringUsingEncoding:NSUTF8StringEncoding];
     const char *password = [_password cStringUsingEncoding:NSUTF8StringEncoding];
-    if (strlen(password) > 0) {
+    if ([_publicKey length] == 0) {
         // We could authenticate via password
         while ((rc = libssh2_userauth_password(session, username, password)) == LIBSSH2_ERROR_EAGAIN);
         if (rc) {
