@@ -80,4 +80,24 @@
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error;
 
+/**
+ * Upload a file to the remote server via SCP.
+ *
+ * Examples:
+ *
+ *     NSError *error;
+ *     BOOL success = [ssh uploadFile:@"/path/to/local.txt" to:@"/path/to/remote.txt" error:&error];
+ */
+- (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath error:(NSError **)error;
+
+/**
+ * Request a file from the remote server via SCP.
+ *
+ * Examples:
+ *
+ *     NSError *error;
+ *     BOOL success = [ssh downloadFile:@"/path/to/remote.txt" to:@"/path/to/local.txt" error:&error];
+ */
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath error:(NSError **)error;
+
 @end

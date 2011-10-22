@@ -222,6 +222,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"An error occured while executing command on remote server" forKey:NSLocalizedDescriptionKey];
         *error = [NSError errorWithDomain:@"ObjSSH" code:100 userInfo:errorDetail];
+
         return nil;
     }
 
@@ -253,6 +254,154 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     channel = NULL;
 
     return result;
+}
+
+// -----------------------------------------------------------------------------
+// SCP
+// -----------------------------------------------------------------------------
+
+- (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath error:(NSError **)error {
+    struct stat fileinfo;
+    size_t nread;
+    char mem[1024*100];
+    char *ptr;
+    size_t prev;
+
+    // Read local file
+    FILE *local = fopen([localPath cStringUsingEncoding:NSUTF8StringEncoding], "rb");
+    if (!local) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:[NSString stringWithFormat:@"Can't read local file: %@", localPath] forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"ObjSSH" code:401 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    stat([localPath cStringUsingEncoding:NSUTF8StringEncoding], &fileinfo);
+
+    // Send the file via SCP
+    do {
+        channel = libssh2_scp_send(session, [remotePath cStringUsingEncoding:NSUTF8StringEncoding], fileinfo.st_mode & 0777, (unsigned long)fileinfo.st_size);
+
+        if ((!channel) && (libssh2_session_last_errno(session) != LIBSSH2_ERROR_EAGAIN)) {
+            char *err_msg;
+            libssh2_session_last_error(session, &err_msg, NULL, 0);
+
+            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+            [errorDetail setValue:[NSString stringWithCString:err_msg encoding:NSUTF8StringEncoding] forKey:NSLocalizedDescriptionKey];
+            *error = [NSError errorWithDomain:@"ObjSSH" code:402 userInfo:errorDetail];
+
+            return NO;
+        }
+    } while (!channel);
+
+    do {
+        nread = fread(mem, 1, sizeof(mem), local);
+        if (nread <= 0) {
+            // end of file
+            break;
+        }
+        ptr = mem;
+
+        prev = 0;
+        do {
+            while ((rc = libssh2_channel_write(channel, ptr, nread)) == LIBSSH2_ERROR_EAGAIN) {
+                waitsocket(sock, session);
+                prev = 0;
+            }
+
+            if (rc < 0) {
+                break;
+            }
+            else {
+                prev = nread;
+
+                // rc indicates how many bytes were written this time
+                nread -= rc;
+                ptr += rc;
+            }
+        } while (nread);
+    } while (!nread); // only continue if nread was drained
+
+    // Sending EOF
+    while (libssh2_channel_send_eof(channel) == LIBSSH2_ERROR_EAGAIN);
+
+    // Waiting for EOF
+    while (libssh2_channel_wait_eof(channel) == LIBSSH2_ERROR_EAGAIN);
+
+    // Waiting for channel to close
+    while (libssh2_channel_wait_closed(channel) == LIBSSH2_ERROR_EAGAIN);
+
+    libssh2_channel_free(channel);
+    channel = NULL;
+
+    return YES;
+}
+
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath error:(NSError **)error {
+    int spin = 0;
+    struct stat fileinfo;
+    off_t got = 0;
+    int localFile = open([localPath cStringUsingEncoding:NSUTF8StringEncoding], O_WRONLY|O_CREAT, 0755);
+
+    do {
+        channel = libssh2_scp_recv(session, [remotePath cStringUsingEncoding:NSUTF8StringEncoding], &fileinfo);
+
+        if (!channel) {
+            if (libssh2_session_last_errno(session) == LIBSSH2_ERROR_EAGAIN) {
+                waitsocket(sock, session);
+            }
+            else {
+                char *err_msg;
+                libssh2_session_last_error(session, &err_msg, NULL, 0);
+
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                [errorDetail setValue:[NSString stringWithCString:err_msg encoding:NSUTF8StringEncoding] forKey:NSLocalizedDescriptionKey];
+                *error = [NSError errorWithDomain:@"ObjSSH" code:301 userInfo:errorDetail];
+
+                return NO;
+            }
+        }
+    } while (!channel);
+
+    // libssh2_scp_recv() is done, now receive data
+    while (got < fileinfo.st_size) {
+        char mem[1024*24];
+        int rc;
+
+        do {
+            int amount = sizeof(mem);
+
+            if ((fileinfo.st_size -got) < amount) {
+                amount = fileinfo.st_size - got;
+            }
+
+            // Loop until we block
+            rc = libssh2_channel_read(channel, mem, amount);
+
+            if (rc > 0) {
+                write(localFile, mem, rc);
+                got += rc;
+            }
+        } while (rc > 0);
+
+        if ((rc == LIBSSH2_ERROR_EAGAIN) && (got < fileinfo.st_size)) {
+            // This is due to blocking that would occur otherwise
+            // so we loop on this condition
+
+            spin++;
+            waitsocket(sock, session);
+            continue;
+        }
+
+        break;
+    }
+
+    libssh2_channel_free(channel);
+    channel = NULL;
+    close(localFile);
+
+    return YES;
 }
 
 // -----------------------------------------------------------------------------

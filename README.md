@@ -38,6 +38,21 @@ Executing a command is as simple as:
 
 The response from the command is conveniently returned as a `NSString`.
 
+## Using SCP
+
+Sending and fetching files is just as simple:
+
+__Sending files__
+
+    NSError *error;
+    [ssh uploadFile:@"/local/file.txt" to:@"/remote/file.txt" error:&error];
+
+__Fetching files__
+
+    NSError *error;
+    [ssh downloadFile:@"/remote/file.txt" to:@"/local/file.txt" error:&error];
+
+
 ## Licence
 
 Copyright (c) 2011 Christoffer Lejdborg
