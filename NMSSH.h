@@ -1,13 +1,13 @@
 #import <Foundation/Foundation.h>
 
 /**
- * ObjSSH aims to be a full Objective-C wrapper for libssh2, with an API
+ * NMSSH aims to be a full Objective-C wrapper for libssh2, with an API
  * that is easy to understand and fun to work with.
  *
  * To achieve that goal, the library will assume conventions but still
  * make it easy to override them without writing ugly code.
  */
-@interface ObjSSH : NSObject {
+@interface NMSSH : NSObject {
     NSString *_host;
     NSNumber *_port;
     NSString *_username;
@@ -24,8 +24,8 @@
  *
  * Examples:
  *
- *     ObjSSH *ssh = [ObjSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"pass" error:&error];
- *     ObjSSH *ssh2 = [ObjSSH connectToHost:@"127.0.0.1:4567" withUsername:@"user" password:@"pass" error:&error];
+ *     NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"pass" error:&error];
+ *     NMSSH *ssh2 = [NMSSH connectToHost:@"127.0.0.1:4567" withUsername:@"user" password:@"pass" error:&error];
  */
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password error:(NSError **)error;
 
@@ -37,16 +37,16 @@
  *
  * Examples:
  *
- *     ObjSSH *ssh = [ObjSSH connectToHost:@"127.0.0.1" withUsername:@"user" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
+ *     NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
  */
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error;
 
 /**
- * Initialize ObjSSH and set its instance variables.
+ * Initialize NMSSH and set its instance variables.
  *
  * Examples:
  *
- *     ObjSSH *ssh = [[ObjSSH alloc] initWithHost:@"127.0.0.1" username:@"user" password:@"pass" publicKey:nil privateKey:nil];
+ *     NMSSH *ssh = [[NMSSH alloc] initWithHost:@"127.0.0.1" username:@"user" password:@"pass" publicKey:nil privateKey:nil];
  */
 - (id)initWithHost:(NSString *)host username:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)priateKey;
 

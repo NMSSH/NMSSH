@@ -1,6 +1,6 @@
 # The Objective-C wrapper for libssh2
 
-ObjSSH aims to be a full Objective-C wrapper for libssh2, with an API that is easy to understand and fun to work with.
+NMSSH aims to be a full Objective-C wrapper for libssh2, with an API that is easy to understand and fun to work with.
 
 To achieve that goal, the library will assume conventions but still make it easy to override them without writing ugly code.
 
@@ -10,19 +10,19 @@ Let's begin with some samples...
 
 Drag and drop the project directory and all it's files in to your Xcode project. Then add the following header where you want to use the library.
 
-    #include "ObjSSH.h"
+    #include "NMSSH.h"
 
 ## Connect to a server
 
     NSError *error;
-    ObjSSH *ssh = [ObjSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"ssh, secret!" error:&error];
+    NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"ssh, secret!" error:&error];
 
 It's that simple. Need to use another port? Set `connectToHost:@"127.0.0.1:456"`. No password? `password:nil`. Now, wasn't that nice and tidy?
 
-ObjSSH also supports public/private key pairs. Connect using the flowing method:
+NMSSH also supports public/private key pairs. Connect using the flowing method:
 
     NSError *error;
-    ObjSSH *ssh = [ObjSSH connectToHost:@"127.0.0.1" withUsername:@"user" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
+    NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
 
 To disconnect just run:
 

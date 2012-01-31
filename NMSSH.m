@@ -28,13 +28,13 @@
  http://libssh2.org/examples/ssh2_exec.html
  */
 
-#import "ObjSSH.h"
+#import "NMSSH.h"
 
 #import "libssh2.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-@implementation ObjSSH
+@implementation NMSSH
 
 unsigned long hostaddr;
 int sock;
@@ -78,12 +78,12 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password error:(NSError **)error {
-    ObjSSH *ssh = [[ObjSSH alloc] initWithHost:host username:username password:password publicKey:nil privateKey:nil];
+    NMSSH *ssh = [[NMSSH alloc] initWithHost:host username:username password:password publicKey:nil privateKey:nil];
     return [ssh connect:error] ? ssh : nil;
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error {
-    ObjSSH *ssh = [[ObjSSH alloc] initWithHost:host username:username password:nil publicKey:publicKey privateKey:privateKey];
+    NMSSH *ssh = [[NMSSH alloc] initWithHost:host username:username password:nil publicKey:publicKey privateKey:privateKey];
     return [ssh connect:error] ? ssh : nil;
 }
 
@@ -132,7 +132,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if (connect(sock, (struct sockaddr*)(&soin),sizeof(struct sockaddr_in)) != 0) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"Failed to connect" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:100 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
 
         return NO;
     }
@@ -142,7 +142,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if (!session) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"Failed to create a session instance" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:101 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:101 userInfo:errorDetail];
 
         return NO;
     }
@@ -156,7 +156,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if (rc) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:[NSString stringWithFormat:@"Failed establishing SSH session: %d", rc] forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:102 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:102 userInfo:errorDetail];
 
         return NO;
     }
@@ -169,7 +169,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         if (rc) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Authentication by password failed" forKey:NSLocalizedDescriptionKey];
-            *error = [NSError errorWithDomain:@"ObjSSH" code:103 userInfo:errorDetail];
+            *error = [NSError errorWithDomain:@"NMSSH" code:103 userInfo:errorDetail];
 
             return NO;
         }
@@ -180,7 +180,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         if (rc) {
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:@"Authentication by public key failed" forKey:NSLocalizedDescriptionKey];
-            *error = [NSError errorWithDomain:@"ObjSSH" code:100 userInfo:errorDetail];
+            *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
 
             return NO;
         }
@@ -210,7 +210,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if ( channel == NULL ) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"An error occured while opening a channel on the remote host" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:201 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:201 userInfo:errorDetail];
         return nil;
     }
 
@@ -221,7 +221,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if ( rc != 0 ) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"An error occured while executing command on remote server" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:100 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
 
         return nil;
     }
@@ -272,7 +272,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if (!local) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:[NSString stringWithFormat:@"Can't read local file: %@", localPath] forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"ObjSSH" code:401 userInfo:errorDetail];
+        *error = [NSError errorWithDomain:@"NMSSH" code:401 userInfo:errorDetail];
 
         return NO;
     }
@@ -289,7 +289,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
             [errorDetail setValue:[NSString stringWithCString:err_msg encoding:NSUTF8StringEncoding] forKey:NSLocalizedDescriptionKey];
-            *error = [NSError errorWithDomain:@"ObjSSH" code:402 userInfo:errorDetail];
+            *error = [NSError errorWithDomain:@"NMSSH" code:402 userInfo:errorDetail];
 
             return NO;
         }
@@ -357,7 +357,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
                 NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
                 [errorDetail setValue:[NSString stringWithCString:err_msg encoding:NSUTF8StringEncoding] forKey:NSLocalizedDescriptionKey];
-                *error = [NSError errorWithDomain:@"ObjSSH" code:301 userInfo:errorDetail];
+                *error = [NSError errorWithDomain:@"NMSSH" code:301 userInfo:errorDetail];
 
                 return NO;
             }
