@@ -1,32 +1,32 @@
 /*
- Copyright (c) 2011 Christoffer Lejdborg
+Copyright (c) 2011 Christoffer Lejdborg
 
- Permission is hereby granted, free of charge, to any person
- obtaining a copy of this software and associated documentation
- files (the "Software"), to deal in the Software without
- restriction, including without limitation the rights to use,
- copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the
- Software is furnished to do so, subject to the following
- conditions:
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
 
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
 
- -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
- The project contains modified code from the examples at
- http://libssh2.org/examples/ssh2_exec.html
- */
+The project contains modified code from the examples at
+http://libssh2.org/examples/ssh2_exec.html
+*/
 
 #import "NMSSH.h"
 
@@ -277,6 +277,11 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         return NO;
     }
 
+    // If remotePath is a directory, copy filename from localPath
+    if ([remotePath hasSuffix:@"/"]) {
+        remotePath = [remotePath stringByAppendingString:[[localPath componentsSeparatedByString:@"/"] lastObject]];
+    }
+
     stat([localPath cStringUsingEncoding:NSUTF8StringEncoding], &fileinfo);
 
     // Send the file via SCP
@@ -342,6 +347,12 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     int spin = 0;
     struct stat fileinfo;
     off_t got = 0;
+
+    // If localPath is a directory, copy filename from remotePath
+    if ([localPath hasSuffix:@"/"]) {
+        localPath = [localPath stringByAppendingString:[[remotePath componentsSeparatedByString:@"/"] lastObject]];
+    }
+
     int localFile = open([localPath cStringUsingEncoding:NSUTF8StringEncoding], O_WRONLY|O_CREAT, 0755);
 
     do {

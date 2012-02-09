@@ -1,4 +1,1 @@
 - Add support for string hostnames, such as "mydomain.com"
-- SFTP support
-- When using SCP methods a to:-parameter that ends with a trailing slash
-  should inherit the file name from the from:-parameter.

@@ -52,6 +52,9 @@ __Fetching files__
     NSError *error;
     [ssh downloadFile:@"/remote/file.txt" to:@"/local/file.txt" error:&error];
 
+If the `to:` parameter ends with a trailing slash, the to-path will
+inherit the filename of the from-path.
+
 
 ## Licence
 
