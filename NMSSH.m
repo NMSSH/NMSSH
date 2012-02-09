@@ -29,8 +29,10 @@ http://libssh2.org/examples/ssh2_exec.html
 */
 
 #import "NMSSH.h"
+#import "NMHostHelper.h"
 
 #import "libssh2.h"
+#include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -122,7 +124,10 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect:(NSError **)error {
-    hostaddr = inet_addr([_host cStringUsingEncoding:NSUTF8StringEncoding]);
+    // Determine host address
+    NSString *host = [NMHostHelper isIp:_host] ? _host : [NMHostHelper ipFromDomainName:_host];
+
+    hostaddr = inet_addr([host cStringUsingEncoding:NSUTF8StringEncoding]);
     sock = socket(AF_INET, SOCK_STREAM, 0);
     soin.sin_family = AF_INET;
     soin.sin_port = htons([_port intValue]);

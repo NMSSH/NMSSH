@@ -12,6 +12,8 @@ Drag and drop the project directory and all it's files in to your Xcode project.
 
     #include "NMSSH.h"
 
+NMSSH depends on [NMHostHelper](https://github.com/Lejdborg/NMHostHelper).
+
 ## Connect to a server
 
     NSError *error;
