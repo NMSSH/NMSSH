@@ -41,7 +41,7 @@ http://libssh2.org/examples/ssh2_exec.html
 unsigned long hostaddr;
 int sock;
 struct sockaddr_in soin;
-int rc;
+long rc;
 
 LIBSSH2_SESSION *session;
 LIBSSH2_CHANNEL *channel;
@@ -131,7 +131,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
     soin.sin_family = AF_INET;
     soin.sin_port = htons([_port intValue]);
-    soin.sin_addr.s_addr = hostaddr;
+    soin.sin_addr.s_addr = (unsigned int)hostaddr;
 
     // Connect to socket
     if (connect(sock, (struct sockaddr*)(&soin),sizeof(struct sockaddr_in)) != 0) {
@@ -219,11 +219,11 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         return nil;
     }
 
-    while ( (rc = libssh2_channel_exec(channel, [command cStringUsingEncoding:NSUTF8StringEncoding])) == LIBSSH2_ERROR_EAGAIN ) {
+    while ((rc = libssh2_channel_exec(channel, [command cStringUsingEncoding:NSUTF8StringEncoding])) == LIBSSH2_ERROR_EAGAIN) {
         waitsocket(sock, session);
     }
 
-    if ( rc != 0 ) {
+    if (rc != 0) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
         [errorDetail setValue:@"An error occured while executing command on remote server" forKey:NSLocalizedDescriptionKey];
         *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
@@ -233,7 +233,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
     for ( ;; ) {
         // Loop until we block
-        int rc1;
+        long rc1;
         do {
             char buffer[0x2000];
             rc1 = libssh2_channel_read(channel, buffer, sizeof(buffer));
@@ -383,10 +383,10 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     // libssh2_scp_recv() is done, now receive data
     while (got < fileinfo.st_size) {
         char mem[1024*24];
-        int rc;
+        long rc;
 
         do {
-            int amount = sizeof(mem);
+            long long amount = sizeof(mem);
 
             if ((fileinfo.st_size -got) < amount) {
                 amount = fileinfo.st_size - got;
