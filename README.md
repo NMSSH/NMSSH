@@ -8,9 +8,13 @@ Let's begin with some samples...
 
 ## Install the library
 
-Drag and drop the project directory and all it's files in to your Xcode project. Then add the following header where you want to use the library.
+* Drag and drop the project directory and all it's files in to your Xcode project.
+* Create a new "Copy files" build phase, destination: Frameworks. Add
+  libssh2.dylib.
 
-    #include "NMSSH.h"
+Then add the following header where you want to use the library.
+
+    #import "NMSSH.h"
 
 NMSSH depends on [NMHostHelper](https://github.com/Lejdborg/NMHostHelper).
 
