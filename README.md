@@ -33,7 +33,6 @@ NMSSH also supports public/private key pairs. Connect using the flowing method:
 To disconnect just run:
 
     [ssh disconnect];
-    [ssh release];
 
 ## Executing command
 
