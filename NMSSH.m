@@ -109,7 +109,6 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
             NSNumber *port = [formatter numberFromString:[hostParts objectAtIndex:1]];
             if (port) {
-                [_port release];
                 _port = [port retain];
                 _host = [hostParts objectAtIndex:0];
             }
@@ -418,21 +417,6 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     close(localFile);
 
     return YES;
-}
-
-// -----------------------------------------------------------------------------
-// MEMORY STUFF
-// -----------------------------------------------------------------------------
-
-- (void)dealloc {
-    [_host release];
-    [_port release];
-    [_username release];
-    [_password release];
-    [_privateKey release];
-    [_publicKey release];
-
-    [super dealloc];
 }
 
 @end
