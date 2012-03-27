@@ -28,7 +28,14 @@ It's that simple. Need to use another port? Set `connectToHost:@"127.0.0.1:456"`
 NMSSH also supports public/private key pairs. Connect using the flowing method:
 
     NSError *error;
-    NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
+    NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"pass" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
+
+There is also a convenience method for when you have key pairs that aren't password protected called `connectToHost:withUsername:publicKey:privateKey:error:`.
+
+Another possibility is to start a SSH agent:
+
+    NSError *error;
+    NMSSH *ssh = [NMSSH connectWithAgentToHost:@"127.0.0.1" withUsername:@"user" error:&error];
 
 To disconnect just run:
 

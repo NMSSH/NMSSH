@@ -54,6 +54,18 @@
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error;
 
 /**
+ * Connect to SSH using a SSH agent.
+ *
+ * Unless otherwise specified in the host parameter, the port is assumed to be
+ * 22. To change port, append ":{portnr}" to the hostname.
+ *
+ * Examples:
+ *
+ *     NMSSH *ssh = [NMSSH connectWithAgentToHost:(NSString *)host withUsername:@"user" error:&error];
+ */
++ (id)connectWithAgentToHost:(NSString *)host withUsername:(NSString *)username error:(NSError **)error;
+
+/**
  * Initialize NMSSH and set its instance variables.
  *
  * Examples:

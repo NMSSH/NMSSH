@@ -36,15 +36,24 @@ http://libssh2.org/examples/ssh2_exec.html
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+@interface NMSSH (hidden)
+- (BOOL)connectWithAgent:(NSError **)error;
+- (BOOL)createSession:(NSError **)error;
+@end
+
 @implementation NMSSH
 
 unsigned long hostaddr;
 int sock;
 struct sockaddr_in soin;
 long rc;
+const char *fingerprint;
+char *userauthlist;
+struct libssh2_agent_publickey *identity, *prev_identity = NULL;
 
 LIBSSH2_SESSION *session;
 LIBSSH2_CHANNEL *channel;
+LIBSSH2_AGENT *agent = NULL;
 
 static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     struct timeval timeout;
@@ -93,6 +102,11 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     return [ssh connect:error] ? ssh : nil;
 }
 
++ (id)connectWithAgentToHost:(NSString *)host withUsername:(NSString *)username error:(NSError **)error {
+    NMSSH *ssh = [[NMSSH alloc] initWithHost:host username:username password:nil publicKey:nil privateKey:nil];
+    return [ssh connectWithAgent:error] ? ssh : nil;
+}
+
 - (id)initWithHost:(NSString *)host username:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)priateKey {
     self = [super init];
 
@@ -127,45 +141,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect:(NSError **)error {
-    // Determine host address
-    NSString *host = [NMHostHelper isIp:_host] ? _host : [NMHostHelper ipFromDomainName:_host];
-
-    hostaddr = inet_addr([host cStringUsingEncoding:NSUTF8StringEncoding]);
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    soin.sin_family = AF_INET;
-    soin.sin_port = htons([_port intValue]);
-    soin.sin_addr.s_addr = (unsigned int)hostaddr;
-
-    // Connect to socket
-    if (connect(sock, (struct sockaddr*)(&soin),sizeof(struct sockaddr_in)) != 0) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:@"Failed to connect" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
-
-        return NO;
-    }
-
-    // Create a session instance
-    session = libssh2_session_init();
-    if (!session) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:@"Failed to create a session instance" forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"NMSSH" code:101 userInfo:errorDetail];
-
-        return NO;
-    }
-
-    // Tell libssh2 we want it all done non-blocking
-    libssh2_session_set_blocking(session, 0);
-
-    // Start it up. This will trade welcome banners, exchange keys,
-    // and setup crypto, compression, and MAC layers
-    while ((rc = libssh2_session_startup(session, sock)) == LIBSSH2_ERROR_EAGAIN);
-    if (rc) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        [errorDetail setValue:[NSString stringWithFormat:@"Failed establishing SSH session: %d", rc] forKey:NSLocalizedDescriptionKey];
-        *error = [NSError errorWithDomain:@"NMSSH" code:102 userInfo:errorDetail];
-
+    if (![self createSession:error]) {
         return NO;
     }
 
@@ -194,12 +170,107 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
         }
     }
 
+    // Tell libssh2 we want it all done non-blocking
+    libssh2_session_set_blocking(session, 0);
+
+    return YES;
+}
+
+- (BOOL)connectWithAgent:(NSError **)error {
+    identity = NULL;
+    prev_identity = NULL;
+
+    if (![self createSession:error]) {
+        return NO;
+    }
+
+    const char *username = [_username cStringUsingEncoding:NSUTF8StringEncoding];
+
+    // Get host fingerprint and check what authentication methods are available
+    fingerprint = libssh2_hostkey_hash(session, LIBSSH2_HOSTKEY_HASH_SHA1);
+    userauthlist = libssh2_userauth_list(session, username, strlen(username));
+
+    if (!userauthlist || strstr(userauthlist, "publickey") == NULL) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Publickey authentication is not supported" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    // Connect to the ssh-agent
+    agent = libssh2_agent_init(session);
+
+    if (!agent) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failure initializing ssh-agent support" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    if (libssh2_agent_connect(agent)) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failure connecting to ssh-agent" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    if (libssh2_agent_list_identities(agent)) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failure requesting identities to ssh-agent" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    while (1) {
+        rc = libssh2_agent_get_identity(agent, &identity, prev_identity);
+
+        if (rc == 1)
+            break;
+
+        if (rc < 0) {
+            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+            [errorDetail setValue:@"Failure obtaining identity from ssh-agent support" forKey:NSLocalizedDescriptionKey];
+            *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+            return NO;
+        }
+
+        // Break loop if authentication succeeds
+        if (!libssh2_agent_userauth(agent, username, identity)) {
+            break;
+        }
+
+        prev_identity = identity;
+    }
+
+    if (rc) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Couldn't continue authentication" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    // Tell libssh2 we want it all done non-blocking
+    libssh2_session_set_blocking(session, 0);
+
     return YES;
 }
 
 - (void)disconnect {
+    if (agent) {
+        libssh2_agent_disconnect(agent);
+        libssh2_agent_free(agent);
+        agent = NULL;
+    }
+
     libssh2_session_disconnect(session, "Disconnect");
     libssh2_session_free(session);
+
     close(sock);
 }
 
