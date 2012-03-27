@@ -85,6 +85,10 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error {
+    return [self connectToHost:host withUsername:username password:nil publicKey:publicKey privateKey:privateKey error:&error];
+}
+
++ (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error {
     NMSSH *ssh = [[NMSSH alloc] initWithHost:host username:username password:nil publicKey:publicKey privateKey:privateKey];
     return [ssh connect:error] ? ssh : nil;
 }

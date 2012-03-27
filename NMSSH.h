@@ -42,6 +42,18 @@
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error;
 
 /**
+ * Connect to a remote host with username and password protected public/private key pair
+ *
+ * Unless otherwise specified in the host parameter, the port is assumed to be
+ * 22. To change port, append ":{portnr}" to the hostname.
+ *
+ * Examples:
+ *
+ *     NMSSH *ssh = [NMSSH connectToHost:@"127.0.0.1" withUsername:@"user" password:@"pass" publicKey:@"/home/user/.ssh/id_rsa.pub" privateKey:@"/home/user/.ssh/id_rsa" error:&error];
+ */
++ (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error;
+
+/**
  * Initialize NMSSH and set its instance variables.
  *
  * Examples:
