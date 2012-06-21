@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E42815BC1593D13800CF680C /* YAML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
+		E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E46A02E015919BE3007049AB /* ConfigHelper.m */; };
 		E4E96D88158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
 		E4E96D9E158E10FD002E6E0A /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D9D158E10FD002E6E0A /* SenTestingKit.framework */; };
 		E4E96D9F158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
@@ -16,6 +18,8 @@
 		E4E96DC4158EFBB4002E6E0A /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E96DC0158EFBB4002E6E0A /* libssh2_publickey.h */; };
 		E4E96DC5158EFBB4002E6E0A /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E96DC1158EFBB4002E6E0A /* libssh2_sftp.h */; };
 		E4E96DC7158EFBD1002E6E0A /* libssh2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4E96DBE158EFBB4002E6E0A /* libssh2.dylib */; };
+		E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
+		E4E96DDC158FD6B6002E6E0A /* config.yml in Resources */ = {isa = PBXBuildFile; fileRef = E4E96DDB158FD6B6002E6E0A /* config.yml */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +33,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E42815BA1593D12F00CF680C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				E42815BC1593D13800CF680C /* YAML.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E4E96DC6158EFBBC002E6E0A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -42,6 +56,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E46A02DF15919BE3007049AB /* ConfigHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigHelper.h; sourceTree = "<group>"; };
+		E46A02E015919BE3007049AB /* ConfigHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigHelper.m; sourceTree = "<group>"; };
 		E4E96D84158E10FD002E6E0A /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E96D87158E10FD002E6E0A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E4E96D8A158E10FD002E6E0A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -57,6 +73,8 @@
 		E4E96DBF158EFBB4002E6E0A /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
 		E4E96DC0158EFBB4002E6E0A /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
 		E4E96DC1158EFBB4002E6E0A /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
+		E4E96DD9158FD65D002E6E0A /* YAML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = YAML.framework; sourceTree = "<group>"; };
+		E4E96DDB158FD6B6002E6E0A /* config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +94,7 @@
 				E4E96D9E158E10FD002E6E0A /* SenTestingKit.framework in Frameworks */,
 				E4E96D9F158E10FD002E6E0A /* Cocoa.framework in Frameworks */,
 				E4E96DA2158E10FD002E6E0A /* NMSSH.framework in Frameworks */,
+				E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +162,7 @@
 		E4E96DA3158E10FD002E6E0A /* NMSSHTests */ = {
 			isa = PBXGroup;
 			children = (
+				E4E96DD0158FD309002E6E0A /* Settings */,
 				E4E96DA4158E10FD002E6E0A /* Supporting Files */,
 			);
 			path = NMSSHTests;
@@ -165,6 +185,25 @@
 				E4E96DC1158EFBB4002E6E0A /* libssh2_sftp.h */,
 			);
 			path = libssh2;
+			sourceTree = "<group>";
+		};
+		E4E96DD0158FD309002E6E0A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				E4E96DD8158FD65D002E6E0A /* lib */,
+				E4E96DDB158FD6B6002E6E0A /* config.yml */,
+				E46A02DF15919BE3007049AB /* ConfigHelper.h */,
+				E46A02E015919BE3007049AB /* ConfigHelper.m */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		E4E96DD8158FD65D002E6E0A /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				E4E96DD9158FD65D002E6E0A /* YAML.framework */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,6 +249,7 @@
 				E4E96D98158E10FD002E6E0A /* Frameworks */,
 				E4E96D99158E10FD002E6E0A /* Resources */,
 				E4E96D9A158E10FD002E6E0A /* ShellScript */,
+				E42815BA1593D12F00CF680C /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -259,6 +299,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4E96DDC158FD6B6002E6E0A /* config.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,7 +434,11 @@
 		E4E96DB2158E10FD002E6E0A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/NMSSHTests/Settings/lib\"",
+				);
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
 				INFOPLIST_FILE = "NMSSHTests/NMSSHTests-Info.plist";
@@ -404,7 +450,11 @@
 		E4E96DB3158E10FD002E6E0A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/NMSSHTests/Settings/lib\"",
+				);
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
 				INFOPLIST_FILE = "NMSSHTests/NMSSHTests-Info.plist";
