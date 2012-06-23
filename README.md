@@ -47,6 +47,11 @@ NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac O
         NSLog(@"Authentication succeeded");
     }
 
+#### 4. Don't forget to disconnect
+
+    [session disconnect];
+    session = nil;
+
 ### Using Channels (<span style="color:red">not yet implemented</span>)
 
     NSString *response = [session execute:@"echo foo"];
