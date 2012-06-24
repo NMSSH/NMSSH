@@ -18,6 +18,9 @@
 /** Property that keeps track of connection status to the server */
 @property (readonly, getter=isConnected) BOOL connected;
 
+/** Property that keeps track of authentication status */
+@property (readonly, getter=isAuthorized) BOOL authorized;
+
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.
  *
@@ -43,5 +46,12 @@
  * Close the session
  */
 - (void)disconnect;
+
+/**
+ * Authenticate by password
+ *
+ * @returns Authentication success
+ */
+- (BOOL)authenticateByPassword:(NSString *)password;
 
 @end

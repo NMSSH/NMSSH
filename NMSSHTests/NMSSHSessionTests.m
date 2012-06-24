@@ -6,6 +6,9 @@
 @interface NMSSHSessionTests () {
     NSString *validHost;
     NSString *validUsername;
+    NSString *validPassword;
+    NSString *invalidPassword;
+
     NSString *invalidHost;
     NSString *invalidUsername;
 
@@ -15,11 +18,19 @@
 
 @implementation NMSSHSessionTests
 
+// -----------------------------------------------------------------------------
+// TEST SETUP
+// -----------------------------------------------------------------------------
+
 - (void)setUp {
     validHost = [ConfigHelper valueForKey:
                  @"valid_password_protected_server.host"];
     validUsername = [ConfigHelper valueForKey:
                      @"valid_password_protected_server.user"];
+    validPassword = [ConfigHelper valueForKey:
+                     @"valid_password_protected_server.password"];
+    invalidPassword = [ConfigHelper valueForKey:
+                       @"valid_password_protected_server.invalid_password"];
 
     invalidHost = [ConfigHelper valueForKey:@"invalid_server.host"];
     invalidUsername = [ConfigHelper valueForKey:@"invalid_server.user"];
@@ -32,30 +43,52 @@
     }
 }
 
-- (void)testConnectionToValidServerDoesntThrowException {
+// -----------------------------------------------------------------------------
+// CONNECTION TESTS
+// -----------------------------------------------------------------------------
+
+- (void)testConnectionToValidServerWorks {
     STAssertNoThrow(session = [NMSSHSession connectToHost:validHost
                                              withUsername:validUsername],
                     @"Connecting to a valid server does not throw exception");
-}
 
-- (void)testConnectionToInvalidServerDoesntThrowException {
-    STAssertNoThrow(session = [NMSSHSession connectToHost:invalidHost
-                                             withUsername:invalidUsername],
-                    @"Connecting to a valid server does not throw exception");
-}
-
-- (void)testConnectionToValidServerWorks {
-    session = [NMSSHSession connectToHost:validHost
-                                           withUsername:validUsername];
     STAssertTrue([session isConnected],
                  @"Connection to valid server should work");
 }
 
 - (void)testConnectionToInvalidServerFails {
-    session = [NMSSHSession connectToHost:invalidHost
-                                           withUsername:invalidUsername];
+    STAssertNoThrow(session = [NMSSHSession connectToHost:invalidHost
+                                             withUsername:invalidUsername],
+                    @"Connecting to a invalid server does not throw exception");
+
     STAssertFalse([session isConnected],
                  @"Connection to invalid server should not work");
+}
+
+// -----------------------------------------------------------------------------
+// AUTHENTICATION TESTS
+// -----------------------------------------------------------------------------
+
+- (void)testAuthenticateWithValidPasswordWorks {
+    session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
+
+    STAssertNoThrow([session authenticateByPassword:validPassword],
+                    @"Authentication with valid password doesn't throw"
+                    @"exception");
+
+    STAssertTrue([session isAuthorized],
+                 @"Authentication with valid password should work");
+}
+
+- (void)testAuthenticateWithInvalidPasswordFails {
+    session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
+
+    STAssertNoThrow([session authenticateByPassword:invalidPassword],
+                    @"Authentication with invalid password doesn't throw"
+                    @"exception");
+
+    STAssertFalse([session isAuthorized],
+                 @"Authentication with invalid password should not work");
 }
 
 @end

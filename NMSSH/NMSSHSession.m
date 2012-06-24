@@ -12,7 +12,7 @@
 @end
 
 @implementation NMSSHSession
-@synthesize host, username, connected;
+@synthesize host, username, connected, authorized;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API
@@ -31,6 +31,7 @@
         host = aHost;
         username = aUsername;
         connected = NO;
+        authorized = NO;
     }
 
     return self;
@@ -78,6 +79,32 @@
     }
 
     libssh2_exit();
+}
+
+// -----------------------------------------------------------------------------
+// PUBLIC AUTHENTICATION API
+// -----------------------------------------------------------------------------
+
+- (BOOL)authenticateByPassword:(NSString *)password {
+    // Check if password authentication methods is available
+    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
+                                               strlen([username UTF8String]));
+
+    if (strstr(userauthlist, "password") == NULL) {
+        NSLog(@"NMSSH: Authentication by password not available for %@", host);
+        return NO;
+    }
+
+    // Try to authenticate by password
+    int error = libssh2_userauth_password(session, [username UTF8String],
+                                           [password UTF8String]);
+    if (error) {
+        NSLog(@"NMSSH: Password authentication failed");
+        return NO;
+    }
+
+    authorized = YES;
+    return YES;
 }
 
 // -----------------------------------------------------------------------------
