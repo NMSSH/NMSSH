@@ -68,7 +68,7 @@
 // AUTHENTICATION TESTS
 // -----------------------------------------------------------------------------
 
-- (void)testAuthenticateWithValidPasswordWorks {
+- (void)testPasswordAuthenticationWithValidPasswordWorks {
     session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
 
     STAssertNoThrow([session authenticateByPassword:validPassword],
@@ -79,7 +79,7 @@
                  @"Authentication with valid password should work");
 }
 
-- (void)testAuthenticateWithInvalidPasswordFails {
+- (void)testPasswordAuthenticationWithInvalidPasswordFails {
     session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
 
     STAssertNoThrow([session authenticateByPassword:invalidPassword],
@@ -90,7 +90,7 @@
                  @"Authentication with invalid password should not work");
 }
 
-- (void)testAuthenticateWithInvalidUserFails {
+- (void)testPasswordAuthenticationWithInvalidUserFails {
     session = [NMSSHSession connectToHost:validHost
                              withUsername:invalidUsername];
     
