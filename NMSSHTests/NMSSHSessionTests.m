@@ -91,4 +91,17 @@
                  @"Authentication with invalid password should not work");
 }
 
+- (void)testAuthenticateWithInvalidUserFails {
+    session = [NMSSHSession connectToHost:validHost
+                             withUsername:invalidUsername];
+    
+    STAssertNoThrow([session authenticateByPassword:invalidPassword],
+                    @"Authentication with invalid username/password doesn't"
+                    @"throw exception");
+    
+    STAssertFalse([session isAuthorized],
+                  @"Authentication with invalid username/password should not"
+                  @"work");
+}
+
 @end
