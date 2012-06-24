@@ -7,10 +7,10 @@
     NSString *validHost;
     NSString *validUsername;
     NSString *validPassword;
-    NSString *invalidPassword;
 
     NSString *invalidHost;
     NSString *invalidUsername;
+    NSString *invalidPassword;
 
     NMSSHSession *session;
 }
@@ -29,11 +29,10 @@
                      @"valid_password_protected_server.user"];
     validPassword = [ConfigHelper valueForKey:
                      @"valid_password_protected_server.password"];
-    invalidPassword = [ConfigHelper valueForKey:
-                       @"valid_password_protected_server.invalid_password"];
 
     invalidHost = [ConfigHelper valueForKey:@"invalid_server.host"];
     invalidUsername = [ConfigHelper valueForKey:@"invalid_server.user"];
+    invalidPassword = [ConfigHelper valueForKey:@"invalid_server.password"];
 }
 
 - (void)tearDown {

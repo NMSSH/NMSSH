@@ -6,11 +6,7 @@ valid_password_protected_server:
 
   # User config
   user: "user"
-  invalid_user: "usr"
-
-  # Password config
   password: "password"
-  invalid_password: "psswrd"
 
   # Directory config
   writable_dir: "/var/www/nmssh-tests/valid/"
@@ -24,7 +20,6 @@ valid_public_key_protected_server:
 
   # User config
   user: "user"
-  invalid_user: "usr"
 
   # Public key path
   valid_public_key: "~/.ssh/id_rsa.pub"
@@ -32,7 +27,6 @@ valid_public_key_protected_server:
 
   # Public key password
   password: "password"
-  invalid_password: "psswrd"
 
   # Directory config
   writable_dir: "/var/www/nmssh-tests/valid/"
@@ -44,13 +38,14 @@ valid_agent_server:
 
   # User config
   user: "user"
-  invalid_user: "usr"
 
   # Directory config
   writable_dir: "/var/www/nmssh-tests/valid/"
   non_writable_dir: "/var/www/nmssh-tests/invalid/"
 
-# Defines an invalid server
+# Defines an invalid server and authentication credentials that are invalid for
+# all defined test servers
 invalid_server:
   host: "0.0.0.0:22"
   user: "user"
+  password: "pass"
