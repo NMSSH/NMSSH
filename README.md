@@ -1,4 +1,4 @@
-# NMSSH rewrite
+# NMSSH
 
 This is a complete rewrite of the previous NMSSH library. The goal is to
 create a clean, easy-to-use, test driven Cocoa framework that wraps libssh2.
@@ -8,6 +8,8 @@ NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac O
 **Framework completion status:** `5 %`  
 **Using libssh2 version:** `1.4.2`
 
+Are you using NMSSH for something cool? Let me know.
+
 ## Usage
 
 ### Install the framework
@@ -15,7 +17,7 @@ NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac O
 * Build the framework and add it to your project
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
-### Connect to a server (<span style="color:red">not yet implemented</span>)
+### Connect to a server (not yet implemented)
 
 #### 1. Create a new session
 
@@ -52,12 +54,12 @@ NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac O
     [session disconnect];
     session = nil;
 
-### Using Channels (<span style="color:red">not yet implemented</span>)
+### Using Channels (not yet implemented)
 
     NSString *response = [session execute:@"echo foo"];
     NSLog(@"Response: %@", response);
 
-### SCP file transfer (<span style="color:red">not yet implemented</span>)
+### SCP file transfer (not yet implemented)
 
 The SCP API provides a simple way to upload or download files.
 
