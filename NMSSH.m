@@ -36,24 +36,25 @@ http://libssh2.org/examples/ssh2_exec.html
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-@interface NMSSH (hidden)
+@interface NMSSH () {
+    unsigned long hostaddr;
+    int sock;
+    struct sockaddr_in soin;
+    long rc;
+    const char *fingerprint;
+    char *userauthlist;
+    struct libssh2_agent_publickey *identity, *prev_identity;
+
+    LIBSSH2_SESSION *session;
+    LIBSSH2_CHANNEL *channel;
+    LIBSSH2_AGENT *agent;
+}
+
 - (BOOL)connectWithAgent:(NSError **)error;
 - (BOOL)createSession:(NSError **)error;
 @end
 
 @implementation NMSSH
-
-unsigned long hostaddr;
-int sock;
-struct sockaddr_in soin;
-long rc;
-const char *fingerprint;
-char *userauthlist;
-struct libssh2_agent_publickey *identity, *prev_identity = NULL;
-
-LIBSSH2_SESSION *session;
-LIBSSH2_CHANNEL *channel;
-LIBSSH2_AGENT *agent = NULL;
 
 static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     struct timeval timeout;
@@ -94,10 +95,6 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error {
-    return [self connectToHost:host withUsername:username password:nil publicKey:publicKey privateKey:privateKey error:&error];
-}
-
-+ (id)connectToHost:(NSString *)host withUsername:(NSString *)username password:(NSString *)password publicKey:(NSString *)publicKey privateKey:(NSString *)privateKey error:(NSError **)error {
     NMSSH *ssh = [[NMSSH alloc] initWithHost:host username:username password:nil publicKey:publicKey privateKey:privateKey];
     return [ssh connect:error] ? ssh : nil;
 }
@@ -113,7 +110,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     if (self) {
         // Set defaults from parameters
         _host = host;
-        _port = [[NSNumber numberWithInt:22] retain];
+        _port = [NSNumber numberWithInt:22];
         _username = username;
         _password = password;
         _publicKey = publicKey;
@@ -127,7 +124,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
 
             NSNumber *port = [formatter numberFromString:[hostParts objectAtIndex:1]];
             if (port) {
-                _port = [port retain];
+                _port = port;
                 _host = [hostParts objectAtIndex:0];
             }
         }
@@ -272,6 +269,64 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
     libssh2_session_free(session);
 
     close(sock);
+
+    libssh2_exit();
+}
+
+// -----------------------------------------------------------------------------
+// CONNECTION HELPERS
+// -----------------------------------------------------------------------------
+
+- (BOOL)createSession:(NSError **)error {
+    // Determine host address
+    NSString *host = [NMHostHelper isIp:_host] ? _host : [NMHostHelper ipFromDomainName:_host];
+
+    rc = libssh2_init(0);
+    if (rc != 0) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to initialize libssh2" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    hostaddr = inet_addr([host cStringUsingEncoding:NSUTF8StringEncoding]);
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    soin.sin_family = AF_INET;
+    soin.sin_port = htons([_port intValue]);
+    soin.sin_addr.s_addr = (unsigned int)hostaddr;
+
+    // Connect to socket
+    if (connect(sock, (struct sockaddr*)(&soin),sizeof(struct sockaddr_in)) != 0) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to connect" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:100 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    // Create a session instance
+    session = libssh2_session_init();
+    if (!session) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to create a session instance" forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:101 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    // Start it up. This will trade welcome banners, exchange keys,
+    // and setup crypto, compression, and MAC layers
+    while ((rc = libssh2_session_startup(session, sock)) == LIBSSH2_ERROR_EAGAIN);
+    if (rc) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:[NSString stringWithFormat:@"Failed establishing SSH session: %d", rc] forKey:NSLocalizedDescriptionKey];
+        *error = [NSError errorWithDomain:@"NMSSH" code:102 userInfo:errorDetail];
+
+        return NO;
+    }
+
+    return YES;
 }
 
 // -----------------------------------------------------------------------------
