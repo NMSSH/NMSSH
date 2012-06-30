@@ -1,11 +1,7 @@
 #import <Foundation/Foundation.h>
 
 /**
- * NMSSH aims to be a full Objective-C wrapper for libssh2, with an API
- * that is easy to understand and fun to work with.
- *
- * To achieve that goal, the library will assume conventions but still
- * make it easy to override them without writing ugly code.
+ * NMSSHSession provides functionality to setup a connection to a SSH server.
  */
 @interface NMSSHSession : NSObject
 
