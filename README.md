@@ -5,7 +5,6 @@ create a clean, easy-to-use, test driven Cocoa framework that wraps libssh2.
 
 NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac OSX application that simplifies continuous deployment.
 
-**Framework completion status:** `5 %`  
 **Using libssh2 version:** `1.4.2`
 
 Are you using NMSSH for something cool? Let me know.
@@ -23,15 +22,15 @@ Are you using NMSSH for something cool? Let me know.
 
     NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
                                            withUsername:@"user"];
-    
+
     if ([session isConnected]) {
         NSLog(@"Successfully created a new session");
     }
-    
+
 #### 2.1. Authenticate by password
 
     [session authenticateByPassword:@"pass"];
-    
+
 #### 2.2. Or by public key
 
     // Explicitly set the public key that should be used...
