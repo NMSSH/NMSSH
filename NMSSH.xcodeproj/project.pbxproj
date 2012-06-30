@@ -11,7 +11,6 @@
 		E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */; };
 		E42815C21593D95200CF680C /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = E42815C01593D95200CF680C /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E42815C31593D95200CF680C /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815C11593D95200CF680C /* NMSSHSession.m */; };
-		E42815C41593D95200CF680C /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815C11593D95200CF680C /* NMSSHSession.m */; };
 		E42815FE15962B7600CF680C /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E96D94158E10FD002E6E0A /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = E42816091596629A00CF680C /* libssh2_publickey.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = E428160A1596629A00CF680C /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -29,7 +28,6 @@
 		E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */; };
 		E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */; };
 		E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */; };
-		E4F1E682159F5B13007B0B2F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -367,9 +365,7 @@
 			files = (
 				E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */,
 				E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */,
-				E42815C41593D95200CF680C /* NMSSHSession.m in Sources */,
 				E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */,
-				E4F1E682159F5B13007B0B2F /* NMSSHChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
