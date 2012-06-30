@@ -152,6 +152,58 @@
     return YES;
 }
 
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
+    localPath = [localPath stringByExpandingTildeInPath];
+
+    // Inherit file name if to: contains a directory
+    if ([localPath hasSuffix:@"/"]) {
+        localPath = [localPath stringByAppendingString:
+                    [[remotePath componentsSeparatedByString:@"/"] lastObject]];
+    }
+
+    // Request a file via SCP
+    struct stat fileinfo;
+    channel = libssh2_scp_recv([session rawSession], [remotePath UTF8String],
+                               &fileinfo);
+
+    if (!channel) {
+        NSLog(@"NMSSH: Unable to open SCP session");
+        return NO;
+    }
+
+    // Open local file in order to write to it
+    int localFile = open([localPath UTF8String], O_WRONLY|O_CREAT, 0644);
+
+    // Save data to local file
+    off_t got = 0;
+    while (got < fileinfo.st_size) {
+        char mem[1024];
+        int amount = sizeof(mem);
+
+        if ((fileinfo.st_size - got) < amount) {
+            amount = fileinfo.st_size - got;
+        }
+
+        int rc = libssh2_channel_read(channel, mem, amount);
+
+        if (rc > 0) {
+            write(localFile, mem, rc);
+        }
+        else if (rc < 0) {
+            NSLog(@"NMSSH: Failed to read SCP data");
+            close(localFile);
+            [self close];
+            return NO;
+        }
+
+        got += rc;
+    }
+
+    close(localFile);
+    [self close];
+    return YES;
+}
+
 // -----------------------------------------------------------------------------
 // PRIVATE HELPER METHODS
 // -----------------------------------------------------------------------------

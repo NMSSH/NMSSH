@@ -53,7 +53,7 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
     [session disconnect];
     session = nil;
 
-### Using Channels (not yet implemented)
+### Using Channels
 
 #### Executing shell commands
 

@@ -46,4 +46,14 @@ enum {
  */
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath;
 
+/**
+ * Download a remote file to local the filesystem.
+ *
+ * If to: specifies a directory, the file name from the original file will be
+ * used.
+ *
+ * @returns SCP download success
+ */
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath;
+
 @end

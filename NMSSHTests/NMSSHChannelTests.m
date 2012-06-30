@@ -45,7 +45,10 @@
     }
 
     // Cleanup SCP test files
-    [[NSFileManager defaultManager] removeItemAtPath:localFilePath error:nil];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:localFilePath]) {
+        [[NSFileManager defaultManager] removeItemAtPath:localFilePath
+                                                   error:nil];
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -95,6 +98,38 @@
                     @"exception");
 
     STAssertFalse(result, @"Uploading to non-writable dir should not work.");
+}
+
+- (void)testDownloadingExistingFileWorks {
+    channel = [[NMSSHChannel alloc] initWithSession:session];
+
+    [[NSFileManager defaultManager] removeItemAtPath:localFilePath error:nil];
+    NSString *remoteFile = [NSString stringWithFormat:@"%@nmssh-test.txt",
+                            [settings objectForKey:@"writable_dir"]];
+
+    BOOL result;
+    STAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
+                    @"Downloading existing file doesn't throw exception");
+
+    STAssertTrue(result, @"Downloading existing file should work.");
+    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
+                 @"A file has been created");
+}
+
+- (void)testDownloadingNonExistingFileFails {
+    channel = [[NMSSHChannel alloc] initWithSession:session];
+
+    [[NSFileManager defaultManager] removeItemAtPath:localFilePath error:nil];
+    NSString *remoteFile = [NSString stringWithFormat:@"%@nmssh-test.txt",
+                            [settings objectForKey:@"non_writable_dir"]];
+
+    BOOL result;
+    STAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
+                    @"Downloading non-existing file doesn't throw exception");
+
+    STAssertFalse(result, @"Downloading non-existing file should not work.");
+    STAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
+                 @"A file has not been created");
 }
 
 @end
