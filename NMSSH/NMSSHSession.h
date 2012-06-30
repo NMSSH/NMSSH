@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "libssh2.h"
 
+@class NMSSHChannel;
+
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
  */
@@ -20,6 +22,9 @@
 
 /** Property that keeps track of authentication status */
 @property (readonly, getter=isAuthorized) BOOL authorized;
+
+/** Get a channel for this session */
+@property (readonly) NMSSHChannel *channel;
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.

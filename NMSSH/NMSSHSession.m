@@ -1,4 +1,5 @@
 #import "NMSSHSession.h"
+#import "NMSSHChannel.h"
 
 #import <netdb.h>
 #import <sys/socket.h>
@@ -12,6 +13,7 @@
 
 @implementation NMSSHSession
 @synthesize session, host, username, connected, authorized;
+@synthesize channel;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API
@@ -181,6 +183,18 @@
     }
 
     return NO;
+}
+
+// -----------------------------------------------------------------------------
+// PUBLIC INTEGRATION API
+// -----------------------------------------------------------------------------
+
+- (NMSSHChannel *)channel {
+    if (!channel) {
+        channel = [[NMSSHChannel alloc] initWithSession:self];
+    }
+    
+    return channel;
 }
 
 // -----------------------------------------------------------------------------
