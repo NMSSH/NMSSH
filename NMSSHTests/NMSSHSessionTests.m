@@ -41,7 +41,7 @@
     NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
     NSString *username = [validPasswordProtectedServer
                                objectForKey:@"user"];
-    
+
     STAssertNoThrow(session = [NMSSHSession connectToHost:host
                                              withUsername:username],
                     @"Connecting to a valid server does not throw exception");
@@ -53,7 +53,7 @@
 - (void)testConnectionToInvalidServerFails {
     NSString *host = [invalidServer objectForKey:@"host"];
     NSString *username = [invalidServer objectForKey:@"user"];
-    
+
     STAssertNoThrow(session = [NMSSHSession connectToHost:host
                                              withUsername:username],
                     @"Connecting to a invalid server does not throw exception");
@@ -72,7 +72,7 @@
                                objectForKey:@"user"];
     NSString *password = [validPasswordProtectedServer
                                objectForKey:@"password"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPassword:password],
@@ -88,7 +88,7 @@
     NSString *username = [validPasswordProtectedServer
                                objectForKey:@"user"];
     NSString *password = [invalidServer objectForKey:@"password"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPassword:password],
@@ -103,13 +103,13 @@
     NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
     NSString *username = [invalidServer objectForKey:@"user"];
     NSString *password = [invalidServer objectForKey:@"password"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
-    
+
     STAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with invalid username/password doesn't"
                     @"throw exception");
-    
+
     STAssertFalse([session isAuthorized],
                   @"Authentication with invalid username/password should not"
                   @"work");
@@ -122,14 +122,14 @@
                            objectForKey:@"valid_public_key"];
     NSString *password = [validPublicKeyProtectedServer
                           objectForKey:@"password"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPublicKey:publicKey
                                          andPassword:password],
                     @"Authentication with valid public key doesn't throw"
                     @"exception");
-    
+
     STAssertTrue([session isAuthorized],
                   @"Authentication with valid public key should work");
 }
@@ -139,14 +139,14 @@
     NSString *username = [validPublicKeyProtectedServer objectForKey:@"user"];
     NSString *publicKey = [validPublicKeyProtectedServer
                            objectForKey:@"valid_public_key"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
-    
+
     STAssertNoThrow([session authenticateByPublicKey:publicKey
                                          andPassword:nil],
                     @"Public key authentication with invalid password doesn't"
                     @"throw exception");
-    
+
     STAssertFalse([session isAuthorized],
                  @"Public key authentication with invalid password should not"
                  @"work");
@@ -158,14 +158,14 @@
     NSString *username = [validPublicKeyProtectedServer objectForKey:@"user"];
     NSString *publicKey = [validPublicKeyProtectedServer
                            objectForKey:@"invalid_public_key"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
-    
+
     STAssertNoThrow([session authenticateByPublicKey:publicKey
                                          andPassword:nil],
                     @"Authentication with invalid public key doesn't throw"
                     @"exception");
-    
+
     STAssertFalse([session isAuthorized],
                  @"Authentication with invalid public key should not work");
 }
@@ -177,16 +177,18 @@
                            objectForKey:@"valid_public_key"];
     NSString *password = [validPublicKeyProtectedServer
                           objectForKey:@"password"];
-    
+
     session = [NMSSHSession connectToHost:host withUsername:username];
-    
+
     STAssertNoThrow([session authenticateByPublicKey:publicKey
                                          andPassword:password],
                     @"Public key authentication with invalid user doesn't"
                     @"throw exception");
-    
+
     STAssertFalse([session isAuthorized],
                   @"Public key authentication with invalid user should not work");
 }
+
+// TODO: Create tests for SSH agent
 
 @end
