@@ -13,6 +13,6 @@
  *     NSString *host = [ConfigHelper valueForKey:
  *                         @"valid_password_protected_server.host"];
  */
-+ (NSString *)valueForKey:(NSString *)key;
++ (id)valueForKey:(NSString *)key;
 
 @end

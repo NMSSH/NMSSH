@@ -3,7 +3,7 @@
 
 @implementation ConfigHelper
 
-+ (NSString *)valueForKey:(NSString *)key {
++ (id)valueForKey:(NSString *)key {
     static id yaml;
 
     if (!yaml) {
@@ -22,7 +22,7 @@
         data = [data objectForKey:keyPart];
     }
 
-    return (NSString *)data;
+    return data;
 }
 
 @end

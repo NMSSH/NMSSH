@@ -4,13 +4,9 @@
 #import <NMSSH/NMSSH.h>
 
 @interface NMSSHSessionTests () {
-    NSString *validHost;
-    NSString *validUsername;
-    NSString *validPassword;
-
-    NSString *invalidHost;
-    NSString *invalidUsername;
-    NSString *invalidPassword;
+    NSDictionary *validPasswordProtectedServer;
+    NSDictionary *validPublicKeyProtectedServer;
+    NSDictionary *invalidServer;
 
     NMSSHSession *session;
 }
@@ -23,16 +19,11 @@
 // -----------------------------------------------------------------------------
 
 - (void)setUp {
-    validHost = [ConfigHelper valueForKey:
-                 @"valid_password_protected_server.host"];
-    validUsername = [ConfigHelper valueForKey:
-                     @"valid_password_protected_server.user"];
-    validPassword = [ConfigHelper valueForKey:
-                     @"valid_password_protected_server.password"];
-
-    invalidHost = [ConfigHelper valueForKey:@"invalid_server.host"];
-    invalidUsername = [ConfigHelper valueForKey:@"invalid_server.user"];
-    invalidPassword = [ConfigHelper valueForKey:@"invalid_server.password"];
+    validPasswordProtectedServer = [ConfigHelper valueForKey:
+                                    @"valid_password_protected_server"];
+    validPublicKeyProtectedServer = [ConfigHelper valueForKey:
+                                     @"valid_public_key_protected_server"];
+    invalidServer = [ConfigHelper valueForKey:@"invalid_server"];
 }
 
 - (void)tearDown {
@@ -47,8 +38,12 @@
 // -----------------------------------------------------------------------------
 
 - (void)testConnectionToValidServerWorks {
-    STAssertNoThrow(session = [NMSSHSession connectToHost:validHost
-                                             withUsername:validUsername],
+    NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
+    NSString *username = [validPasswordProtectedServer
+                               objectForKey:@"user"];
+    
+    STAssertNoThrow(session = [NMSSHSession connectToHost:host
+                                             withUsername:username],
                     @"Connecting to a valid server does not throw exception");
 
     STAssertTrue([session isConnected],
@@ -56,8 +51,11 @@
 }
 
 - (void)testConnectionToInvalidServerFails {
-    STAssertNoThrow(session = [NMSSHSession connectToHost:invalidHost
-                                             withUsername:invalidUsername],
+    NSString *host = [invalidServer objectForKey:@"host"];
+    NSString *username = [invalidServer objectForKey:@"user"];
+    
+    STAssertNoThrow(session = [NMSSHSession connectToHost:host
+                                             withUsername:username],
                     @"Connecting to a invalid server does not throw exception");
 
     STAssertFalse([session isConnected],
@@ -69,9 +67,15 @@
 // -----------------------------------------------------------------------------
 
 - (void)testPasswordAuthenticationWithValidPasswordWorks {
-    session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
+    NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
+    NSString *username = [validPasswordProtectedServer
+                               objectForKey:@"user"];
+    NSString *password = [validPasswordProtectedServer
+                               objectForKey:@"password"];
+    
+    session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPassword:validPassword],
+    STAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with valid password doesn't throw"
                     @"exception");
 
@@ -80,9 +84,14 @@
 }
 
 - (void)testPasswordAuthenticationWithInvalidPasswordFails {
-    session = [NMSSHSession connectToHost:validHost withUsername:validUsername];
+    NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
+    NSString *username = [validPasswordProtectedServer
+                               objectForKey:@"user"];
+    NSString *password = [invalidServer objectForKey:@"password"];
+    
+    session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPassword:invalidPassword],
+    STAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with invalid password doesn't throw"
                     @"exception");
 
@@ -91,10 +100,13 @@
 }
 
 - (void)testPasswordAuthenticationWithInvalidUserFails {
-    session = [NMSSHSession connectToHost:validHost
-                             withUsername:invalidUsername];
+    NSString *host = [validPasswordProtectedServer objectForKey:@"host"];
+    NSString *username = [invalidServer objectForKey:@"user"];
+    NSString *password = [invalidServer objectForKey:@"password"];
     
-    STAssertNoThrow([session authenticateByPassword:invalidPassword],
+    session = [NMSSHSession connectToHost:host withUsername:username];
+    
+    STAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with invalid username/password doesn't"
                     @"throw exception");
     
