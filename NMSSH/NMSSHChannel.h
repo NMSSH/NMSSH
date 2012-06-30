@@ -19,19 +19,13 @@ enum {
 @property (nonatomic, readonly) NSString *lastResponse;
 
 /**
- * Create a new NMSSHChannel instance and open a channel on the provided
- * session.
+ * Create a new NMSSHChannel instance.
  *
  * aSession needs to be a valid, connected, NMSSHSession instance!
  *
  * @returns New NMSSHChannel instance
  */
 - (id)initWithSession:(NMSSHSession *)aSession;
-
-/**
- * Close and cleanup the channel
- */
-- (void)close;
 
 /**
  * Execute a shell command on the server.
@@ -41,5 +35,15 @@ enum {
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error;
+
+/**
+ * Upload a local file to a remote server.
+ *
+ * If to: specifies a directory, the file name from the original file will be
+ * used.
+ *
+ * @returns SCP upload success
+ */
+- (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath;
 
 @end

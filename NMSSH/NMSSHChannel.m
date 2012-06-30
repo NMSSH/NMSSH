@@ -23,23 +23,9 @@
         if (![session isKindOfClass:[NMSSHSession class]]) {
             return nil;
         }
-
-        // Open up the channel
-        if (!(channel = libssh2_channel_open_session([session rawSession]))) {
-            NSLog(@"NMSSH: Unable to open a session");
-            return nil;
-        }
     }
 
     return self;
-}
-
-- (void)close {
-    if (channel) {
-        libssh2_channel_close(channel);
-        libssh2_channel_free(channel);
-        channel = nil;
-    }
 }
 
 // -----------------------------------------------------------------------------
@@ -48,6 +34,12 @@
 
 - (NSString *)execute:(NSString *)command error:(NSError **)error {
     lastResponse = nil;
+
+    // Open up the channel
+    if (!(channel = libssh2_channel_open_session([session rawSession]))) {
+        NSLog(@"NMSSH: Unable to open a session");
+        return nil;
+    }
 
     // In case of error...
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:command
@@ -61,6 +53,7 @@
                                  userInfo:userInfo];
 
         NSLog(@"NMSSH: Error executing command");
+        [self close];
         return nil;
     }
 
@@ -72,8 +65,8 @@
             rc = libssh2_channel_read(channel, buffer, sizeof(buffer));
 
             if (rc != LIBSSH2_ERROR_EAGAIN) {
-                lastResponse = [NSString stringWithCString:buffer
-                                                  encoding:NSUTF8StringEncoding];
+                lastResponse = [NSString stringWithFormat:@"%s", buffer];
+                [self close];
                 return lastResponse;
             }
         }
@@ -86,7 +79,89 @@
                              userInfo:userInfo];
 
     NSLog(@"NMSSH: Error fetching response from command");
+    [self close];
     return nil;
+}
+
+// -----------------------------------------------------------------------------
+// PUBLIC SCP API
+// -----------------------------------------------------------------------------
+
+- (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
+    localPath = [localPath stringByExpandingTildeInPath];
+
+    // Inherit file name if to: contains a directory
+    if ([remotePath hasSuffix:@"/"]) {
+        remotePath = [remotePath stringByAppendingString:
+                     [[localPath componentsSeparatedByString:@"/"] lastObject]];
+    }
+
+    // Read local file
+    FILE *local = fopen([localPath UTF8String], "rb");
+    if (!local) {
+        NSLog(@"NMSSH: Can't read local file");
+        return NO;
+    }
+
+    // Try to send a file via SCP.
+    struct stat fileinfo;
+    stat([localPath UTF8String], &fileinfo);
+    channel = libssh2_scp_send([session rawSession], [remotePath UTF8String],
+                               fileinfo.st_mode & 0644,
+                               (unsigned long)fileinfo.st_size);
+
+    if (!channel) {
+        NSLog(@"NMSSH: Unable to open SCP session");
+        return NO;
+    }
+
+    // Wait for file transfer to finish
+    char mem[1024];
+    size_t nread;
+    char *ptr;
+    do {
+        nread = fread(mem, 1, sizeof(mem), local);
+        if (nread <= 0) {
+            break; // End of file
+        }
+        ptr = mem;
+
+        do {
+            // Write the same data over and over, until error or completion
+            int rc = libssh2_channel_write(channel, ptr, nread);
+
+            if (rc < 0) {
+                NSLog(@"NMSSH: Failed writing file");
+                [self close];
+                return NO;
+            }
+            else {
+                // rc indicates how many bytes were written this time
+                ptr += rc;
+                nread -= rc;
+            }
+        } while (nread);
+    } while (1);
+
+    // Send EOF and clean up
+    libssh2_channel_send_eof(channel);
+    libssh2_channel_wait_eof(channel);
+    libssh2_channel_wait_closed(channel);
+    [self close];
+
+    return YES;
+}
+
+// -----------------------------------------------------------------------------
+// PRIVATE HELPER METHODS
+// -----------------------------------------------------------------------------
+
+- (void)close {
+    if (channel) {
+        libssh2_channel_close(channel);
+        libssh2_channel_free(channel);
+        channel = nil;
+    }
 }
 
 @end
