@@ -86,7 +86,7 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)authenticateByPassword:(NSString *)password {
-    // Check if password authentication methods is available
+    // Check if password authentication is available for this server
     char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
                                                strlen([username UTF8String]));
 
@@ -109,7 +109,7 @@
 
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                     andPassword:(NSString *)password {
-    // Check what authentication methods are available
+    // Check if public key authentication is available for this server
     char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
                                                strlen([username UTF8String]));
 
