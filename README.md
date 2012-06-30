@@ -7,7 +7,7 @@ NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac O
 
 **Using libssh2 version:** `1.4.2`
 
-Are you using NMSSH for something cool? Let me know.
+Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdborg).
 
 ## Usage
 
