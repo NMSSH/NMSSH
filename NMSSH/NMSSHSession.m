@@ -104,7 +104,43 @@
     }
 
     authorized = YES;
-    return YES;
+    return [self isAuthorized];
+}
+
+- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                    andPassword:(NSString *)password {
+    // Check what authentication methods are available
+    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
+                                               strlen([username UTF8String]));
+    
+    if (strstr(userauthlist, "publickey") == NULL) {
+        NSLog(@"NMSSH: Authentication by public key not available for %@", host);
+        return NO;
+    }
+    
+    if (password == nil) {
+        password = @"";
+    }
+    
+    // Get absolute paths for private/public key pair
+    publicKey = [publicKey stringByExpandingTildeInPath];
+    NSString *privateKey = [publicKey stringByReplacingOccurrencesOfString:@".pub" 
+                                                                withString:@""];
+    
+    // Try to authenticate with key pair and password
+    int error = libssh2_userauth_publickey_fromfile(session,
+                                                    [username UTF8String],
+                                                    [publicKey UTF8String],
+                                                    [privateKey UTF8String],
+                                                    [password UTF8String]);
+    
+    if (error) {
+        NSLog(@"NMSSH: Public key authentication failed");
+        return NO;
+    }
+    
+    authorized = YES;
+    return [self isAuthorized];
 }
 
 // -----------------------------------------------------------------------------

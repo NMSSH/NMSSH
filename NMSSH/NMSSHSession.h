@@ -54,4 +54,14 @@
  */
 - (BOOL)authenticateByPassword:(NSString *)password;
 
+/**
+ * Authenticate by public key
+ *
+ * Use password:nil when the key is unencrypted
+ *
+ * @returns Authentication success
+ */
+- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                    andPassword:(NSString *)password;
+
 @end

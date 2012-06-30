@@ -115,4 +115,37 @@
                   @"work");
 }
 
+- (void)testPublicKeyAuthenticationWithValidKeyWorks {
+    NSString *host = [validPublicKeyProtectedServer objectForKey:@"host"];
+    NSString *username = [validPublicKeyProtectedServer objectForKey:@"user"];
+    NSString *publicKey = [validPublicKeyProtectedServer
+                           objectForKey:@"valid_public_key"];
+    NSString *password = [validPublicKeyProtectedServer
+                          objectForKey:@"password"];
+    
+    session = [NMSSHSession connectToHost:host withUsername:username];
+
+    STAssertNoThrow([session authenticateByPublicKey:publicKey
+                                         andPassword:password],
+                    @"Authentication with valid public key doesn't throw"
+                    @"exception");
+    
+    STAssertTrue([session isAuthorized],
+                  @"Authentication with valid public key should work");
+}
+
+/*
+- (void)testPublicKeyAuthenticationWithInvalidKeyFails {
+    session = [NMSSHSession connectToHost:validHost
+                             withUsername:validUsername];
+}
+*/
+
+/*
+- (void)testPublicKeyAuthenticationWithInvalidUserFails {
+    session = [NMSSHSession connectToHost:validHost
+                             withUsername:invalidUsername];
+}
+*/
+
 @end
