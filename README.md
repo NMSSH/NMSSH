@@ -16,7 +16,7 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
 * Build the framework and add it to your project
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
-### Connect to a server (not yet implemented)
+### Connect to a server
 
 #### 1. Create a new session
 

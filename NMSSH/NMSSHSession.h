@@ -64,4 +64,11 @@
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                     andPassword:(NSString *)password;
 
+/**
+ * Setup and connect to an SSH agent
+ *
+ * @returns Authentication success
+ */
+- (BOOL)connectToAgent;
+
 @end

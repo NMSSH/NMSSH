@@ -8,6 +8,7 @@
 @interface NMSSHSession () {
     int sock;
     LIBSSH2_SESSION *session;
+    LIBSSH2_AGENT *agent;
 }
 @end
 
@@ -68,6 +69,12 @@
 }
 
 - (void)disconnect {
+    if (agent) {
+        libssh2_agent_disconnect(agent);
+        libssh2_agent_free(agent);
+        agent = nil;
+    }
+
     if (session) {
         libssh2_session_disconnect(session, "NMSSH: Disconnect");
         libssh2_session_free(session);
@@ -86,12 +93,7 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)authenticateByPassword:(NSString *)password {
-    // Check if password authentication is available for this server
-    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
-                                               strlen([username UTF8String]));
-
-    if (strstr(userauthlist, "password") == NULL) {
-        NSLog(@"NMSSH: Authentication by password not available for %@", host);
+    if (![self supportsAuthenticationMethod:@"password"]) {
         return NO;
     }
 
@@ -109,12 +111,7 @@
 
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                     andPassword:(NSString *)password {
-    // Check if public key authentication is available for this server
-    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
-                                               strlen([username UTF8String]));
-
-    if (strstr(userauthlist, "publickey") == NULL) {
-        NSLog(@"NMSSH: Authentication by public key not available for %@", host);
+    if (![self supportsAuthenticationMethod:@"publickey"]) {
         return NO;
     }
 
@@ -141,6 +138,51 @@
 
     authorized = YES;
     return [self isAuthorized];
+}
+
+- (BOOL)connectToAgent {
+    if (![self supportsAuthenticationMethod:@"publickey"]) {
+        return NO;
+    }
+
+    // Try to setup a connection to the SSH-agent
+    agent = libssh2_agent_init(session);
+    if (!agent) {
+        NSLog(@"NMSSH: Could not start a new agent");
+        return NO;
+    }
+
+    // Try connecting to the agent
+    if (libssh2_agent_connect(agent)) {
+        NSLog(@"NMSSH: Failed connection to agent");
+        return NO;
+    }
+
+    // Try to fetch available SSH identities
+    if (libssh2_agent_list_identities(agent)) {
+        NSLog(@"NMSSH: Failed to request agent identities");
+        return NO;
+    }
+
+    // Search for the correct identity and try to authenticate
+    struct libssh2_agent_publickey *identity, *prev_identity = NULL;
+    while (1) {
+        int error = libssh2_agent_get_identity(agent, &identity, prev_identity);
+        if (error) {
+            NSLog(@"NMSSH: Failed to find a valid identity for the agent");
+            return NO;
+        }
+
+        error = libssh2_agent_userauth(agent, [username UTF8String], identity);
+        if (!error) {
+            authorized = YES;
+            return [self isAuthorized];
+        }
+
+        prev_identity = identity;
+    }
+
+    return NO;
 }
 
 // -----------------------------------------------------------------------------
@@ -186,6 +228,22 @@
     [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
 
     return [formatter numberFromString:[hostComponents objectAtIndex:1]];
+}
+
+// -----------------------------------------------------------------------------
+// PRIVATE CONNECTION HELPERS
+// -----------------------------------------------------------------------------
+
+- (BOOL)supportsAuthenticationMethod:(NSString *)method {
+    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
+                                               strlen([username UTF8String]));
+
+    if (strstr(userauthlist, [method UTF8String]) == NULL) {
+        NSLog(@"NMSSH: Authentication by %@ not available for %@", method, host);
+        return NO;
+    }
+
+    return YES;
 }
 
 @end

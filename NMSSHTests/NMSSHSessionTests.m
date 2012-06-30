@@ -6,6 +6,7 @@
 @interface NMSSHSessionTests () {
     NSDictionary *validPasswordProtectedServer;
     NSDictionary *validPublicKeyProtectedServer;
+    NSDictionary *validAgentServer;
     NSDictionary *invalidServer;
 
     NMSSHSession *session;
@@ -24,6 +25,7 @@
     validPublicKeyProtectedServer = [ConfigHelper valueForKey:
                                      @"valid_public_key_protected_server"];
     invalidServer = [ConfigHelper valueForKey:@"invalid_server"];
+    validAgentServer = [ConfigHelper valueForKey:@"valid_agent_server"];
 }
 
 - (void)tearDown {
@@ -189,6 +191,31 @@
                   @"Public key authentication with invalid user should not work");
 }
 
-// TODO: Create tests for SSH agent
+- (void)testValidConnectionToAgent {
+    NSString *host = [validAgentServer objectForKey:@"host"];
+    NSString *username = [validAgentServer objectForKey:@"user"];
+
+    session = [NMSSHSession connectToHost:host withUsername:username];
+
+    STAssertNoThrow([session connectToAgent],
+                    @"Valid connection to agent doesn't throw exception");
+
+    STAssertTrue([session isAuthorized],
+                 @"Agent authentication with valid username should work");
+}
+
+- (void)testInvalidConnectionToAgent {
+    NSString *host = [validAgentServer objectForKey:@"host"];
+    NSString *username = [invalidServer objectForKey:@"user"];
+
+    session = [NMSSHSession connectToHost:host withUsername:username];
+
+    STAssertNoThrow([session connectToAgent],
+                    @"Invalid connection to agent doesn't throw exception");
+
+    STAssertFalse([session isAuthorized],
+                  @"Agent authentication with invalid username should not"
+                  @"work");
+}
 
 @end
