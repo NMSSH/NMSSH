@@ -56,10 +56,12 @@ Are you using NMSSH for something cool? Let me know.
 
 ### Using Channels (not yet implemented)
 
-    NSString *response = [session execute:@"echo foo"];
+#### Executing shell commands
+
+    NSString *response = [[session channel] execute:@"echo foo"];
     NSLog(@"Response: %@", response);
 
-### SCP file transfer (not yet implemented)
+#### SCP file transfer
 
 The SCP API provides a simple way to upload or download files.
 
@@ -67,11 +69,15 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
 #### Uploading files from your local computer
 
-    BOOL success = [session uploadFile:@"~/my-local-file.txt" to:@"/var/www/"];
+    BOOL success = [[session channel] uploadFile:@"~/my-local-file.txt" to:@"/var/www/"];
 
 #### Downloading files from a server
 
-    BOOL success = [session downloadFile:@"/var/www/my-remote-file.txt" to:@"~/"];
+    BOOL success = [[session channel] downloadFile:@"/var/www/my-remote-file.txt" to:@"~/"];
+
+## Compatibility
+
+NMSSH contains a pre-built libssh2 for Mac OSX. It should work just fine with iOS as well if you compile libssh2 yourself and switch the included `libssh2.dylib`.
 
 ## License
 
