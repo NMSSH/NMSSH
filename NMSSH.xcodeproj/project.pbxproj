@@ -26,6 +26,10 @@
 		E4E96DA2158E10FD002E6E0A /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D84158E10FD002E6E0A /* NMSSH.framework */; };
 		E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
 		E4E96DDC158FD6B6002E6E0A /* config.yml in Resources */ = {isa = PBXBuildFile; fileRef = E4E96DDB158FD6B6002E6E0A /* config.yml */; };
+		E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */; };
+		E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */; };
+		E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */; };
+		E4F1E682159F5B13007B0B2F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +89,10 @@
 		E4E96DA5158E10FD002E6E0A /* NMSSHTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NMSSHTests-Info.plist"; sourceTree = "<group>"; };
 		E4E96DD9158FD65D002E6E0A /* YAML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = YAML.framework; sourceTree = "<group>"; };
 		E4E96DDB158FD6B6002E6E0A /* config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.yml; sourceTree = "<group>"; };
+		E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMSSHChannelTests.h; path = NMSSHTests/NMSSHChannelTests.h; sourceTree = "<group>"; };
+		E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NMSSHChannelTests.m; path = NMSSHTests/NMSSHChannelTests.m; sourceTree = "<group>"; };
+		E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannel.h; sourceTree = "<group>"; };
+		E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +125,8 @@
 			children = (
 				E4E96D8D158E10FD002E6E0A /* NMSSH */,
 				E4E96DA3158E10FD002E6E0A /* NMSSHTests */,
+				E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */,
+				E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */,
 				E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */,
 				E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */,
 				E4E96D86158E10FD002E6E0A /* Frameworks */,
@@ -159,6 +169,8 @@
 				E4E96DBD158EFBB4002E6E0A /* libssh2 */,
 				E4E96D8E158E10FD002E6E0A /* Supporting Files */,
 				E4E96D94158E10FD002E6E0A /* NMSSH.h */,
+				E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */,
+				E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */,
 				E42815C01593D95200CF680C /* NMSSHSession.h */,
 				E42815C11593D95200CF680C /* NMSSHSession.m */,
 			);
@@ -233,6 +245,7 @@
 				E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */,
 				E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */,
 				E428160E1596629A00CF680C /* libssh2.h in Headers */,
+				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E42815C31593D95200CF680C /* NMSSHSession.m in Sources */,
+				E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +368,8 @@
 				E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */,
 				E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */,
 				E42815C41593D95200CF680C /* NMSSHSession.m in Sources */,
+				E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */,
+				E4F1E682159F5B13007B0B2F /* NMSSHChannel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

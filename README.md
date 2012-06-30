@@ -57,7 +57,8 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
 
 #### Executing shell commands
 
-    NSString *response = [[session channel] execute:@"echo foo"];
+    NSError *error = nil;
+    NSString *response = [[session channel] execute:@"echo foo" error:&error];
     NSLog(@"Response: %@", response);
 
 #### SCP file transfer

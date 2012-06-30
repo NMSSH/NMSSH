@@ -1,9 +1,13 @@
 #import <Foundation/Foundation.h>
+#import "libssh2.h"
 
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
  */
 @interface NMSSHSession : NSObject
+
+/** Raw libssh2 session instance */
+@property (readonly, getter=rawSession) LIBSSH2_SESSION *session;
 
 /** Server hostname in the form "{hostname}:{port}" */
 @property (readonly) NSString *host;

@@ -1,19 +1,17 @@
 #import "NMSSHSession.h"
 
-#import "libssh2.h"
 #import <netdb.h>
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
 @interface NMSSHSession () {
     int sock;
-    LIBSSH2_SESSION *session;
     LIBSSH2_AGENT *agent;
 }
 @end
 
 @implementation NMSSHSession
-@synthesize host, username, connected, authorized;
+@synthesize session, host, username, connected, authorized;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API

@@ -8,6 +8,10 @@ valid_password_protected_server:
   user: "user"
   password: "password"
 
+  # Shell execution config
+  execute_command: "ls -1 /var/www/nmssh-tests/"
+  execute_expected_response: "invalid\nvalid\n"
+
   # Directory config
   writable_dir: "/var/www/nmssh-tests/valid/"
   non_writable_dir: "/var/www/nmssh-tests/invalid/"
