@@ -64,8 +64,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMSSHSessionTests.h; path = NMSSHTests/NMSSHSessionTests.h; sourceTree = "<group>"; };
-		E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NMSSHSessionTests.m; path = NMSSHTests/NMSSHSessionTests.m; sourceTree = "<group>"; };
+		E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionTests.h; sourceTree = "<group>"; };
+		E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSessionTests.m; sourceTree = "<group>"; };
 		E42815C01593D95200CF680C /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
 		E42815C11593D95200CF680C /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
 		E42816091596629A00CF680C /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
@@ -87,8 +87,8 @@
 		E4E96DA5158E10FD002E6E0A /* NMSSHTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NMSSHTests-Info.plist"; sourceTree = "<group>"; };
 		E4E96DD9158FD65D002E6E0A /* YAML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = YAML.framework; sourceTree = "<group>"; };
 		E4E96DDB158FD6B6002E6E0A /* config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.yml; sourceTree = "<group>"; };
-		E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMSSHChannelTests.h; path = NMSSHTests/NMSSHChannelTests.h; sourceTree = "<group>"; };
-		E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NMSSHChannelTests.m; path = NMSSHTests/NMSSHChannelTests.m; sourceTree = "<group>"; };
+		E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelTests.h; sourceTree = "<group>"; };
+		E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannelTests.m; sourceTree = "<group>"; };
 		E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannel.h; sourceTree = "<group>"; };
 		E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,10 +123,6 @@
 			children = (
 				E4E96D8D158E10FD002E6E0A /* NMSSH */,
 				E4E96DA3158E10FD002E6E0A /* NMSSHTests */,
-				E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */,
-				E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */,
-				E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */,
-				E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */,
 				E4E96D86158E10FD002E6E0A /* Frameworks */,
 				E4E96D85158E10FD002E6E0A /* Products */,
 			);
@@ -189,6 +185,10 @@
 			children = (
 				E4E96DD0158FD309002E6E0A /* Settings */,
 				E4E96DA4158E10FD002E6E0A /* Supporting Files */,
+				E4F1E67A159F5923007B0B2F /* NMSSHChannelTests.h */,
+				E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */,
+				E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */,
+				E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */,
 			);
 			path = NMSSHTests;
 			sourceTree = "<group>";
