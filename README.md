@@ -75,6 +75,31 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
     BOOL success = [[session channel] downloadFile:@"/var/www/my-remote-file.txt" to:@"~/"];
 
+### SFTP
+
+#### Connect to SFTP
+
+    NMSFTP *sftp = [NMSFTP connectWithSession:session];
+    // do stuff…
+    [sftp disconnect];
+
+#### Create directory
+
+    [sftp createDirectoryAtPath:@"/var/www/new-dir/"];
+
+#### Delete directory
+
+    [sftp removeDirectoryAtPath:@"/var/www/dir/"];
+
+#### Create symlink
+
+    [sftp createSymbolicLinkAtPath:@"/var/www/symlink"
+               withDestinationPath:@"/var/www/new-dir/"];
+
+#### Delete file
+
+    [sftp removeFileAtPath:@"/var/www/file.txt"];
+
 ## Compatibility
 
 NMSSH contains a pre-built libssh2 for Mac OSX. The framework should work just fine with iOS as well if you compile libssh2 yourself and switch the included `libssh2.dylib`.

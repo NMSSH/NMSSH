@@ -19,6 +19,10 @@
 		E4281634159745D100CF680C /* libssh2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4281632159745D100CF680C /* libssh2.dylib */; };
 		E4281635159745D900CF680C /* libssh2.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4281632159745D100CF680C /* libssh2.dylib */; };
 		E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E46A02E015919BE3007049AB /* ConfigHelper.m */; };
+		E48DA7B915D0DCC100721060 /* NMSFTPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7B815D0DCC100721060 /* NMSFTPTests.m */; };
+		E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = E48DA7BB15D0EB2800721060 /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E48DA7BE15D0EB2800721060 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7BC15D0EB2800721060 /* NMSFTP.m */; };
+		E48DA7BF15D0EB2800721060 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7BC15D0EB2800721060 /* NMSFTP.m */; };
 		E4E96D88158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
 		E4E96D9E158E10FD002E6E0A /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D9D158E10FD002E6E0A /* SenTestingKit.framework */; };
 		E4E96D9F158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
@@ -26,7 +30,7 @@
 		E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
 		E4E96DDC158FD6B6002E6E0A /* config.yml in Resources */ = {isa = PBXBuildFile; fileRef = E4E96DDB158FD6B6002E6E0A /* config.yml */; };
 		E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */; };
-		E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */; };
+		E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +78,10 @@
 		E4281632159745D100CF680C /* libssh2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libssh2.dylib; sourceTree = "<group>"; };
 		E46A02DF15919BE3007049AB /* ConfigHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigHelper.h; sourceTree = "<group>"; };
 		E46A02E015919BE3007049AB /* ConfigHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigHelper.m; sourceTree = "<group>"; };
+		E48DA7B715D0DCC100721060 /* NMSFTPTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPTests.h; sourceTree = "<group>"; };
+		E48DA7B815D0DCC100721060 /* NMSFTPTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPTests.m; sourceTree = "<group>"; };
+		E48DA7BB15D0EB2800721060 /* NMSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTP.h; sourceTree = "<group>"; };
+		E48DA7BC15D0EB2800721060 /* NMSFTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTP.m; sourceTree = "<group>"; };
 		E4E96D84158E10FD002E6E0A /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E96D87158E10FD002E6E0A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E4E96D8A158E10FD002E6E0A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -167,6 +175,8 @@
 				E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */,
 				E42815C01593D95200CF680C /* NMSSHSession.h */,
 				E42815C11593D95200CF680C /* NMSSHSession.m */,
+				E48DA7BB15D0EB2800721060 /* NMSFTP.h */,
+				E48DA7BC15D0EB2800721060 /* NMSFTP.m */,
 			);
 			path = NMSSH;
 			sourceTree = "<group>";
@@ -189,6 +199,8 @@
 				E4F1E67B159F5923007B0B2F /* NMSSHChannelTests.m */,
 				E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */,
 				E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */,
+				E48DA7B715D0DCC100721060 /* NMSFTPTests.h */,
+				E48DA7B815D0DCC100721060 /* NMSFTPTests.m */,
 			);
 			path = NMSSHTests;
 			sourceTree = "<group>";
@@ -240,10 +252,11 @@
 			files = (
 				E42815FE15962B7600CF680C /* NMSSH.h in Headers */,
 				E42815C21593D95200CF680C /* NMSSHSession.h in Headers */,
+				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
+				E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */,
 				E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */,
 				E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */,
 				E428160E1596629A00CF680C /* libssh2.h in Headers */,
-				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +369,7 @@
 			files = (
 				E42815C31593D95200CF680C /* NMSSHSession.m in Sources */,
 				E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */,
+				E48DA7BE15D0EB2800721060 /* NMSFTP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +380,8 @@
 				E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */,
 				E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */,
 				E4F1E67C159F5923007B0B2F /* NMSSHChannelTests.m in Sources */,
+				E48DA7B915D0DCC100721060 /* NMSFTPTests.m in Sources */,
+				E48DA7BF15D0EB2800721060 /* NMSFTP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
