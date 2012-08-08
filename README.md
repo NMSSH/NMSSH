@@ -80,25 +80,28 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 #### Connect to SFTP
 
     NMSFTP *sftp = [NMSFTP connectWithSession:session];
-    // do stuff…
+
+    if ([sftp isConnected]) {
+        // do stuff...
+    }
+
     [sftp disconnect];
 
 #### Create directory
 
-    [sftp createDirectoryAtPath:@"/var/www/new-dir/"];
+    BOOL success = [sftp createDirectoryAtPath:@"/var/www/new-dir/"];
 
 #### Delete directory
 
-    [sftp removeDirectoryAtPath:@"/var/www/dir/"];
+    BOOL success = [sftp removeDirectoryAtPath:@"/var/www/dir/"];
 
 #### Create symlink
 
-    [sftp createSymbolicLinkAtPath:@"/var/www/symlink"
-               withDestinationPath:@"/var/www/new-dir/"];
+    BOOL success = [sftp createSymbolicLinkAtPath:@"/var/www/symlink" withDestinationPath:@"/var/www/new-dir/"];
 
 #### Delete file
 
-    [sftp removeFileAtPath:@"/var/www/file.txt"];
+    BOOL success = [sftp removeFileAtPath:@"/var/www/file.txt"];
 
 ## Compatibility
 
