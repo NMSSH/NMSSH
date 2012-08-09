@@ -520,8 +520,8 @@ libssh2_session_disconnect_ex((session), SSH_DISCONNECT_BY_APPLICATION, \
                                                  LIBSSH2_PASSWD_CHANGEREQ_FUNC((*passwd_change_cb)));
     
 #define libssh2_userauth_password(session, username, password) \
-libssh2_userauth_password_ex((session), (username), strlen(username), \
-(password), strlen(password), NULL)
+libssh2_userauth_password_ex((session), (username), (unsigned int)strlen(username), \
+(password), (unsigned int)strlen(password), NULL)
     
     LIBSSH2_API int
     libssh2_userauth_publickey_fromfile_ex(LIBSSH2_SESSION *session,
@@ -534,7 +534,7 @@ libssh2_userauth_password_ex((session), (username), strlen(username), \
 #define libssh2_userauth_publickey_fromfile(session, username, publickey, \
 privatekey, passphrase)     \
 libssh2_userauth_publickey_fromfile_ex((session), (username), \
-strlen(username), (publickey), \
+(unsigned int)strlen(username), (publickey), \
 (privatekey), (passphrase))
     
     LIBSSH2_API int
@@ -675,7 +675,7 @@ libssh2_channel_process_startup((channel), "shell", sizeof("shell") - 1, \
 NULL, 0)
 #define libssh2_channel_exec(channel, command) \
 libssh2_channel_process_startup((channel), "exec", sizeof("exec") - 1, \
-(command), strlen(command))
+(command), (unsigned int)strlen(command))
 #define libssh2_channel_subsystem(channel, subsystem) \
 libssh2_channel_process_startup((channel), "subsystem",              \
 sizeof("subsystem") - 1, (subsystem), \

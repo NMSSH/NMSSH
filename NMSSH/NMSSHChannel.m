@@ -59,10 +59,10 @@
 
     // Fetch response from output buffer
     for (;;) {
-        int rc;
+        long rc;
         do {
             char buffer[0x4000];
-            rc = libssh2_channel_read(channel, buffer, sizeof(buffer));
+            rc = libssh2_channel_read(channel, buffer, (ssize_t)sizeof(buffer));
 
             if (rc != LIBSSH2_ERROR_EAGAIN) {
                 lastResponse = [NSString stringWithFormat:@"%s", buffer];
@@ -128,7 +128,7 @@
 
         do {
             // Write the same data over and over, until error or completion
-            int rc = libssh2_channel_write(channel, ptr, nread);
+            long rc = libssh2_channel_write(channel, ptr, nread);
 
             if (rc < 0) {
                 NSLog(@"NMSSH: Failed writing file");
@@ -178,13 +178,13 @@
     off_t got = 0;
     while (got < fileinfo.st_size) {
         char mem[1024];
-        int amount = sizeof(mem);
+        long long amount = sizeof(mem);
 
         if ((fileinfo.st_size - got) < amount) {
             amount = fileinfo.st_size - got;
         }
 
-        int rc = libssh2_channel_read(channel, mem, amount);
+        ssize_t rc = libssh2_channel_read(channel, mem, amount);
 
         if (rc > 0) {
             write(localFile, mem, rc);
