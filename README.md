@@ -13,7 +13,7 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
 
 ### Install the framework
 
-* Build the framework and add it to your project
+* Build the framework and add it to your project. Consult the Wiki for detailed information about how to build for [OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project).
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
 ### Connect to a server
