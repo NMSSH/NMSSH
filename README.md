@@ -105,7 +105,7 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
 ## Compatibility
 
-NMSSH contains a pre-built libssh2 for Mac OSX. The framework should work just fine with iOS as well if you compile libssh2 yourself and switch the included `libssh2.dylib`.
+NMSSH contains a pre-built static libssh2 for Mac OSX. The framework should work just fine with iOS as well if you compile libssh2 yourself and switch the included `libssh2.a`.
 
 ## License
 
