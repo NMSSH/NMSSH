@@ -48,9 +48,11 @@
     // Try executing command
     int rc = libssh2_channel_exec(channel, [command UTF8String]);
     if (rc) {
-        *error = [NSError errorWithDomain:@"NMSSH"
-                                     code:NMSSHChannelExecutionError
-                                 userInfo:userInfo];
+        if (error) {
+            *error = [NSError errorWithDomain:@"NMSSH"
+                                         code:NMSSHChannelExecutionError
+                                     userInfo:userInfo];
+        }
 
         NSLog(@"NMSSH: Error executing command");
         [self close];
@@ -74,9 +76,11 @@
     }
 
     // If we've got this far, it means fetching execution response failed
-    *error = [NSError errorWithDomain:@"NMSSH"
-                                 code:NMSSHChannelExecutionResponseError
-                             userInfo:userInfo];
+    if (error) {
+        *error = [NSError errorWithDomain:@"NMSSH"
+                                     code:NMSSHChannelExecutionResponseError
+                                 userInfo:userInfo];
+    }
 
     NSLog(@"NMSSH: Error fetching response from command");
     [self close];
