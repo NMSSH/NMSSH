@@ -75,6 +75,10 @@
                                                 (ssize_t)sizeof(errorBuffer));
 
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
+                    if (!desc) {
+                        desc = @"An unspecified error occurred";
+                    }
+
                     [userInfo setObject:desc forKey:@"description"];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
