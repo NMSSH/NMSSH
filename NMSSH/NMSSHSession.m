@@ -193,7 +193,7 @@
     if (!channel) {
         channel = [[NMSSHChannel alloc] initWithSession:self];
     }
-    
+
     return channel;
 }
 
