@@ -42,8 +42,8 @@
     }
 
     // In case of error...
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:command
-                                                         forKey:@"command"];
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command
+                                                                       forKey:@"command"];
 
     // Try executing command
     int rc = libssh2_channel_exec(channel, [command UTF8String]);
@@ -62,11 +62,28 @@
     // Fetch response from output buffer
     for (;;) {
         long rc;
+        char buffer[0x4000];
+        char errorBuffer[0x4000];
+
         do {
-            char buffer[0x4000];
             rc = libssh2_channel_read(channel, buffer, (ssize_t)sizeof(buffer));
 
-            if (rc != LIBSSH2_ERROR_EAGAIN) {
+            // Store all errors that might occur
+            if (libssh2_channel_get_exit_status(channel)) {
+                if (error) {
+                    libssh2_channel_read_stderr(channel, errorBuffer,
+                                                (ssize_t)sizeof(errorBuffer));
+
+                    NSString *desc = [NSString stringWithUTF8String:errorBuffer];
+                    [userInfo setObject:desc forKey:@"description"];
+
+                    *error = [NSError errorWithDomain:@"NMSSH"
+                                                 code:NMSSHChannelExecutionError
+                                             userInfo:userInfo];
+                }
+            }
+
+            if (rc == 0) {
                 lastResponse = [NSString stringWithFormat:@"%s", buffer];
                 [self close];
                 return lastResponse;
