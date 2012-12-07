@@ -5,6 +5,8 @@ create a clean, easy-to-use, test driven Cocoa framework that wraps libssh2.
 
 NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac OSX application that simplifies continuous deployment.
 
+NMSSH now also works on iOS.
+
 **Using libssh2 version:** `1.4.2`
 
 Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdborg).
@@ -13,7 +15,7 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
 
 ### Install the framework
 
-* Build the framework and add it to your project. Consult the Wiki for detailed information about how to build for [OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project).
+* Build the framework and add it to your project. Consult the Wiki for detailed information about how to [build for OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project) or [build for iOS](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-iOS-project).
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
 ### Connect to a server
@@ -102,10 +104,6 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 #### Delete file
 
     BOOL success = [sftp removeFileAtPath:@"/var/www/file.txt"];
-
-## Compatibility
-
-NMSSH is built for Mac OSX. The code should work just fine with iOS as well if you create a new iOS static library project and copy the files and configuration from the main project.
 
 ## License
 
