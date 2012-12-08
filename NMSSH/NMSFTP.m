@@ -101,6 +101,44 @@
     return libssh2_sftp_rmdir(sftpSession, [path UTF8String]) == 0;
 }
 
+- (NSArray *)contentsOfDirectoryAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(sftpSession, [path UTF8String]);
+
+    if (!handle) {
+        NSLog(@"NMSFTP: Could not open directory");
+        return nil;
+    }
+
+    NSArray *ignoredFiles = @[@".", @".."];
+    NSMutableArray *contents = [NSMutableArray array];
+
+    int rc;
+    do {
+        char buffer[512];
+        char longentry[512];
+        LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+
+        rc = libssh2_sftp_readdir(handle, buffer, longentry, &fileAttributes);
+        if (rc <= 0) {
+            break;
+        }
+
+        NSString *fileName = [NSString stringWithUTF8String:buffer];
+        if (![ignoredFiles containsObject:fileName]) {
+            // Append a "/" at the end of all directories
+            if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
+                fileName = [fileName stringByAppendingString:@"/"];
+            }
+
+            [contents addObject:fileName];
+        }
+    } while (1);
+
+    libssh2_sftp_closedir(handle);
+
+    return [contents sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+}
+
 // -----------------------------------------------------------------------------
 // MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------

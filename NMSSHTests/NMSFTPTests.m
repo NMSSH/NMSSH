@@ -80,6 +80,46 @@
                   @"Try to create directory at invalid path");
 }
 
+- (void)testListingContentsOfDirectory {
+    NSString *baseDir = [NSString stringWithFormat:@"%@listing/",
+                         [settings objectForKey:@"writable_dir"]];
+    NSArray *dirs = @[@"a", @"b", @"c"];
+    NSArray *files = @[@"d.txt", @"e.txt", @"f.txt"];
+
+    // Setup basedir
+    [sftp createDirectoryAtPath:baseDir];
+
+    // Setup subdirs
+    for (NSString *dir in dirs) {
+        [sftp createDirectoryAtPath:[baseDir stringByAppendingString:dir]];
+    }
+
+    // Setup files
+    NSData *contents = [@"Hello World" dataUsingEncoding:NSUTF8StringEncoding];
+    for (NSString *file in files) {
+        [sftp writeContents:contents
+               toFileAtPath:[baseDir stringByAppendingString:file]];
+    }
+
+    // Test entry listing
+    NSArray *entries = @[@"a/", @"b/", @"c/", @"d.txt", @"e.txt", @"f.txt"];
+    STAssertEqualObjects([sftp contentsOfDirectoryAtPath:baseDir], entries,
+                         @"Get a list of directory entries");
+
+    // Cleanup subdirs
+    for (NSString *dir in dirs) {
+        [sftp removeDirectoryAtPath:[baseDir stringByAppendingString:dir]];
+    }
+
+    // Cleanup files
+    for (NSString *file in files) {
+        [sftp removeFileAtPath:[baseDir stringByAppendingString:file]];
+    }
+
+    // Cleanup basedir
+    [sftp removeDirectoryAtPath:baseDir];
+}
+
 // -----------------------------------------------------------------------------
 // TEST MANIPULATING FILES AND SYMLINKS
 // -----------------------------------------------------------------------------

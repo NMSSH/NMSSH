@@ -87,6 +87,13 @@
  */
 - (BOOL)removeDirectoryAtPath:(NSString *)path;
 
+/**
+ * Get a list of file names for a directory path
+ *
+ * @returns List of relative paths
+ */
+- (NSArray *)contentsOfDirectoryAtPath:(NSString *)path;
+
 // -----------------------------------------------------------------------------
 // MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
