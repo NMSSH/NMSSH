@@ -62,6 +62,9 @@
     STAssertTrue([sftp createDirectoryAtPath:path],
                  @"Try to create directory at valid path");
 
+    STAssertTrue([sftp directoryExistsAtPath:path],
+                  @"Directory exists at path");
+
     STAssertTrue([sftp moveItemAtPath:path toPath:destPath],
                  @"Try to move a directory");
 
@@ -125,8 +128,11 @@
 
     STAssertTrue([sftp moveItemAtPath:path toPath:destPath], @"Move a file");
 
+    STAssertTrue([sftp fileExistsAtPath:destPath], @"File exists at path");
+    STAssertFalse([sftp fileExistsAtPath:[settings objectForKey:@"writable_dir"]],
+                  @"Should return false if a directory is provided");
+
     STAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
 }
-@end
 
 @end

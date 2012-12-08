@@ -65,6 +65,15 @@
 // -----------------------------------------------------------------------------
 
 /**
+ * Test if a directory exists at the specified path.
+ *
+ * Note: Will return NO if a file exists at the path, but not a directory.
+ *
+ * @returns YES if file exists
+ */
+- (BOOL)directoryExistsAtPath:(NSString *)path;
+
+/**
  * Create a directory at path
  *
  * @returns Creation success
@@ -81,6 +90,15 @@
 // -----------------------------------------------------------------------------
 // MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
+
+/**
+ * Test if a file exists at the specified path.
+ *
+ * Note: Will return NO if a directory exists at the path, but not a file.
+ *
+ * @returns YES if file exists
+ */
+- (BOOL)fileExistsAtPath:(NSString *)path;
 
 /**
  * Create a symbolic link

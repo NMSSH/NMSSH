@@ -73,6 +73,21 @@
 // MANIPULATE DIRECTORIES
 // -----------------------------------------------------------------------------
 
+- (BOOL)directoryExistsAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+                                                    LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+
+    if (!handle) {
+        return NO;
+    }
+
+    long rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    libssh2_sftp_close(handle);
+
+    return rc == 0 && LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
+}
+
 - (BOOL)createDirectoryAtPath:(NSString *)path {
     int rc = libssh2_sftp_mkdir(sftpSession, [path UTF8String],
                             LIBSSH2_SFTP_S_IRWXU|
@@ -89,6 +104,21 @@
 // -----------------------------------------------------------------------------
 // MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
+
+- (BOOL)fileExistsAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+                                                    LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+
+    if (!handle) {
+        return NO;
+    }
+
+    long rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    libssh2_sftp_close(handle);
+
+    return rc == 0 && !LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
+}
 
 - (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath
              withDestinationPath:(NSString *)destPath {
