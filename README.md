@@ -1,11 +1,8 @@
 # NMSSH
 
-This is a complete rewrite of the previous NMSSH library. The goal is to
-create a clean, easy-to-use, test driven Cocoa framework that wraps libssh2.
+NMSSH is a clean, easy-to-use, test driven framework for iOS and OSX that wraps libssh2.
 
-NMSSH was initially built for usage in [Kleio](http://9muses.se/kleio) - a Mac OSX application that simplifies continuous deployment.
-
-NMSSH now also works on iOS.
+The framework was initially built for usage in [Kleio](http://9muses.se/kleio) – a Mac OSX application that simplifies continuous deployment.
 
 **Using libssh2 version:** `1.4.2`
 
@@ -89,6 +86,10 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
     [sftp disconnect];
 
+#### Check if directory exists
+
+    BOOL exits = [sftp directoryExistsAtPath:@"/var/www/"];
+
 #### Create directory
 
     BOOL success = [sftp createDirectoryAtPath:@"/var/www/new-dir/"];
@@ -97,13 +98,39 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
     BOOL success = [sftp removeDirectoryAtPath:@"/var/www/dir/"];
 
+#### List contents of a directory
+
+    NSArray *entries = [sftp contentsOfDirectoryAtPath:@"/var/www/"];
+
+#### Check if file exists
+
+    BOOL exists = [sftp fileExistsAtPath:@"/var/www/file.txt"];
+
 #### Create symlink
 
     BOOL success = [sftp createSymbolicLinkAtPath:@"/var/www/symlink" withDestinationPath:@"/var/www/new-dir/"];
 
+#### Read contents of file
+
+    NSData *contents = [sftp contentsAtPath:@"/var/www/file.txt"];
+
+#### Write to file
+
+    NSData *contents = [@"Hello World" dataUsingEncoding:NSUTF8StringEncoding];
+    BOOL success = [sftp writeContents:contents toFileAtPath:@"/var/www/file.txt"];
+
+#### Append contents to the end of a file
+
+    NSData *contents = [@"\nBye!" dataUsingEncoding:NSUTF8StringEncoding];
+    BOOL success = [sftp appendContents:contents toFileAtPath:@"/var/www/file.txt"];
+
 #### Delete file
 
     BOOL success = [sftp removeFileAtPath:@"/var/www/file.txt"];
+
+#### Move file or directory
+
+    BOOL success = [sftp moveItemAtPath:@"/var/www/file.txt" toPath:@"/var/www/newname.txt"];
 
 ## License
 
