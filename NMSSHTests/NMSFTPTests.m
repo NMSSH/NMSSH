@@ -103,9 +103,14 @@
 - (void)testCreateMoveAndDeleteFileAtWriteablePath {
     NSString *path = [NSString stringWithFormat:@"%@file_test.txt",
                       [settings objectForKey:@"writable_dir"]];
-    NSData *contents = [@"Hello World" dataUsingEncoding:NSUTF8StringEncoding];
+
+    NSMutableData *contents = [[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]
+                               mutableCopy];
 
     STAssertTrue([sftp writeContents:contents toFileAtPath:path],
                  @"Write contents to file");
+
+    STAssertEqualObjects([sftp contentsAtPath:path], contents,
+                         @"Read contents at path");
 }
 @end

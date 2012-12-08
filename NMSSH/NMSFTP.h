@@ -79,7 +79,7 @@
 - (BOOL)removeDirectoryAtPath:(NSString *)path;
 
 // -----------------------------------------------------------------------------
-// CREATE, SYMLINK AND DELETE FILES
+// MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
 
 /**
@@ -97,6 +97,12 @@
  */
 - (BOOL)removeFileAtPath:(NSString *)path;
 
+/**
+ * Read the contents of a file
+ *
+ * @returns File contents
+ */
+- (NSData *)contentsAtPath:(NSString *)path;
 
 /**
  * Overwrite the contents of a file

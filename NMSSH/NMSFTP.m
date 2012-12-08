@@ -87,7 +87,7 @@
 }
 
 // -----------------------------------------------------------------------------
-// CREATE, SYMLINK AND DELETE FILES
+// MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
 
 - (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath
@@ -100,6 +100,21 @@
 
 - (BOOL)removeFileAtPath:(NSString *)path {
     return libssh2_sftp_unlink(sftpSession, [path UTF8String]) == 0;
+}
+
+- (NSData *)contentsAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+                                                    LIBSSH2_FXF_READ, 0);
+
+    char buffer[0x4000];
+    long rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer));
+    libssh2_sftp_close(handle);
+
+    if (rc < 0) {
+        return nil;
+    }
+
+    return [NSData dataWithBytes:buffer length:rc];
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
