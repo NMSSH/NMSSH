@@ -50,7 +50,6 @@
 - (void)disconnect;
 
 // -----------------------------------------------------------------------------
-// DIRECTORY METHODS
 // MANIPULATE FILE SYSTEM ENTRIES
 // -----------------------------------------------------------------------------
 
@@ -98,4 +97,13 @@
  */
 - (BOOL)removeFileAtPath:(NSString *)path;
 
+
+/**
+ * Overwrite the contents of a file
+ *
+ * If no file exists, one is created.
+ *
+ * @returns Write success
+ */
+- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path;
 @end

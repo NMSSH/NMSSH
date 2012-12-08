@@ -78,7 +78,7 @@
 }
 
 // -----------------------------------------------------------------------------
-// TEST CREATE, SYMLINK AND DELETE FILES
+// TEST MANIPULATING FILES AND SYMLINKS
 // -----------------------------------------------------------------------------
 
 - (void)testCreateAndDeleteSymlinkAtWritablePath {
@@ -100,4 +100,12 @@
     [sftp removeDirectoryAtPath:path];
 }
 
+- (void)testCreateMoveAndDeleteFileAtWriteablePath {
+    NSString *path = [NSString stringWithFormat:@"%@file_test.txt",
+                      [settings objectForKey:@"writable_dir"]];
+    NSData *contents = [@"Hello World" dataUsingEncoding:NSUTF8StringEncoding];
+
+    STAssertTrue([sftp writeContents:contents toFileAtPath:path],
+                 @"Write contents to file");
+}
 @end

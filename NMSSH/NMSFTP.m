@@ -102,4 +102,16 @@
     return libssh2_sftp_unlink(sftpSession, [path UTF8String]) == 0;
 }
 
+- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+                      LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
+                      LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
+                      LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+
+    long rc = libssh2_sftp_write(handle, [contents bytes], [contents length]);
+    libssh2_sftp_close(handle);
+
+    return rc > 0;
+}
+
 @end
