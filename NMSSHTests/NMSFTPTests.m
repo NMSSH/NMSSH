@@ -49,17 +49,24 @@
 }
 
 // -----------------------------------------------------------------------------
-// TEST CREATE AND DELETE DIRECTORIES
+// TEST MANIPULATING DIRECTORIES
 // -----------------------------------------------------------------------------
 
-- (void)testCreateAndDeleteDirectoryAtWritablePathWorks {
+- (void)testCreateMoveAndDeleteDirectoryAtWritablePathWorks {
     NSString *path = [NSString stringWithFormat:@"%@mkdir_test",
                          [settings objectForKey:@"writable_dir"]];
+
+    NSString *destPath = [NSString stringWithFormat:@"%@mvdir_test",
+                             [settings objectForKey:@"writable_dir"]];
 
     STAssertTrue([sftp createDirectoryAtPath:path],
                  @"Try to create directory at valid path");
 
-    STAssertTrue([sftp removeDirectoryAtPath:path], @"Try to remove directory");
+    STAssertTrue([sftp moveItemAtPath:path toPath:destPath],
+                 @"Try to move a directory");
+
+    STAssertTrue([sftp removeDirectoryAtPath:destPath],
+                 @"Try to remove directory");
 }
 
 - (void)testCreateDirectoryAtNonWritablePathFails {

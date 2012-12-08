@@ -59,7 +59,18 @@
 }
 
 // -----------------------------------------------------------------------------
-// DIRECTORY METHODS
+// MANIPULATE FILE SYSTEM ENTRIES
+// -----------------------------------------------------------------------------
+
+- (BOOL)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath {
+    long rc = libssh2_sftp_rename(sftpSession, [sourcePath UTF8String],
+                                           [destPath UTF8String]);
+
+    return rc == 0;
+}
+
+// -----------------------------------------------------------------------------
+// MANIPULATE DIRECTORIES
 // -----------------------------------------------------------------------------
 
 - (BOOL)createDirectoryAtPath:(NSString *)path {
