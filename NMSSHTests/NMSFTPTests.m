@@ -112,5 +112,13 @@
 
     STAssertEqualObjects([sftp contentsAtPath:path], contents,
                          @"Read contents at path");
+
+    NSData *moreContents = [@"\nBye!" dataUsingEncoding:NSUTF8StringEncoding];
+    STAssertTrue([sftp appendContents:moreContents toFileAtPath:path],
+                 @"Append contents to the end of a file");
+
+    [contents appendData:moreContents];
+    STAssertEqualObjects([sftp contentsAtPath:path], contents,
+                         @"Read appended contents at path");
 }
 @end

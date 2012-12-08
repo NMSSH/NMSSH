@@ -112,4 +112,14 @@
  * @returns Write success
  */
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path;
+
+/**
+ * Append contents to the end of a file
+ *
+ * If no file exists, one is created.
+ *
+ * @returns Append success
+ */
+- (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path;
+
 @end

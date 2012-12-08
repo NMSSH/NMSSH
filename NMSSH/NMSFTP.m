@@ -129,4 +129,19 @@
     return rc > 0;
 }
 
+- (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
+    // The reason for reading, appending and writing instead of using the
+    // LIBSSH2_FXF_APPEND flag on libssh2_sftp_open is because the flag doesn't
+    // seem to be reliable accross a variety of hosts.
+    NSData *originalContents = [self contentsAtPath:path];
+    if (!originalContents) {
+        return NO;
+    }
+
+    NSMutableData *newContents = [originalContents mutableCopy];
+    [newContents appendData:contents];
+
+    return [self writeContents:newContents toFileAtPath:path];
+}
+
 @end
