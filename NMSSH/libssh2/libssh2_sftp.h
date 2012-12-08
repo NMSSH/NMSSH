@@ -227,7 +227,7 @@ LIBSSH2_API LIBSSH2_SFTP_HANDLE *libssh2_sftp_open_ex(LIBSSH2_SFTP *sftp,
                                                       unsigned long flags,
                                                       long mode, int open_type);
 #define libssh2_sftp_open(sftp, filename, flags, mode) \
-    libssh2_sftp_open_ex((sftp), (filename), strlen(filename), (flags), \
+    libssh2_sftp_open_ex((sftp), (filename), (unsigned int)strlen(filename), (flags), \
                          (mode), LIBSSH2_SFTP_OPENFILE)
 #define libssh2_sftp_opendir(sftp, path) \
     libssh2_sftp_open_ex((sftp), (path), strlen(path), 0, 0, \
@@ -276,8 +276,8 @@ LIBSSH2_API int libssh2_sftp_rename_ex(LIBSSH2_SFTP *sftp,
                                        unsigned int dest_filename_len,
                                        long flags);
 #define libssh2_sftp_rename(sftp, sourcefile, destfile) \
-    libssh2_sftp_rename_ex((sftp), (sourcefile), strlen(sourcefile), \
-                           (destfile), strlen(destfile),                \
+    libssh2_sftp_rename_ex((sftp), (sourcefile), (unsigned int)strlen(sourcefile), \
+                           (destfile), (unsigned int)strlen(destfile),                \
                            LIBSSH2_SFTP_RENAME_OVERWRITE | \
                            LIBSSH2_SFTP_RENAME_ATOMIC | \
                            LIBSSH2_SFTP_RENAME_NATIVE)
