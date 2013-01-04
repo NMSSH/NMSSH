@@ -12,7 +12,7 @@
 @end
 
 @implementation NMSSHSession
-@synthesize session, host, username, connected, authorized;
+@synthesize session, host, username, connected;
 @synthesize channel;
 
 // -----------------------------------------------------------------------------
@@ -32,7 +32,6 @@
         host = aHost;
         username = aUsername;
         connected = NO;
-        authorized = NO;
     }
 
     return self;
@@ -92,6 +91,14 @@
 // PUBLIC AUTHENTICATION API
 // -----------------------------------------------------------------------------
 
+- (BOOL)isAuthorized {
+    if (session) {
+        return libssh2_userauth_authenticated(session) == 1;
+    } else {
+        return NO;
+    }
+}
+
 - (BOOL)authenticateByPassword:(NSString *)password {
     if (![self supportsAuthenticationMethod:@"password"]) {
         return NO;
@@ -105,7 +112,6 @@
         return NO;
     }
 
-    authorized = YES;
     return [self isAuthorized];
 }
 
@@ -136,7 +142,6 @@
         return NO;
     }
 
-    authorized = YES;
     return [self isAuthorized];
 }
 
@@ -175,7 +180,6 @@
 
         error = libssh2_agent_userauth(agent, [username UTF8String], identity);
         if (!error) {
-            authorized = YES;
             return [self isAuthorized];
         }
 
