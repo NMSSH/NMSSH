@@ -254,7 +254,7 @@
     char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
                                    (unsigned int)strlen([username UTF8String]));
 
-    if (strstr(userauthlist, [method UTF8String]) == NULL) {
+    if (userauthlist == NULL || strstr(userauthlist, [method UTF8String]) == NULL) {
         NSLog(@"NMSSH: Authentication by %@ not available for %@", method, host);
         return NO;
     }
