@@ -115,10 +115,9 @@
     int rc;
     do {
         char buffer[512];
-        char longentry[512];
         LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
 
-        rc = libssh2_sftp_readdir(handle, buffer, longentry, &fileAttributes);
+        rc = libssh2_sftp_readdir(handle, buffer, sizeof(buffer), &fileAttributes);
         if (rc <= 0) {
             break;
         }
