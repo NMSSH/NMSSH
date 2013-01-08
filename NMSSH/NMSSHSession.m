@@ -94,9 +94,9 @@
 - (BOOL)isAuthorized {
     if (session) {
         return libssh2_userauth_authenticated(session) == 1;
-    } else {
-        return NO;
     }
+    
+    return NO;
 }
 
 - (BOOL)authenticateByPassword:(NSString *)password {
