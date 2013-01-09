@@ -58,11 +58,18 @@
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
 
 /**
- * Connect to the server.
+ * Connect to the server using the default timeout (10 seconds)
  *
  * @returns Connection status
  */
 - (BOOL)connect;
+
+/**
+ * Connect to the server.
+ *
+ * @returns Connection status
+ */
+- (BOOL)connectWithTimeout:(NSNumber *)timeout;
 
 /**
  * Close the session

@@ -12,7 +12,7 @@
 
 @implementation NMSSHSession
 
-@synthesize channel;
+@synthesize channel = _channel;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API
@@ -47,30 +47,113 @@
 }
 
 - (BOOL)connect {
+    return [self connectWithTimeout:[NSNumber numberWithLong:10]];
+}
+
+- (BOOL)connectWithTimeout:(NSNumber *)timeout {
+    if ([self isConnected]) {
+        [self disconnect];
+    }
+    
     // Try to initialize libssh2
     if (libssh2_init(0) != 0) {
         NMSSHLogError(@"NMSSH: libssh2 initialization failed");
         return NO;
     }
-
+    
+    NMSSHLogVerbose(@"NMSSH: libssh2 initialized");
+    
     // Try to establish a connection to the server
     sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        NMSSHLogError(@"NMSSH: Error creating the socket");
+        return NO;
+    }
+    
+    // Set NOSIGPIPE
+    int set = 1;
+    setsockopt(sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+    
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
     sin.sin_port = htons([[self port] intValue]);
     sin.sin_addr.s_addr = inet_addr([[self hostIPAddress] UTF8String]);
-    if (connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
-        NMSSHLogError(@"NMSSH: Failed connection to socket");
+    
+    // Set non-blocking
+    long arg;
+    if((arg = fcntl(sock, F_GETFL, NULL)) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
         return NO;
     }
-
+    arg |= O_NONBLOCK;
+    if(fcntl(sock, F_SETFL, arg) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
+        return NO;
+    }
+    
+    // Trying to connect with timeout
+    int res = connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in));
+    if (res < 0) {
+        if (errno == EINPROGRESS) {
+            NMSSHLogVerbose(@"NMSSH: EINPROGRESS in connect() - selecting");
+            struct timeval tv;
+            fd_set myset;
+            int valopt;
+            socklen_t lon;
+            do {
+                tv.tv_sec = [timeout longValue];
+                tv.tv_usec = 0;
+                FD_ZERO(&myset);
+                FD_SET(sock, &myset);
+                res = select(sock+1, NULL, &myset, NULL, &tv);
+                if (res < 0 && errno != EINTR) {
+                    NMSSHLogError(@"NMSSH: Error connecting");
+                    return NO;
+                } else if (res > 0) {
+                    // Socket selected for write
+                    lon = sizeof(int);
+                    if (getsockopt(sock, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &lon) < 0) {
+                        NMSSHLogError(@"NMSSH: Error in getsockopt()");
+                        return NO;
+                    }
+                    // Check the value returned...
+                    if (valopt) {
+                        NMSSHLogError(@"NMSSH: Error in delayed connection() %d", valopt);
+                        return NO;
+                    }
+                    NMSSHLogVerbose(@"NMSSH: libssh2 connected");
+                    break;
+                } else {
+                    NMSSHLogError(@"NMSSH: Connection to socket timed out");
+                    return NO;
+                }
+            } while (true);
+        } else {
+            NMSSHLogError(@"NMSSH: Failed connection to socket");
+            return NO;
+        }
+    }
+    
+    // Set to blocking mode again...
+    if((arg = fcntl(sock, F_GETFL, NULL)) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
+        return NO;
+    }
+    arg &= (~O_NONBLOCK);
+    if(fcntl(sock, F_SETFL, arg) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
+        return NO;
+    }
+    
     // Create a session instance and start it up.
     _session = libssh2_session_init();
     if (libssh2_session_handshake(_session, sock)) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
-
+    
+    NMSSHLogVerbose(@"NMSSH: SSH session started");
+    
     // We managed to successfully setup a connection
     _connected = YES;
     return [self isConnected];
@@ -205,11 +288,11 @@
 // -----------------------------------------------------------------------------
 
 - (NMSSHChannel *)channel {
-    if (!channel) {
-        channel = [[NMSSHChannel alloc] initWithSession:self];
+    if (!_channel) {
+        _channel = [[NMSSHChannel alloc] initWithSession:self];
     }
 
-    return channel;
+    return _channel;
 }
 
 // -----------------------------------------------------------------------------
