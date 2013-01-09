@@ -8,18 +8,17 @@
 @end
 
 @implementation NMSSHChannel
-@synthesize session, lastResponse;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API
 // -----------------------------------------------------------------------------
 
-- (id)initWithSession:(NMSSHSession *)aSession {
+- (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        session = aSession;
+        _session = session;
 
         // Make sure we were provided a valid session
-        if (![session isKindOfClass:[NMSSHSession class]]) {
+        if (![_session isKindOfClass:[NMSSHSession class]]) {
             return nil;
         }
     }
@@ -32,10 +31,10 @@
 // -----------------------------------------------------------------------------
 
 - (NSString *)execute:(NSString *)command error:(NSError **)error {
-    lastResponse = nil;
+    _lastResponse = nil;
 
     // Open up the channel
-    if (!(channel = libssh2_channel_open_session([session rawSession]))) {
+    if (!(channel = libssh2_channel_open_session([_session rawSession]))) {
         NMSSHLogError(@"NMSSH: Unable to open a session");
         return nil;
     }
@@ -87,9 +86,9 @@
             }
 
             if (rc == 0) {
-                lastResponse = [NSString stringWithFormat:@"%s", buffer];
+                _lastResponse = [NSString stringWithFormat:@"%s", buffer];
                 [self close];
-                return lastResponse;
+                return _lastResponse;
             }
         }
         while (rc > 0);
@@ -130,7 +129,7 @@
     // Try to send a file via SCP.
     struct stat fileinfo;
     stat([localPath UTF8String], &fileinfo);
-    channel = libssh2_scp_send([session rawSession], [remotePath UTF8String],
+    channel = libssh2_scp_send([_session rawSession], [remotePath UTF8String],
                                fileinfo.st_mode & 0644,
                                (unsigned long)fileinfo.st_size);
 
@@ -187,7 +186,7 @@
 
     // Request a file via SCP
     struct stat fileinfo;
-    channel = libssh2_scp_recv([session rawSession], [remotePath UTF8String],
+    channel = libssh2_scp_recv([_session rawSession], [remotePath UTF8String],
                                &fileinfo);
 
     if (!channel) {

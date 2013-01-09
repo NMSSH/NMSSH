@@ -38,7 +38,7 @@
  *
  * @returns NMSSHSession instance
  */
-- (id)initWithHost:(NSString *)aHost andUsername:(NSString *)aUsername;
+- (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
 
 /**
  * Connect to the server.

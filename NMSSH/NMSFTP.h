@@ -22,7 +22,7 @@
  *
  * @returns Connected NMSFTP instance
  */
-+ (id)connectWithSession:(NMSSHSession *)aSession;
++ (id)connectWithSession:(NMSSHSession *)session;
 
 /**
  * Create a new NMSFTP instance.
@@ -31,7 +31,7 @@
  *
  * @returns New NMSFTP instance
  */
-- (id)initWithSession:(NMSSHSession *)aSession;
+- (id)initWithSession:(NMSSHSession *)session;
 
 // -----------------------------------------------------------------------------
 // HANDLE CONNECTIONS

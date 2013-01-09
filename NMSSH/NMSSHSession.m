@@ -11,7 +11,7 @@
 @end
 
 @implementation NMSSHSession
-@synthesize session, host, username, connected;
+
 @synthesize channel;
 
 // -----------------------------------------------------------------------------
@@ -26,11 +26,11 @@
     return session;
 }
 
-- (id)initWithHost:(NSString *)aHost andUsername:(NSString *)aUsername {
+- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
     if ((self = [super init])) {
-        host = aHost;
-        username = aUsername;
-        connected = NO;
+        _host = host;
+        _username = username;
+        _connected = NO;
     }
 
     return self;
@@ -55,14 +55,14 @@
     }
 
     // Create a session instance and start it up.
-    session = libssh2_session_init();
-    if (libssh2_session_handshake(session, sock)) {
+    _session = libssh2_session_init();
+    if (libssh2_session_handshake(_session, sock)) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
 
     // We managed to successfully setup a connection
-    connected = YES;
+    _connected = YES;
     return [self isConnected];
 }
 
@@ -73,10 +73,10 @@
         agent = nil;
     }
 
-    if (session) {
-        libssh2_session_disconnect(session, "NMSSH: Disconnect");
-        libssh2_session_free(session);
-        session = nil;
+    if (_session) {
+        libssh2_session_disconnect(_session, "NMSSH: Disconnect");
+        libssh2_session_free(_session);
+        _session = nil;
     }
 
     if (sock) {
@@ -91,8 +91,8 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)isAuthorized {
-    if (session) {
-        return libssh2_userauth_authenticated(session) == 1;
+    if (_session) {
+        return libssh2_userauth_authenticated(_session) == 1;
     }
     
     return NO;
@@ -104,7 +104,7 @@
     }
 
     // Try to authenticate by password
-    int error = libssh2_userauth_password(session, [username UTF8String],
+    int error = libssh2_userauth_password(_session, [_username UTF8String],
                                            [password UTF8String]);
     if (error) {
         NMSSHLogError(@"NMSSH: Password authentication failed");
@@ -130,8 +130,8 @@
                                                                 withString:@""];
 
     // Try to authenticate with key pair and password
-    int error = libssh2_userauth_publickey_fromfile(session,
-                                                    [username UTF8String],
+    int error = libssh2_userauth_publickey_fromfile(_session,
+                                                    [_username UTF8String],
                                                     [publicKey UTF8String],
                                                     [privateKey UTF8String],
                                                     [password UTF8String]);
@@ -150,7 +150,7 @@
     }
 
     // Try to setup a connection to the SSH-agent
-    agent = libssh2_agent_init(session);
+    agent = libssh2_agent_init(_session);
     if (!agent) {
         NMSSHLogError(@"NMSSH: Could not start a new agent");
         return NO;
@@ -177,7 +177,7 @@
             return NO;
         }
 
-        error = libssh2_agent_userauth(agent, [username UTF8String], identity);
+        error = libssh2_agent_userauth(agent, [_username UTF8String], identity);
         if (!error) {
             return [self isAuthorized];
         }
@@ -205,7 +205,7 @@
 // -----------------------------------------------------------------------------
 
 - (NSString *)hostIPAddress {
-    NSString *addr = [[host componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *addr = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
 
     if (![self isIp:addr]) {
         return [self ipFromDomainName:addr];
@@ -232,7 +232,7 @@
 }
 
 - (NSNumber *)port {
-    NSArray *hostComponents = [host componentsSeparatedByString:@":"];
+    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
 
     // If no port was defined, use 22 by default
     if ([hostComponents count] == 1) {
@@ -250,11 +250,11 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)supportsAuthenticationMethod:(NSString *)method {
-    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
-                                   (unsigned int)strlen([username UTF8String]));
+    char *userauthlist = libssh2_userauth_list(_session, [_username UTF8String],
+                                   (unsigned int)strlen([_username UTF8String]));
 
     if (userauthlist == NULL || strstr(userauthlist, [method UTF8String]) == NULL) {
-        NMSSHLogInfo(@"NMSSH: Authentication by %@ not available for %@", method, host);
+        NMSSHLogInfo(@"NMSSH: Authentication by %@ not available for %@", method, _host);
         return NO;
     }
     NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);

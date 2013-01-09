@@ -9,22 +9,21 @@
 @end
 
 @implementation NMSFTP
-@synthesize session, connected;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API
 // -----------------------------------------------------------------------------
 
-+ (id)connectWithSession:(NMSSHSession *)aSession {
-    NMSFTP *sftp = [[NMSFTP alloc] initWithSession:aSession];
++ (id)connectWithSession:(NMSSHSession *)session {
+    NMSFTP *sftp = [[NMSFTP alloc] initWithSession:session];
     [sftp connect];
 
     return sftp;
 }
 
-- (id)initWithSession:(NMSSHSession *)aSession {
+- (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        session = aSession;
+        _session = session;
 
         // Make sure we were provided a valid session
         if (![session isKindOfClass:[NMSSHSession class]]) {
@@ -40,21 +39,21 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect {
-    libssh2_session_set_blocking([session rawSession], 1);
-    sftpSession = libssh2_sftp_init([session rawSession]);
+    libssh2_session_set_blocking([_session rawSession], 1);
+    sftpSession = libssh2_sftp_init([_session rawSession]);
 
     if (!sftpSession) {
         NMSSHLogError(@"NMSFTP: Unable to init SFTP session");
         return NO;
     }
 
-    connected = YES;
+    _connected = YES;
     return [self isConnected];
 }
 
 - (void)disconnect {
     libssh2_sftp_shutdown(sftpSession);
-    connected = NO;
+    _connected = NO;
 }
 
 // -----------------------------------------------------------------------------
