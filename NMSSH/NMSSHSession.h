@@ -3,6 +3,8 @@
 
 @class NMSSHChannel;
 
+@protocol NMSSHSessionDelegate;
+
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
  */
@@ -28,6 +30,9 @@
 
 /** Get a channel for this session */
 @property (nonatomic, readonly) NMSSHChannel *channel;
+
+/** Session delegate **/
+@property (nonatomic, weak) id<NMSSHSessionDelegate> delegate;
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.
@@ -99,5 +104,13 @@
  * @returns Authentication success
  */
 - (BOOL)connectToAgent;
+
+@end
+
+@protocol NMSSHSessionDelegate <NSObject>
+
+@optional
+
+- (void)session:(NMSSHSession *)session didDisconnectWithError:(NSError *)error;
 
 @end

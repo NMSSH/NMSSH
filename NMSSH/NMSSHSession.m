@@ -146,13 +146,16 @@
     }
     
     // Create a session instance and start it up.
-    _session = libssh2_session_init();
+    _session = libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self));
     if (libssh2_session_handshake(_session, sock)) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
     
     NMSSHLogVerbose(@"NMSSH: SSH session started");
+    
+    // Set a callback for disconnection
+    libssh2_session_callback_set(_session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
     
     // We managed to successfully setup a connection
     _connected = YES;
@@ -312,6 +315,7 @@
 - (BOOL)isIp:(NSString *)address {
     struct in_addr pin;
     int success = inet_aton([address UTF8String], &pin);
+    
     return (success == 1);
 }
 
@@ -355,6 +359,28 @@
     NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);
     
     return YES;
+}
+
+void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *message, int message_len, const char *language, int language_len, void **abstract) {
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+    
+    // Build a raw error to encapsulate the disconnect
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:2];
+    if (message) {
+        NSString *string = [[NSString alloc] initWithBytes:message length:message_len encoding:NSUTF8StringEncoding];
+        [userInfo setObject:string forKey:NSLocalizedDescriptionKey];
+    }
+    if (language) {
+        NSString *string = [[NSString alloc] initWithBytes:language length:language_len encoding:NSUTF8StringEncoding];
+        [userInfo setObject:string forKey:@"language"];
+    }
+    
+    NSError *error = [NSError errorWithDomain:@"NMSSH" code:reason userInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(session:didDisconnectWithError:)]) {
+        [self.delegate session:self didDisconnectWithError:error];
+    }
+    
+    [self disconnect];
 }
 
 @end
