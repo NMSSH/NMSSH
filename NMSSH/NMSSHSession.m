@@ -84,6 +84,8 @@
     }
 
     libssh2_exit();
+    NMSSHLogVerbose(@"NMSSH: Disconnected");
+    _connected = NO;
 }
 
 // -----------------------------------------------------------------------------
