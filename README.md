@@ -36,8 +36,16 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
     // Pass nil as password parameter for unprotected keys
     [session authenticateByPublicKey:@"~/.ssh/id_rsa.pub"
                          andPassword:@"pass"];
+                         
+#### 2.3. Or by keyboard-interactive
+    
+    // Don't forget to set the delegate
+    // And implements session:keyboardInteractiveRequest:
+    // To return response
+    [session setDelegate:self];
+    [session authenticateByKeyboardInteractive];
 
-#### 2.3. Or connect to a SSH agent
+#### 2.4. Or connect to a SSH agent
 
     [session connectToAgent];
 
