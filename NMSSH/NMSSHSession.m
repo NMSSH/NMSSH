@@ -242,6 +242,29 @@
     return [self isAuthorized];
 }
 
+- (BOOL)authenticateByKeyboardInteractive {
+    if (![self supportsAuthenticationMethod:@"keyboard-interactive"]) {
+        return NO;
+    }
+    
+    libssh2_session_set_blocking(_session, 1);
+    int rc = (libssh2_userauth_keyboard_interactive(_session, [_username UTF8String], &kb_callback));
+    
+    if (rc != 0) {
+        NMSSHLogError(@"NMSSH: Authentication by keyboard-interactive failed!");
+        return NO;
+    }
+    
+    NMSSHLogVerbose(@"NMSSH: Authentication by keyboard-interactive succeeded.");
+    
+    libssh2_session_set_blocking(_session, 0);
+    if (rc == LIBSSH2_ERROR_EAGAIN) {
+        NMSSHLogVerbose(@"NMSSH: Boned");
+    }
+    
+    return [self isAuthorized];
+}
+
 - (BOOL)connectToAgent {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
         return NO;
@@ -359,6 +382,37 @@
     NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);
     
     return YES;
+}
+
+- (NSString *)keyboardInteractiveRequest:(NSString *)request {
+    NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
+    if (_delegate && [_delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
+        return [_delegate session:self keyboardInteractiveRequest:request];
+    }
+    
+    NMSSHLogWarn(@"NMSSH: Keyboard interactive requires a delegate!");
+    
+    return @"";
+}
+
+void kb_callback(const char *name, int name_len, const char *instr, int instr_len,
+                 int num_prompts, const LIBSSH2_USERAUTH_KBDINT_PROMPT *prompts, LIBSSH2_USERAUTH_KBDINT_RESPONSE *res,
+                 void **abstract) {
+    int i;
+    
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+    
+    for (i = 0; i < num_prompts; i++) {
+        NSString *request = [[NSString alloc] initWithBytes:prompts[i].text length:prompts[i].length encoding:NSUTF8StringEncoding];
+        NSString *response = [self keyboardInteractiveRequest:request];
+        
+        if (!response) {
+            response = @"";
+        }
+        
+        res[i].text = strdup([response UTF8String]);
+        res[i].length = strlen([response UTF8String]);
+    }
 }
 
 void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *message, int message_len, const char *language, int language_len, void **abstract) {

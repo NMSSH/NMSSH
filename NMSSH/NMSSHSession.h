@@ -99,6 +99,13 @@
                     andPassword:(NSString *)password;
 
 /**
+ * Authenticate by keyboard-interactive
+ *
+ * @returns Authentication success
+ */
+- (BOOL)authenticateByKeyboardInteractive;
+
+/**
  * Setup and connect to an SSH agent
  *
  * @returns Authentication success
@@ -110,6 +117,8 @@
 @protocol NMSSHSessionDelegate <NSObject>
 
 @optional
+
+- (NSString *)session:(NMSSHSession *)session keyboardInteractiveRequest:(NSString *)request;
 
 - (void)session:(NMSSHSession *)session didDisconnectWithError:(NSError *)error;
 
