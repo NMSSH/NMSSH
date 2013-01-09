@@ -1,1 +1,10 @@
 NMSSHTests/Settings/config.yml
+.DS_Store
+
+*.xcworkspacedata
+
+*.xcuserstate
+
+*.xcscheme
+
+*.plist
