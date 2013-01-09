@@ -14,6 +14,9 @@
 /** Server hostname in the form "{hostname}:{port}" */
 @property (nonatomic, readonly) NSString *host;
 
+/** Server port **/
+@property (nonatomic, readonly) NSNumber *port;
+
 /** Server username */
 @property (nonatomic, readonly) NSString *username;
 
@@ -34,11 +37,25 @@
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username;
 
 /**
+ * Shorthand method for initializing a NMSSHSession object and calling connect.
+ *
+ * @returns NMSSHSession instance
+ */
++ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
+
+/**
  * Create and setup a new NMSSH instance.
  *
  * @returns NMSSHSession instance
  */
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
+
+/**
+ * Create and setup a new NMSSH instance.
+ *
+ * @returns NMSSHSession instance
+ */
+- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
 
 /**
  * Connect to the server.

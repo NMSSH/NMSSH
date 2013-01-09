@@ -18,12 +18,22 @@
 // PUBLIC CONNECTION API
 // -----------------------------------------------------------------------------
 
++ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
+    return [self connectToHost:[NSString stringWithFormat:@"%@:%i", host, port]
+                  withUsername:username];
+}
+
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                    andUsername:username];
     [session connect];
 
     return session;
+}
+
+- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
+    return [self initWithHost:[NSString stringWithFormat:@"%@:%i", host, port]
+                  andUsername:username];
 }
 
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
