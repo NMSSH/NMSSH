@@ -11,7 +11,7 @@
 @property (nonatomic, readonly) NMSSHSession *session;
 
 /** Property that keeps track of connection status to the server */
-@property (readonly, getter=isConnected) BOOL connected;
+@property (nonatomic, readonly, getter=isConnected) BOOL connected;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API

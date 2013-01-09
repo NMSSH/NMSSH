@@ -9,22 +9,22 @@
 @interface NMSSHSession : NSObject
 
 /** Raw libssh2 session instance */
-@property (readonly, getter=rawSession) LIBSSH2_SESSION *session;
+@property (nonatomic, readonly, getter=rawSession) LIBSSH2_SESSION *session;
 
 /** Server hostname in the form "{hostname}:{port}" */
-@property (readonly) NSString *host;
+@property (nonatomic, readonly) NSString *host;
 
 /** Server username */
-@property (readonly) NSString *username;
+@property (nonatomic, readonly) NSString *username;
 
 /** Property that keeps track of connection status to the server */
-@property (readonly, getter=isConnected) BOOL connected;
+@property (nonatomic, readonly, getter=isConnected) BOOL connected;
 
 /** Property that keeps track of authentication status */
-@property (readonly, getter=isAuthorized) BOOL authorized;
+@property (nonatomic, readonly, getter=isAuthorized) BOOL authorized;
 
 /** Get a channel for this session */
-@property (readonly) NMSSHChannel *channel;
+@property (nonatomic, readonly) NMSSHChannel *channel;
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.
