@@ -1,5 +1,4 @@
-#import "NMSSHSession.h"
-#import "NMSSHChannel.h"
+#import "NMSSH.h"
 
 #import <netdb.h>
 #import <sys/socket.h>
@@ -40,7 +39,7 @@
 - (BOOL)connect {
     // Try to initialize libssh2
     if (libssh2_init(0) != 0) {
-        NSLog(@"NMSSH: libssh2 initialization failed");
+        NMSSHLogError(@"NMSSH: libssh2 initialization failed");
         return NO;
     }
 
@@ -51,14 +50,14 @@
     sin.sin_port = htons([[self port] intValue]);
     sin.sin_addr.s_addr = inet_addr([[self hostIPAddress] UTF8String]);
     if (connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
-        NSLog(@"NMSSH: Failed connection to socket");
+        NMSSHLogError(@"NMSSH: Failed connection to socket");
         return NO;
     }
 
     // Create a session instance and start it up.
     session = libssh2_session_init();
     if (libssh2_session_handshake(session, sock)) {
-        NSLog(@"NMSSH: Failure establishing SSH session");
+        NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
 
@@ -108,7 +107,7 @@
     int error = libssh2_userauth_password(session, [username UTF8String],
                                            [password UTF8String]);
     if (error) {
-        NSLog(@"NMSSH: Password authentication failed");
+        NMSSHLogError(@"NMSSH: Password authentication failed");
         return NO;
     }
 
@@ -138,7 +137,7 @@
                                                     [password UTF8String]);
 
     if (error) {
-        NSLog(@"NMSSH: Public key authentication failed");
+        NMSSHLogError(@"NMSSH: Public key authentication failed");
         return NO;
     }
 
@@ -153,19 +152,19 @@
     // Try to setup a connection to the SSH-agent
     agent = libssh2_agent_init(session);
     if (!agent) {
-        NSLog(@"NMSSH: Could not start a new agent");
+        NMSSHLogError(@"NMSSH: Could not start a new agent");
         return NO;
     }
 
     // Try connecting to the agent
     if (libssh2_agent_connect(agent)) {
-        NSLog(@"NMSSH: Failed connection to agent");
+        NMSSHLogError(@"NMSSH: Failed connection to agent");
         return NO;
     }
 
     // Try to fetch available SSH identities
     if (libssh2_agent_list_identities(agent)) {
-        NSLog(@"NMSSH: Failed to request agent identities");
+        NMSSHLogError(@"NMSSH: Failed to request agent identities");
         return NO;
     }
 
@@ -174,7 +173,7 @@
     while (1) {
         int error = libssh2_agent_get_identity(agent, &identity, prev_identity);
         if (error) {
-            NSLog(@"NMSSH: Failed to find a valid identity for the agent");
+            NMSSHLogError(@"NMSSH: Failed to find a valid identity for the agent");
             return NO;
         }
 
@@ -255,10 +254,11 @@
                                    (unsigned int)strlen([username UTF8String]));
 
     if (userauthlist == NULL || strstr(userauthlist, [method UTF8String]) == NULL) {
-        NSLog(@"NMSSH: Authentication by %@ not available for %@", method, host);
+        NMSSHLogInfo(@"NMSSH: Authentication by %@ not available for %@", method, host);
         return NO;
     }
-
+    NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);
+    
     return YES;
 }
 

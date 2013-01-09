@@ -1,5 +1,4 @@
-#import "NMSFTP.h"
-#import "NMSSHSession.h"
+#import "NMSSH.h"
 
 #import "libssh2.h"
 #import "libssh2_sftp.h"
@@ -45,7 +44,7 @@
     sftpSession = libssh2_sftp_init([session rawSession]);
 
     if (!sftpSession) {
-        NSLog(@"NMSFTP: Unable to init SFTP session");
+        NMSSHLogError(@"NMSFTP: Unable to init SFTP session");
         return NO;
     }
 
@@ -105,7 +104,7 @@
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(sftpSession, [path UTF8String]);
 
     if (!handle) {
-        NSLog(@"NMSFTP: Could not open directory");
+        NMSSHLogError(@"NMSFTP: Could not open directory");
         return nil;
     }
 

@@ -1,5 +1,4 @@
-#import "NMSSHChannel.h"
-#import "NMSSHSession.h"
+#import "NMSSH.h"
 
 #import "libssh2.h"
 
@@ -37,7 +36,7 @@
 
     // Open up the channel
     if (!(channel = libssh2_channel_open_session([session rawSession]))) {
-        NSLog(@"NMSSH: Unable to open a session");
+        NMSSHLogError(@"NMSSH: Unable to open a session");
         return nil;
     }
 
@@ -54,7 +53,7 @@
                                      userInfo:userInfo];
         }
 
-        NSLog(@"NMSSH: Error executing command");
+        NMSSHLogError(@"NMSSH: Error executing command");
         [self close];
         return nil;
     }
@@ -103,7 +102,7 @@
                                  userInfo:userInfo];
     }
 
-    NSLog(@"NMSSH: Error fetching response from command");
+    NMSSHLogError(@"NMSSH: Error fetching response from command");
     [self close];
     return nil;
 }
@@ -124,7 +123,7 @@
     // Read local file
     FILE *local = fopen([localPath UTF8String], "rb");
     if (!local) {
-        NSLog(@"NMSSH: Can't read local file");
+        NMSSHLogError(@"NMSSH: Can't read local file");
         return NO;
     }
 
@@ -136,7 +135,7 @@
                                (unsigned long)fileinfo.st_size);
 
     if (!channel) {
-        NSLog(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
@@ -156,7 +155,7 @@
             long rc = libssh2_channel_write(channel, ptr, nread);
 
             if (rc < 0) {
-                NSLog(@"NMSSH: Failed writing file");
+                NMSSHLogError(@"NMSSH: Failed writing file");
                 [self close];
                 return NO;
             }
@@ -192,7 +191,7 @@
                                &fileinfo);
 
     if (!channel) {
-        NSLog(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
@@ -215,7 +214,7 @@
             write(localFile, mem, rc);
         }
         else if (rc < 0) {
-            NSLog(@"NMSSH: Failed to read SCP data");
+            NMSSHLogError(@"NMSSH: Failed to read SCP data");
             close(localFile);
             [self close];
             return NO;
