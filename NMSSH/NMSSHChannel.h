@@ -4,7 +4,8 @@
 
 enum {
     NMSSHChannelExecutionError,
-    NMSSHChannelExecutionResponseError
+    NMSSHChannelExecutionResponseError,
+    NMSSHChannelExecutionTimeout
 };
 
 /**
@@ -35,6 +36,15 @@ enum {
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error;
+
+/**
+ * Execute a shell command on the server with a given timeout.
+ *
+ * If an error occurs or the connection timed out, it will return nil and populate the error object.
+ *
+ * @returns Shell command response
+ */
+- (NSString *)execute:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
 
 /**
  * Upload a local file to a remote server.

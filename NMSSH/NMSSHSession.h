@@ -31,6 +31,9 @@
 /** Get a channel for this session */
 @property (nonatomic, readonly) NMSSHChannel *channel;
 
+/** Get session socket **/
+@property (nonatomic, readonly) int sock;
+
 /** Session delegate **/
 @property (nonatomic, weak) id<NMSSHSessionDelegate> delegate;
 

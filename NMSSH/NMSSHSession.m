@@ -5,7 +5,6 @@
 #import <arpa/inet.h>
 
 @interface NMSSHSession () {
-    int sock;
     LIBSSH2_AGENT *agent;
 }
 @end
@@ -64,15 +63,15 @@
     NMSSHLogVerbose(@"NMSSH: libssh2 initialized");
     
     // Try to establish a connection to the server
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock < 0) {
+    _sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (_sock < 0) {
         NMSSHLogError(@"NMSSH: Error creating the socket");
         return NO;
     }
     
     // Set NOSIGPIPE
     int set = 1;
-    setsockopt(sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+    setsockopt(_sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
     
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
@@ -81,18 +80,18 @@
     
     // Set non-blocking
     long arg;
-    if((arg = fcntl(sock, F_GETFL, NULL)) < 0) {
+    if((arg = fcntl(_sock, F_GETFL, NULL)) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
         return NO;
     }
     arg |= O_NONBLOCK;
-    if(fcntl(sock, F_SETFL, arg) < 0) {
+    if(fcntl(_sock, F_SETFL, arg) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
         return NO;
     }
     
     // Trying to connect with timeout
-    int res = connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in));
+    int res = connect(_sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in));
     if (res < 0) {
         if (errno == EINPROGRESS) {
             NMSSHLogVerbose(@"NMSSH: EINPROGRESS in connect() - selecting");
@@ -104,15 +103,15 @@
                 tv.tv_sec = [timeout longValue];
                 tv.tv_usec = 0;
                 FD_ZERO(&myset);
-                FD_SET(sock, &myset);
-                res = select(sock+1, NULL, &myset, NULL, &tv);
+                FD_SET(_sock, &myset);
+                res = select(_sock+1, NULL, &myset, NULL, &tv);
                 if (res < 0 && errno != EINTR) {
                     NMSSHLogError(@"NMSSH: Error connecting");
                     return NO;
                 } else if (res > 0) {
                     // Socket selected for write
                     lon = sizeof(int);
-                    if (getsockopt(sock, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &lon) < 0) {
+                    if (getsockopt(_sock, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &lon) < 0) {
                         NMSSHLogError(@"NMSSH: Error in getsockopt()");
                         return NO;
                     }
@@ -135,19 +134,19 @@
     }
     
     // Set to blocking mode again...
-    if((arg = fcntl(sock, F_GETFL, NULL)) < 0) {
+    if((arg = fcntl(_sock, F_GETFL, NULL)) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
         return NO;
     }
     arg &= (~O_NONBLOCK);
-    if(fcntl(sock, F_SETFL, arg) < 0) {
+    if(fcntl(_sock, F_SETFL, arg) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
         return NO;
     }
     
     // Create a session instance and start it up.
     _session = libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self));
-    if (libssh2_session_handshake(_session, sock)) {
+    if (libssh2_session_handshake(_session, _sock)) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
@@ -175,8 +174,8 @@
         _session = nil;
     }
 
-    if (sock) {
-        close(sock);
+    if (_sock) {
+        close(_sock);
     }
 
     libssh2_exit();

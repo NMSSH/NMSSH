@@ -30,77 +30,121 @@
 // PUBLIC SHELL EXECUTION API
 // -----------------------------------------------------------------------------
 
-- (NSString *)execute:(NSString *)command error:(NSError **)error {
-    _lastResponse = nil;
+- (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error {
+    return [self execute:command error:error timeout:[NSNumber numberWithDouble:0]];
+}
 
+- (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
+    NMSSHLogInfo(@"NMSSH: Exec command %@", command);
+    
+    _lastResponse = nil;
+    
     // Open up the channel
-    if (!(channel = libssh2_channel_open_session([_session rawSession]))) {
+    while( (channel = libssh2_channel_open_session([_session rawSession])) == NULL &&
+		  libssh2_session_last_error([_session rawSession],NULL,NULL,0) ==
+		  LIBSSH2_ERROR_EAGAIN ) {
+        waitsocket([_session sock], [_session rawSession]);
+    }
+    if(channel == NULL){
         NMSSHLogError(@"NMSSH: Unable to open a session");
         return nil;
     }
-
+    
     // In case of error...
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command
                                                                        forKey:@"command"];
-
+    
     // Try executing command
-    int rc = libssh2_channel_exec(channel, [command UTF8String]);
-    if (rc) {
+    int rc;
+    while((rc = libssh2_channel_exec(channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
+        waitsocket([_session sock], [_session rawSession]);
+    }
+    libssh2_channel_wait_closed(channel);
+    if (rc != 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
                                      userInfo:userInfo];
         }
-
+        
         NMSSHLogError(@"NMSSH: Error executing command");
         [self close];
         return nil;
     }
-
+    
+    // Set the timeout for blocking session
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
+    if ([timeout longValue] >= 0) {
+        libssh2_session_set_timeout([_session rawSession], [timeout longValue] * 1000);
+    }
+    
     // Fetch response from output buffer
     for (;;) {
         long rc;
         char buffer[0x4000];
         char errorBuffer[0x4000];
-
+        
         do {
             rc = libssh2_channel_read(channel, buffer, (ssize_t)sizeof(buffer));
-
+            
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(channel)) {
                 if (error) {
                     libssh2_channel_read_stderr(channel, errorBuffer,
                                                 (ssize_t)sizeof(errorBuffer));
-
+                    
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
                     if (!desc) {
                         desc = @"An unspecified error occurred";
                     }
-
-                    [userInfo setObject:desc forKey:@"description"];
-
+                    
+                    [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
+                    
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
                                              userInfo:userInfo];
+                    return nil;
                 }
             }
-
+            
             if (rc == 0) {
                 _lastResponse = [NSString stringWithFormat:@"%s", buffer];
                 [self close];
                 return _lastResponse;
             }
+            
+            // Check if the connection timed out
+            if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
+                if (error) {
+                    NSString *desc = @"Connection timed out";
+                    
+                    [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
+                    
+                    *error = [NSError errorWithDomain:@"NMSSH"
+                                                 code:NMSSHChannelExecutionTimeout
+                                             userInfo:userInfo];
+                }
+                [self close];
+                return nil;
+            }
         }
         while (rc > 0);
+        
+        // This is due to blocking that would occur otherwise so we loop on this condition
+        if( rc == LIBSSH2_ERROR_EAGAIN ) {
+            waitsocket([_session sock], [_session rawSession]);
+        } else {
+            break;
+        }
     }
-
+    
     // If we've got this far, it means fetching execution response failed
     if (error) {
         *error = [NSError errorWithDomain:@"NMSSH"
                                      code:NMSSHChannelExecutionResponseError
                                  userInfo:userInfo];
     }
-
+    
     NMSSHLogError(@"NMSSH: Error fetching response from command");
     [self close];
     return nil;
@@ -237,6 +281,34 @@
         libssh2_channel_free(channel);
         channel = nil;
     }
+}
+
+static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
+    struct timeval timeout;
+    
+    fd_set fd;
+    fd_set *writefd = NULL;
+    fd_set *readfd = NULL;
+    
+    int rc;
+    int dir;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 500000;
+    
+    FD_ZERO(&fd);
+    FD_SET(socket_fd, &fd);
+	
+    /* now make sure we wait in the correct direction */ 
+    dir = libssh2_session_block_directions(session);
+    if(dir & LIBSSH2_SESSION_BLOCK_INBOUND) {
+        readfd = &fd;
+    }
+    if(dir & LIBSSH2_SESSION_BLOCK_OUTBOUND) {
+        writefd = &fd;
+    }
+    rc = select(socket_fd + 1, readfd, writefd, NULL, &timeout);
+    
+    return rc;
 }
 
 @end
