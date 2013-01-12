@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "libssh2.h"
 
-@class NMSSHChannel;
+@class NMSSHChannel, NMSFTP;
 
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
@@ -25,6 +25,9 @@
 
 /** Get a channel for this session */
 @property (readonly) NMSSHChannel *channel;
+
+/** Get a SFTP instance for this session */
+@property (readonly) NMSFTP *sftp;
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.

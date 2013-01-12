@@ -1,5 +1,6 @@
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
+#import "NMSFTP.h"
 
 #import <netdb.h>
 #import <sys/socket.h>
@@ -13,7 +14,7 @@
 
 @implementation NMSSHSession
 @synthesize session, host, username, connected;
-@synthesize channel;
+@synthesize channel, sftp;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API
@@ -199,6 +200,14 @@
     }
 
     return channel;
+}
+
+- (NMSFTP *)sftp {
+    if (!sftp) {
+        sftp = [[NMSFTP alloc] initWithSession:self];
+    }
+
+    return sftp;
 }
 
 // -----------------------------------------------------------------------------
