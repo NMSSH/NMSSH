@@ -88,7 +88,7 @@ The `to:` parameter is flexible in that if you provide a directory, it will keep
 
 #### Check if directory exists
 
-    BOOL exits = [sftp directoryExistsAtPath:@"/var/www/"];
+    BOOL exists = [sftp directoryExistsAtPath:@"/var/www/"];
 
 #### Create directory
 
