@@ -9,7 +9,7 @@
 @end
 
 @implementation NMSSHChannel
-@synthesize session, lastResponse;
+@synthesize session, lastResponse, requestPty, ptyTerminalType;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API
@@ -18,6 +18,8 @@
 - (id)initWithSession:(NMSSHSession *)aSession {
     if ((self = [super init])) {
         session = aSession;
+        requestPty = NO;
+        ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
 
         // Make sure we were provided a valid session
         if (![session isKindOfClass:[NMSSHSession class]]) {
@@ -45,8 +47,26 @@
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command
                                                                        forKey:@"command"];
 
+    // If requested, try to allocate a pty
+    int rc = 0;
+
+    if (self.requestPty) {
+        rc = libssh2_channel_request_pty(channel, [self getTerminalNameForType:self.ptyTerminalType]);
+        if (rc) {
+            if (error) {
+                *error = [NSError errorWithDomain:@"NMSSH"
+                                             code:NMSSHChannelRequestPtyError
+                                         userInfo:userInfo];
+            }
+
+            NSLog(@"NMSSH: Error requesting pseudo terminal");
+            [self close];
+            return nil;
+        }
+    }
+
     // Try executing command
-    int rc = libssh2_channel_exec(channel, [command UTF8String]);
+    rc = libssh2_channel_exec(channel, [command UTF8String]);
     if (rc) {
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
@@ -239,6 +259,21 @@
         libssh2_channel_free(channel);
         channel = nil;
     }
+}
+
+- (const char*)getTerminalNameForType:(unsigned long)terminalType {
+    switch (terminalType) {
+        case NMSSHChannelPtyTerminalVanilla:
+            return "vanilla";
+
+        case NMSSHChannelPtyTerminalVT102:
+            return "vt102";
+
+        case NMSSHChannelPtyTerminalAnsi:
+            return "ansi";
+    }
+    // catch invalid values
+    return "vanilla";
 }
 
 @end

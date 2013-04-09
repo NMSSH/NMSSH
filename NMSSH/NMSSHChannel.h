@@ -4,9 +4,15 @@
 
 enum {
     NMSSHChannelExecutionError,
-    NMSSHChannelExecutionResponseError
+    NMSSHChannelExecutionResponseError,
+    NMSSHChannelRequestPtyError
 };
 
+enum {
+    NMSSHChannelPtyTerminalVanilla,
+    NMSSHChannelPtyTerminalVT102,
+    NMSSHChannelPtyTerminalAnsi
+};
 /**
  * NMSSHChannel provides functionality to work with SSH shells and SCP.
  */
@@ -17,6 +23,12 @@ enum {
 
 /** The last response from a shell command execution */
 @property (nonatomic, readonly) NSString *lastResponse;
+
+/** Request a pseudo terminal before executing a command */
+@property (nonatomic, assign) BOOL requestPty;
+
+/** Terminal emulation mode if a PTY is requested, defaults to vanilla */
+@property (nonatomic, assign) unsigned int ptyTerminalType;
 
 /**
  * Create a new NMSSHChannel instance.
@@ -31,6 +43,8 @@ enum {
  * Execute a shell command on the server.
  *
  * If an error occurs, it will return nil and populate the error object.
+ * If requestPty is enabled request a pseude terminal before running the
+ * command.
  *
  * @returns Shell command response
  */
