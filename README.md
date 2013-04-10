@@ -60,6 +60,17 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
     NSString *response = [[session channel] execute:@"echo foo" error:&error];
     NSLog(@"Response: %@", response);
 
+#### (Optianally) executing shell commands with pseudo terminal support
+
+    [session channel].requestPty = YES;
+    [session channel].ptyTerminalType = NMSSHChannelPtyTerminalVT102;
+    
+    NSError *error = nil;
+    NSString *response = [channel execute:@"echo foo" error:&error];
+    NSLog(@"Response: %@", response);
+    
+Supported terminal emulations include VT102, ANSI and a vanilla terminal.
+
 #### SCP file transfer
 
 The SCP API provides a simple way to upload or download files.
