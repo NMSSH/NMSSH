@@ -60,10 +60,10 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
     NSString *response = [[session channel] execute:@"echo foo" error:&error];
     NSLog(@"Response: %@", response);
 
-#### (Optianally) executing shell commands with pseudo terminal support
+#### (Optionally) executing shell commands with pseudo terminal support
 
-    [session channel].requestPty = YES;
-    [session channel].ptyTerminalType = NMSSHChannelPtyTerminalVT102;
+    [[session channel] setRequestPty:YES];
+    [[session channel] setPtyTerminalType:NMSSHChannelPtyTerminalVT102];
     
     NSError *error = nil;
     NSString *response = [channel execute:@"echo foo" error:&error];
