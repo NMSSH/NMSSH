@@ -19,13 +19,20 @@
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect.
  *
+ * @param host The server hostname (a port number can be specified by appending
+ *             @":{portnr}"
+ * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username;
 
 /**
- * Shorthand method for initializing a NMSSHSession object and calling connect.
+ * Shorthand method for initializing a NMSSHSession object and calling connect,
+ * and explicitly setting a port number.
  *
+ * @param host The server hostname
+ * @param port The port number
+ * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
@@ -33,6 +40,9 @@
 /**
  * Create and setup a new NMSSH instance.
  *
+ * @param host The server hostname (a port number can be specified by appending
+ *             @":{portnr}"
+ * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
@@ -40,6 +50,9 @@
 /**
  * Create and setup a new NMSSH instance.
  *
+ * @param host The server hostname
+ * @param port The port number
+ * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
@@ -76,6 +89,7 @@
 /**
  * Connect to the server.
  *
+ * @param timeout The time, in seconds, to wait before giving up.
  * @returns Connection status
  */
 - (BOOL)connectWithTimeout:(NSNumber *)timeout;
@@ -95,6 +109,7 @@
 /**
  * Authenticate by password
  *
+ * @param password Password for connected user
  * @returns Authentication success
  */
 - (BOOL)authenticateByPassword:(NSString *)password;
@@ -104,6 +119,8 @@
  *
  * Use password:nil when the key is unencrypted
  *
+ * @param publicKey Path to public key on local computer
+ * @param password Password for encrypted private key
  * @returns Authentication success
  */
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey

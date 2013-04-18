@@ -26,8 +26,7 @@ enum {
 /**
  * Create a new NMSSHChannel instance.
  *
- * aSession needs to be a valid, connected, NMSSHSession instance!
- *
+ * @param session A valid, connected, NMSSHSession instance
  * @returns New NMSSHChannel instance
  */
 - (id)initWithSession:(NMSSHSession *)session;
@@ -52,6 +51,8 @@ enum {
  * If requestPty is enabled request a pseude terminal before running the
  * command.
  *
+ * @param command Any shell script that is available on the server
+ * @param error Error handler
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error;
@@ -61,6 +62,9 @@ enum {
  *
  * If an error occurs or the connection timed out, it will return nil and populate the error object.
  *
+ * @param command Any shell script that is available on the server
+ * @param error Error handler
+ * @param timeout The time to wait (in seconds) before giving up on the request
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
@@ -75,6 +79,8 @@ enum {
  * If to: specifies a directory, the file name from the original file will be
  * used.
  *
+ * @param localPath Path to a file on the local computer
+ * @param remotePath Path to save the file to
  * @returns SCP upload success
  */
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath;
@@ -85,6 +91,8 @@ enum {
  * If to: specifies a directory, the file name from the original file will be
  * used.
  *
+ * @param remotePath Path to a file on the remote server
+ * @param localPath Path to save the file to
  * @returns SCP download success
  */
 - (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath;

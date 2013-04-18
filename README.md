@@ -1,159 +1,62 @@
 # NMSSH
 
-NMSSH is a clean, easy-to-use, test driven framework for iOS and OSX that wraps libssh2.
+NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2.
 
-The framework was initially built for usage in [Kleio](http://9muses.se/kleio) – a Mac OSX application that simplifies continuous deployment.
-
-**Using libssh2 version:** `1.4.2`
+The framework was initially built for usage in [Kleio](http://9muses.se/kleio) – a Mac OSX application that simplifies deployment.
 
 Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdborg).
 
 ## Usage
 
-### Install the framework
+### How do I install it?
 
 * Build the framework and add it to your project. Consult the Wiki for detailed information about how to [build for OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project) or [build for iOS](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-iOS-project).
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
-### Connect to a server
+### What does it look like?
 
-#### 1. Create a new session
+```objc
+NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
+                                       withUsername:@"user"];
 
-    NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
-                                           withUsername:@"user"];
-
-    if ([session isConnected]) {
-        NSLog(@"Successfully created a new session");
-    }
-
-#### 2.1. Authenticate by password
-
+if (session.isConnected) {
     [session authenticateByPassword:@"pass"];
 
-#### 2.2. Or by public key
-
-    // Explicitly set the public key that should be used...
-    // Pass nil as password parameter for unprotected keys
-    [session authenticateByPublicKey:@"~/.ssh/id_rsa.pub"
-                         andPassword:@"pass"];
-                         
-#### 2.3. Or by keyboard-interactive
-    
-    // Don't forget to set the delegate
-    // And implements session:keyboardInteractiveRequest:
-    // To return response
-    [session setDelegate:self];
-    [session authenticateByKeyboardInteractive];
-
-#### 2.4. Or connect to a SSH agent
-
-    [session connectToAgent];
-
-#### 3. Check if authentication was successful
-
-    if ([session isAuthorized]) {
+    if (session.isAuthorized) {
         NSLog(@"Authentication succeeded");
     }
-
-#### 4. Don't forget to disconnect
-
-    [session disconnect];
-    session = nil;
-
-### Using Channels
-
-#### Executing shell commands
-
-    NSError *error = nil;
-    NSString *response = [[session channel] execute:@"echo foo" error:&error];
-    NSLog(@"Response: %@", response);
-
-#### (Optionally) executing shell commands with pseudo terminal support
-
-    [[session channel] setRequestPty:YES];
-    [[session channel] setPtyTerminalType:NMSSHChannelPtyTerminalVT102];
+}
     
-    NSError *error = nil;
-    NSString *response = [channel execute:@"echo foo" error:&error];
-    NSLog(@"Response: %@", response);
+NSError *error = nil;
+NSString *response = [session.channel execute:@"ls -l /var/www/" error:&error];
+NSLog(@"List of my sites: %@", response);
     
-Supported terminal emulations include VT102, ANSI and a vanilla terminal.
+BOOL success = [session.channel uploadFile:@"~/index.html" to:@"/var/www/9muses.se/"];
 
-#### SCP file transfer
+[session disconnect];
+```
 
-The SCP API provides a simple way to upload or download files.
+## Documentation
 
-The `to:` parameter is flexible in that if you provide a directory, it will keep the same filename as in the from-parameter. But if you provide a complete file name you may name the transferred file anything you want.
+API documentation for NMSSH is available here: [http://docs.9muses.se/nmssh/](http://docs.9muses.se/nmssh/)
 
-#### Uploading files from your local computer
+## Contributing
 
-    BOOL success = [[session channel] uploadFile:@"~/my-local-file.txt" to:@"/var/www/"];
+* Follow the [code conventions](https://github.com/Lejdborg/cocoa-conventions/).
+* Fork NMSSH and create a feature branch. Develop your feature.
+* Open a pull request.
+* Add your name to the contributor list
 
-#### Downloading files from a server
+**Note:** Make sure that you have documented your code and that you follow the code conventions before opening the pull request.
 
-    BOOL success = [[session channel] downloadFile:@"/var/www/my-remote-file.txt" to:@"~/"];
+## Contributors
 
-### SFTP
-
-#### Connect to SFTP
-
-    NMSFTP *sftp = [NMSFTP connectWithSession:session];
-
-    if ([sftp isConnected]) {
-        // do stuff...
-    }
-
-    [sftp disconnect];
-
-#### Check if directory exists
-
-    BOOL exists = [sftp directoryExistsAtPath:@"/var/www/"];
-
-#### Create directory
-
-    BOOL success = [sftp createDirectoryAtPath:@"/var/www/new-dir/"];
-
-#### Delete directory
-
-    BOOL success = [sftp removeDirectoryAtPath:@"/var/www/dir/"];
-
-#### List contents of a directory
-
-    NSArray *entries = [sftp contentsOfDirectoryAtPath:@"/var/www/"];
-
-#### Check if file exists
-
-    BOOL exists = [sftp fileExistsAtPath:@"/var/www/file.txt"];
-
-#### Create symlink
-
-    BOOL success = [sftp createSymbolicLinkAtPath:@"/var/www/symlink" withDestinationPath:@"/var/www/new-dir/"];
-
-#### Read contents of file
-
-    NSData *contents = [sftp contentsAtPath:@"/var/www/file.txt"];
-
-#### Write to file
-
-    NSData *contents = [@"Hello World" dataUsingEncoding:NSUTF8StringEncoding];
-    BOOL success = [sftp writeContents:contents toFileAtPath:@"/var/www/file.txt"];
-
-#### Append contents to the end of a file
-
-    NSData *contents = [@"\nBye!" dataUsingEncoding:NSUTF8StringEncoding];
-    BOOL success = [sftp appendContents:contents toFileAtPath:@"/var/www/file.txt"];
-
-#### Delete file
-
-    BOOL success = [sftp removeFileAtPath:@"/var/www/file.txt"];
-
-#### Move file or directory
-
-    BOOL success = [sftp moveItemAtPath:@"/var/www/file.txt" toPath:@"/var/www/newname.txt"];
+* [Tommaso Madonia (@Frugghi)](https://github.com/Frugghi)
+* [@Shirk](https://github.com/Shirk)
 
 ## License
 
-Copyright (c) 2012 Nine Muses AB
+Copyright © 2013 Nine Muses AB
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
