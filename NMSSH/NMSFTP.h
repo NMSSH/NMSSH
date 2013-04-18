@@ -1,7 +1,3 @@
-#import <Foundation/Foundation.h>
-
-@class NMSSHSession;
-
 /**
  * NMSFTP provides functionality for working with SFTP servers.
  */
@@ -11,11 +7,11 @@
 @property (nonatomic, readonly) NMSSHSession *session;
 
 /** Property that keeps track of connection status to the server */
-@property (nonatomic, readonly, getter=isConnected) BOOL connected;
+@property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
-// -----------------------------------------------------------------------------
-// PUBLIC SETUP API
-// -----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------
+/// @name Initializer
+/// ----------------------------------------------------------------------------
 
 /**
  * Create a new NMSFTP instance and connect it.
@@ -33,9 +29,9 @@
  */
 - (id)initWithSession:(NMSSHSession *)session;
 
-// -----------------------------------------------------------------------------
-// HANDLE CONNECTIONS
-// -----------------------------------------------------------------------------
+/// ----------------------------------------------------------------------------
+/// @name Connection
+/// ----------------------------------------------------------------------------
 
 /**
  * Create and connect to a SFTP session
@@ -49,9 +45,9 @@
  */
 - (void)disconnect;
 
-// -----------------------------------------------------------------------------
-// MANIPULATE FILE SYSTEM ENTRIES
-// -----------------------------------------------------------------------------
+/// ----------------------------------------------------------------------------
+/// @name Manipulate file system entries
+/// ----------------------------------------------------------------------------
 
 /**
  * Move or rename an item
@@ -60,9 +56,9 @@
  */
 - (BOOL)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath;
 
-// -----------------------------------------------------------------------------
-// MANIPULATE DIRECTORIES
-// -----------------------------------------------------------------------------
+/// ----------------------------------------------------------------------------
+/// @name Manipulate directories
+/// ----------------------------------------------------------------------------
 
 /**
  * Test if a directory exists at the specified path.
@@ -94,9 +90,9 @@
  */
 - (NSArray *)contentsOfDirectoryAtPath:(NSString *)path;
 
-// -----------------------------------------------------------------------------
-// MANIPULATE SYMLINKS AND FILES
-// -----------------------------------------------------------------------------
+/// ----------------------------------------------------------------------------
+/// @name Manipulate symlinks and files
+/// ----------------------------------------------------------------------------
 
 /**
  * Test if a file exists at the specified path.

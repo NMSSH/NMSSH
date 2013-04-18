@@ -1,7 +1,17 @@
-//
-// Prefix header for all source files of the 'NMSSH' target in the 'NMSSH' project
-//
-
 #ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
+
+#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+
+#import "libssh2.h"
+#import "libssh2_sftp.h"
+
+#import <netdb.h>
+#import <sys/socket.h>
+#import <arpa/inet.h>
+
+@class NMSSHChannel, NMSSHSession, NMSFTP;
+#import "NMSSHLogger.h"
+#import "NMSSH.h"
+
 #endif

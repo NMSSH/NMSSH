@@ -1,56 +1,86 @@
-#import "NMSSH.h"
+#import "NMSSHChannel.h"
+#import "socket_helper.h"
 
-#import "libssh2.h"
+@interface NMSSHChannel ()
+@property (nonatomic, strong) NMSSHSession *session;
+@property (nonatomic, assign) LIBSSH2_CHANNEL *channel;
 
-@interface NMSSHChannel () {
-    LIBSSH2_CHANNEL *channel;
-}
+@property (nonatomic, assign) const char *ptyTerminalName;
+@property (nonatomic, strong) NSString *lastResponse;
 @end
 
 @implementation NMSSHChannel
 
 // -----------------------------------------------------------------------------
-// PUBLIC SETUP API
+#pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
 - (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        _session = session;
-        _requestPty = NO;
-        _ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
+        [self setSession:session];
+        [self setRequestPty:NO];
+        [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
 
         // Make sure we were provided a valid session
-        if (![_session isKindOfClass:[NMSSHSession class]]) {
-            return nil;
+        if (![self.session isKindOfClass:[NMSSHSession class]]) {
+            @throw @"You have to provide a valid NMSSHSession!";
         }
     }
 
     return self;
 }
 
+- (void)close {
+    if (self.channel) {
+        libssh2_channel_close(self.channel);
+        libssh2_channel_free(self.channel);
+        [self setChannel:nil];
+    }
+}
+
 // -----------------------------------------------------------------------------
-// PUBLIC SHELL EXECUTION API
+#pragma mark - SHELL COMMAND EXECUTION
 // -----------------------------------------------------------------------------
 
+- (const char *)ptyTerminalName {
+    switch (self.ptyTerminalType) {
+        case NMSSHChannelPtyTerminalVanilla:
+            return "vanilla";
+
+        case NMSSHChannelPtyTerminalVT102:
+            return "vt102";
+
+        case NMSSHChannelPtyTerminalAnsi:
+            return "ansi";
+    }
+
+    // catch invalid values
+    return "vanilla";
+}
+
 - (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error {
-    return [self execute:command error:error timeout:[NSNumber numberWithDouble:0]];
+    return [self execute:command error:error timeout:@0];
 }
 
 - (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
     NMSSHLogInfo(@"NMSSH: Exec command %@", command);
 
-    _lastResponse = nil;
+    [self setLastResponse:nil];
 
     // Open up the channel
-    while( (channel = libssh2_channel_open_session([_session rawSession])) == NULL &&
-		  libssh2_session_last_error([_session rawSession],NULL,NULL,0) ==
-		  LIBSSH2_ERROR_EAGAIN ) {
-        waitsocket([_session sock], [_session rawSession]);
+    LIBSSH2_CHANNEL *channel;
+    while ((channel = libssh2_channel_open_session(self.session.rawSession)) == NULL &&
+		  libssh2_session_last_error(self.session.rawSession, NULL, NULL, 0) ==
+		  LIBSSH2_ERROR_EAGAIN) {
+        waitsocket(self.session.sock, self.session.rawSession);
     }
-    if(channel == NULL){
+
+    if (channel == NULL){
         NMSSHLogError(@"NMSSH: Unable to open a session");
         return nil;
     }
+
+    [self setChannel:channel];
 
     // In case of error...
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command
@@ -60,7 +90,7 @@
     int rc = 0;
 
     if (self.requestPty) {
-        rc = libssh2_channel_request_pty(channel, [self getTerminalNameForType:self.ptyTerminalType]);
+        rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName);
         if (rc) {
             if (error) {
                 *error = [NSError errorWithDomain:@"NMSSH"
@@ -70,16 +100,17 @@
 
             NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
             [self close];
+
             return nil;
         }
     }
 
     // Try executing command
-    while ((rc = libssh2_channel_exec(channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
-        waitsocket([_session sock], [_session rawSession]);
+    while ((rc = libssh2_channel_exec(self.channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
+        waitsocket(self.session.sock, self.session.rawSession);
     }
 
-    libssh2_channel_wait_closed(channel);
+    libssh2_channel_wait_closed(self.channel);
 
     if (rc != 0) {
         if (error) {
@@ -96,7 +127,7 @@
     // Set the timeout for blocking session
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
     if ([timeout longValue] >= 0) {
-        libssh2_session_set_timeout([_session rawSession], [timeout longValue] * 1000);
+        libssh2_session_set_timeout(self.session.rawSession, [timeout longValue] * 1000);
     }
 
     // Fetch response from output buffer
@@ -106,12 +137,12 @@
         char errorBuffer[0x4000];
 
         do {
-            rc = libssh2_channel_read(channel, buffer, (ssize_t)sizeof(buffer));
+            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer));
 
             // Store all errors that might occur
-            if (libssh2_channel_get_exit_status(channel)) {
+            if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
-                    libssh2_channel_read_stderr(channel, errorBuffer,
+                    libssh2_channel_read_stderr(self.channel, errorBuffer,
                                                 (ssize_t)sizeof(errorBuffer));
 
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
@@ -129,9 +160,10 @@
             }
 
             if (rc == 0) {
-                _lastResponse = [NSString stringWithFormat:@"%s", buffer];
+                [self setLastResponse:[NSString stringWithFormat:@"%s", buffer]];
                 [self close];
-                return _lastResponse;
+
+                return self.lastResponse;
             }
 
             // Check if the connection timed out
@@ -145,6 +177,7 @@
                                                  code:NMSSHChannelExecutionTimeout
                                              userInfo:userInfo];
                 }
+
                 [self close];
                 return nil;
             }
@@ -152,11 +185,11 @@
         while (rc > 0);
 
         // This is due to blocking that would occur otherwise so we loop on this condition
-        if( rc == LIBSSH2_ERROR_EAGAIN ) {
-            waitsocket([_session sock], [_session rawSession]);
-        } else {
+        if (rc != LIBSSH2_ERROR_EAGAIN) {
             break;
         }
+
+        waitsocket(self.session.sock, self.session.rawSession);
     }
 
     // If we've got this far, it means fetching execution response failed
@@ -168,11 +201,12 @@
 
     NMSSHLogError(@"NMSSH: Error fetching response from command");
     [self close];
+
     return nil;
 }
 
 // -----------------------------------------------------------------------------
-// PUBLIC SCP API
+#pragma mark - SCP FILE TRANSFER
 // -----------------------------------------------------------------------------
 
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
@@ -194,11 +228,11 @@
     // Try to send a file via SCP.
     struct stat fileinfo;
     stat([localPath UTF8String], &fileinfo);
-    channel = libssh2_scp_send([_session rawSession], [remotePath UTF8String],
-                               fileinfo.st_mode & 0644,
-                               (unsigned long)fileinfo.st_size);
+    [self setChannel:libssh2_scp_send(self.session.rawSession, [remotePath UTF8String],
+                                      fileinfo.st_mode & 0644,
+                                      (unsigned long)fileinfo.st_size)];
 
-    if (!channel) {
+    if (!self.channel) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
@@ -216,7 +250,7 @@
 
         do {
             // Write the same data over and over, until error or completion
-            long rc = libssh2_channel_write(channel, ptr, nread);
+            long rc = libssh2_channel_write(self.channel, ptr, nread);
 
             if (rc < 0) {
                 NMSSHLogError(@"NMSSH: Failed writing file");
@@ -232,9 +266,9 @@
     } while (1);
 
     // Send EOF and clean up
-    libssh2_channel_send_eof(channel);
-    libssh2_channel_wait_eof(channel);
-    libssh2_channel_wait_closed(channel);
+    libssh2_channel_send_eof(self.channel);
+    libssh2_channel_wait_eof(self.channel);
+    libssh2_channel_wait_closed(self.channel);
     [self close];
 
     return YES;
@@ -251,10 +285,10 @@
 
     // Request a file via SCP
     struct stat fileinfo;
-    channel = libssh2_scp_recv([_session rawSession], [remotePath UTF8String],
-                               &fileinfo);
+    [self setChannel:libssh2_scp_recv(self.session.rawSession, [remotePath UTF8String],
+                                      &fileinfo)];
 
-    if (!channel) {
+    if (!self.channel) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
@@ -272,7 +306,7 @@
             amount = fileinfo.st_size - got;
         }
 
-        ssize_t rc = libssh2_channel_read(channel, mem, amount);
+        ssize_t rc = libssh2_channel_read(self.channel, mem, amount);
 
         if (rc > 0) {
             write(localFile, mem, rc);
@@ -281,6 +315,7 @@
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
             close(localFile);
             [self close];
+
             return NO;
         }
 
@@ -289,66 +324,8 @@
 
     close(localFile);
     [self close];
+
     return YES;
-}
-
-// -----------------------------------------------------------------------------
-// PRIVATE HELPER METHODS
-// -----------------------------------------------------------------------------
-
-- (void)close {
-    if (channel) {
-        libssh2_channel_close(channel);
-        libssh2_channel_free(channel);
-        channel = nil;
-    }
-}
-
-- (const char*)getTerminalNameForType:(unsigned long)terminalType {
-    switch (terminalType) {
-        case NMSSHChannelPtyTerminalVanilla:
-            return "vanilla";
-
-        case NMSSHChannelPtyTerminalVT102:
-            return "vt102";
-
-        case NMSSHChannelPtyTerminalAnsi:
-            return "ansi";
-    }
-
-    // catch invalid values
-    return "vanilla";
-}
-
-static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
-    struct timeval timeout;
-
-    fd_set fd;
-    fd_set *writefd = NULL;
-    fd_set *readfd = NULL;
-
-    int rc;
-    int dir;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 500000;
-
-    FD_ZERO(&fd);
-    FD_SET(socket_fd, &fd);
-
-    // Now make sure we wait in the correct direction
-    dir = libssh2_session_block_directions(session);
-
-    if (dir & LIBSSH2_SESSION_BLOCK_INBOUND) {
-        readfd = &fd;
-    }
-
-    if (dir & LIBSSH2_SESSION_BLOCK_OUTBOUND) {
-        writefd = &fd;
-    }
-
-    rc = select(socket_fd + 1, readfd, writefd, NULL, &timeout);
-
-    return rc;
 }
 
 @end

@@ -1,7 +1,3 @@
-#import <Foundation/Foundation.h>
-
-@class NMSSHSession;
-
 enum {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,
@@ -23,14 +19,9 @@ enum {
 /** A valid NMSSHSession instance */
 @property (nonatomic, readonly) NMSSHSession *session;
 
-/** The last response from a shell command execution */
-@property (nonatomic, readonly) NSString *lastResponse;
-
-/** Request a pseudo terminal before executing a command */
-@property (nonatomic, assign) BOOL requestPty;
-
-/** Terminal emulation mode if a PTY is requested, defaults to vanilla */
-@property (nonatomic, assign) unsigned int ptyTerminalType;
+/// ----------------------------------------------------------------------------
+/// @name Initializer
+/// ----------------------------------------------------------------------------
 
 /**
  * Create a new NMSSHChannel instance.
@@ -39,7 +30,20 @@ enum {
  *
  * @returns New NMSSHChannel instance
  */
-- (id)initWithSession:(NMSSHSession *)aSession;
+- (id)initWithSession:(NMSSHSession *)session;
+
+/// ----------------------------------------------------------------------------
+/// @name Shell command execution
+/// ----------------------------------------------------------------------------
+
+/** The last response from a shell command execution */
+@property (nonatomic, readonly) NSString *lastResponse;
+
+/** Request a pseudo terminal before executing a command */
+@property (nonatomic, assign) BOOL requestPty;
+
+/** Terminal emulation mode if a PTY is requested, defaults to vanilla */
+@property (nonatomic, assign) unsigned int ptyTerminalType;
 
 /**
  * Execute a shell command on the server.
@@ -60,6 +64,10 @@ enum {
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
+
+/// ----------------------------------------------------------------------------
+/// @name SCP file transfer
+/// ----------------------------------------------------------------------------
 
 /**
  * Upload a local file to a remote server.

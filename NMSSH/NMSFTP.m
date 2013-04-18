@@ -1,17 +1,15 @@
-#import "NMSSH.h"
+#import "NMSFTP.h"
 
-#import "libssh2.h"
-#import "libssh2_sftp.h"
-
-@interface NMSFTP () {
-    LIBSSH2_SFTP *sftpSession;
-}
+@interface NMSFTP ()
+@property (nonatomic, strong) NMSSHSession *session;
+@property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
+@property (nonatomic, readwrite, getter = isConnected) BOOL connected;
 @end
 
 @implementation NMSFTP
 
 // -----------------------------------------------------------------------------
-// PUBLIC SETUP API
+#pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
 + (id)connectWithSession:(NMSSHSession *)session {
@@ -23,11 +21,11 @@
 
 - (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        _session = session;
+        [self setSession:session];
 
         // Make sure we were provided a valid session
         if (![session isKindOfClass:[NMSSHSession class]]) {
-            return nil;
+            @throw @"You have to provide a valid NMSSHSession!";
         }
     }
 
@@ -35,44 +33,44 @@
 }
 
 // -----------------------------------------------------------------------------
-// HANDLE CONNECTIONS
+#pragma mark - CONNECTION
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect {
-    libssh2_session_set_blocking([_session rawSession], 1);
-    sftpSession = libssh2_sftp_init([_session rawSession]);
+    libssh2_session_set_blocking(self.session.rawSession, 1);
+    [self setSftpSession:libssh2_sftp_init(self.session.rawSession)];
 
-    if (!sftpSession) {
+    if (!self.sftpSession) {
         NMSSHLogError(@"NMSFTP: Unable to init SFTP session");
         return NO;
     }
 
-    _connected = YES;
-    return [self isConnected];
+    [self setConnected:YES];
+
+    return self.isConnected;
 }
 
 - (void)disconnect {
-    libssh2_sftp_shutdown(sftpSession);
-    _connected = NO;
+    libssh2_sftp_shutdown(self.sftpSession);
+    [self setConnected:NO];
 }
 
 // -----------------------------------------------------------------------------
-// MANIPULATE FILE SYSTEM ENTRIES
+#pragma mark - MANIPULATE FILE SYSTEM ENTRIES
 // -----------------------------------------------------------------------------
 
 - (BOOL)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath {
-    long rc = libssh2_sftp_rename(sftpSession, [sourcePath UTF8String],
-                                           [destPath UTF8String]);
+    long rc = libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]);
 
     return rc == 0;
 }
 
 // -----------------------------------------------------------------------------
-// MANIPULATE DIRECTORIES
+#pragma mark - MANIPULATE DIRECTORIES
 // -----------------------------------------------------------------------------
 
 - (BOOL)directoryExistsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
                                                     LIBSSH2_FXF_READ, 0);
     LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
 
@@ -87,7 +85,7 @@
 }
 
 - (BOOL)createDirectoryAtPath:(NSString *)path {
-    int rc = libssh2_sftp_mkdir(sftpSession, [path UTF8String],
+    int rc = libssh2_sftp_mkdir(self.sftpSession, [path UTF8String],
                             LIBSSH2_SFTP_S_IRWXU|
                             LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IXGRP|
                             LIBSSH2_SFTP_S_IROTH|LIBSSH2_SFTP_S_IXOTH);
@@ -96,11 +94,11 @@
 }
 
 - (BOOL)removeDirectoryAtPath:(NSString *)path {
-    return libssh2_sftp_rmdir(sftpSession, [path UTF8String]) == 0;
+    return libssh2_sftp_rmdir(self.sftpSession, [path UTF8String]) == 0;
 }
 
 - (NSArray *)contentsOfDirectoryAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(sftpSession, [path UTF8String]);
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(self.sftpSession, [path UTF8String]);
 
     if (!handle) {
         NMSSHLogError(@"NMSFTP: Could not open directory");
@@ -137,12 +135,11 @@
 }
 
 // -----------------------------------------------------------------------------
-// MANIPULATE SYMLINKS AND FILES
+#pragma mark - MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
 
 - (BOOL)fileExistsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
-                                                    LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
     LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
 
     if (!handle) {
@@ -157,19 +154,17 @@
 
 - (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath
              withDestinationPath:(NSString *)destPath {
-    int rc = libssh2_sftp_symlink(sftpSession, [destPath UTF8String],
-                                  (char *)[linkPath UTF8String]);
+    int rc = libssh2_sftp_symlink(self.sftpSession, [destPath UTF8String], (char *)[linkPath UTF8String]);
 
     return rc == 0;
 }
 
 - (BOOL)removeFileAtPath:(NSString *)path {
-    return libssh2_sftp_unlink(sftpSession, [path UTF8String]) == 0;
+    return libssh2_sftp_unlink(self.sftpSession, [path UTF8String]) == 0;
 }
 
 - (NSData *)contentsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
-                                                    LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
 
     char buffer[0x4000];
     long rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer));
@@ -183,7 +178,7 @@
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(sftpSession, [path UTF8String],
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
                       LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
                       LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
                       LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
