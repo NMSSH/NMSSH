@@ -97,6 +97,10 @@
 		E4B6C54E16724DEF001C2C84 /* x509_vfy.h in Headers */ = {isa = PBXBuildFile; fileRef = E4B6C4FD16724DEF001C2C84 /* x509_vfy.h */; };
 		E4B6C54F16724DEF001C2C84 /* x509v3.h in Headers */ = {isa = PBXBuildFile; fileRef = E4B6C4FE16724DEF001C2C84 /* x509v3.h */; };
 		E4B6C55016724DEF001C2C84 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4B6C4FF16724DEF001C2C84 /* libssl.a */; };
+		E4F1CBBB1720865E0025EBFC /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */; };
+		E4F1CBBC1720865E0025EBFC /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBB81720865E0025EBFC /* socket_helper.h */; };
+		E4F1CBBD1720865E0025EBFC /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1CBB91720865E0025EBFC /* socket_helper.m */; };
+		E4F1CBBE1720865E0025EBFC /* NMSSH-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -192,6 +196,10 @@
 		E4B6C4FD16724DEF001C2C84 /* x509_vfy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509_vfy.h; sourceTree = "<group>"; };
 		E4B6C4FE16724DEF001C2C84 /* x509v3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509v3.h; sourceTree = "<group>"; };
 		E4B6C4FF16724DEF001C2C84 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHLogger.h; sourceTree = "<group>"; };
+		E4F1CBB81720865E0025EBFC /* socket_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_helper.h; sourceTree = "<group>"; };
+		E4F1CBB91720865E0025EBFC /* socket_helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socket_helper.m; sourceTree = "<group>"; };
+		E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +247,7 @@
 		E44F37461640FADE0069424F /* NMSSH */ = {
 			isa = PBXGroup;
 			children = (
+				E4F1CBB61720865E0025EBFC /* Config */,
 				E4B6C4A916724DEF001C2C84 /* Libraries */,
 				E44F37651640FBAA0069424F /* Supporting files */,
 				E44F374C1640FADE0069424F /* NMSFTP.h */,
@@ -255,6 +264,7 @@
 		E44F37651640FBAA0069424F /* Supporting files */ = {
 			isa = PBXGroup;
 			children = (
+				E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */,
 				E44F37631640FBA10069424F /* NMSSH-iOS-Info.plist */,
 			);
 			name = "Supporting files";
@@ -389,6 +399,16 @@
 			path = Headers;
 			sourceTree = "<group>";
 		};
+		E4F1CBB61720865E0025EBFC /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */,
+				E4F1CBB81720865E0025EBFC /* socket_helper.h */,
+				E4F1CBB91720865E0025EBFC /* socket_helper.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -478,6 +498,9 @@
 				E4B6C54D16724DEF001C2C84 /* x509.h in Headers */,
 				E4B6C54E16724DEF001C2C84 /* x509_vfy.h in Headers */,
 				E4B6C54F16724DEF001C2C84 /* x509v3.h in Headers */,
+				E4F1CBBB1720865E0025EBFC /* NMSSHLogger.h in Headers */,
+				E4F1CBBC1720865E0025EBFC /* socket_helper.h in Headers */,
+				E4F1CBBE1720865E0025EBFC /* NMSSH-Prefix.pch in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,6 +586,7 @@
 				E44F375A1640FADE0069424F /* NMSFTP.m in Sources */,
 				E44F375F1640FADE0069424F /* NMSSHChannel.m in Sources */,
 				E44F37611640FADE0069424F /* NMSSHSession.m in Sources */,
+				E4F1CBBD1720865E0025EBFC /* socket_helper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -627,7 +651,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
 				INFOPLIST_FILE = "NMSSH-iOS/NMSSH-iOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -656,7 +680,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
+				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
 				INFOPLIST_FILE = "NMSSH-iOS/NMSSH-iOS-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
