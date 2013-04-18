@@ -17,7 +17,7 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    return [self connectToHost:[NSString stringWithFormat:@"%@:%i", host, port]
+    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
                   withUsername:username];
 }
 
@@ -30,7 +30,7 @@
 }
 
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
-    return [self initWithHost:[NSString stringWithFormat:@"%@:%i", host, port]
+    return [self initWithHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
                   andUsername:username];
 }
 
@@ -417,7 +417,7 @@ void kb_callback(const char *name, int name_len, const char *instr, int instr_le
         }
         
         res[i].text = strdup([response UTF8String]);
-        res[i].length = strlen([response UTF8String]);
+        res[i].length = (unsigned int)strlen([response UTF8String]);
     }
 }
 
