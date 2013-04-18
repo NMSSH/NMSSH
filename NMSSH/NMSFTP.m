@@ -1,5 +1,4 @@
-#import "NMSFTP.h"
-#import "NMSSHSession.h"
+#import "NMSSH.h"
 
 #import "libssh2.h"
 #import "libssh2_sftp.h"
@@ -10,22 +9,21 @@
 @end
 
 @implementation NMSFTP
-@synthesize session, connected;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API
 // -----------------------------------------------------------------------------
 
-+ (id)connectWithSession:(NMSSHSession *)aSession {
-    NMSFTP *sftp = [[NMSFTP alloc] initWithSession:aSession];
++ (id)connectWithSession:(NMSSHSession *)session {
+    NMSFTP *sftp = [[NMSFTP alloc] initWithSession:session];
     [sftp connect];
 
     return sftp;
 }
 
-- (id)initWithSession:(NMSSHSession *)aSession {
+- (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        session = aSession;
+        _session = session;
 
         // Make sure we were provided a valid session
         if (![session isKindOfClass:[NMSSHSession class]]) {
@@ -41,21 +39,21 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect {
-    libssh2_session_set_blocking([session rawSession], 1);
-    sftpSession = libssh2_sftp_init([session rawSession]);
+    libssh2_session_set_blocking([_session rawSession], 1);
+    sftpSession = libssh2_sftp_init([_session rawSession]);
 
     if (!sftpSession) {
-        NSLog(@"NMSFTP: Unable to init SFTP session");
+        NMSSHLogError(@"NMSFTP: Unable to init SFTP session");
         return NO;
     }
 
-    connected = YES;
+    _connected = YES;
     return [self isConnected];
 }
 
 - (void)disconnect {
     libssh2_sftp_shutdown(sftpSession);
-    connected = NO;
+    _connected = NO;
 }
 
 // -----------------------------------------------------------------------------
@@ -105,7 +103,7 @@
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(sftpSession, [path UTF8String]);
 
     if (!handle) {
-        NSLog(@"NMSFTP: Could not open directory");
+        NMSSHLogError(@"NMSFTP: Could not open directory");
         return nil;
     }
 

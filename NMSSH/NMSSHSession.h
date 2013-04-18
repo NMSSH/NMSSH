@@ -3,28 +3,39 @@
 
 @class NMSSHChannel, NMSFTP;
 
+@protocol NMSSHSessionDelegate;
+
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
  */
 @interface NMSSHSession : NSObject
 
 /** Raw libssh2 session instance */
-@property (readonly, getter=rawSession) LIBSSH2_SESSION *session;
+@property (nonatomic, readonly, getter=rawSession) LIBSSH2_SESSION *session;
 
 /** Server hostname in the form "{hostname}:{port}" */
-@property (readonly) NSString *host;
+@property (nonatomic, readonly) NSString *host;
+
+/** Server port **/
+@property (nonatomic, readonly) NSNumber *port;
 
 /** Server username */
-@property (readonly) NSString *username;
+@property (nonatomic, readonly) NSString *username;
 
 /** Property that keeps track of connection status to the server */
-@property (readonly, getter=isConnected) BOOL connected;
+@property (nonatomic, readonly, getter=isConnected) BOOL connected;
 
 /** Property that keeps track of authentication status */
-@property (readonly, getter=isAuthorized) BOOL authorized;
+@property (nonatomic, readonly, getter=isAuthorized) BOOL authorized;
 
 /** Get a channel for this session */
-@property (readonly) NMSSHChannel *channel;
+@property (nonatomic, readonly) NMSSHChannel *channel;
+
+/** Get session socket **/
+@property (nonatomic, readonly) int sock;
+
+/** Session delegate **/
+@property (nonatomic, weak) id<NMSSHSessionDelegate> delegate;
 
 /** Get a SFTP instance for this session */
 @property (readonly) NMSFTP *sftp;
@@ -37,18 +48,39 @@
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username;
 
 /**
+ * Shorthand method for initializing a NMSSHSession object and calling connect.
+ *
+ * @returns NMSSHSession instance
+ */
++ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
+
+/**
  * Create and setup a new NMSSH instance.
  *
  * @returns NMSSHSession instance
  */
-- (id)initWithHost:(NSString *)aHost andUsername:(NSString *)aUsername;
+- (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
+
+/**
+ * Create and setup a new NMSSH instance.
+ *
+ * @returns NMSSHSession instance
+ */
+- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
+
+/**
+ * Connect to the server using the default timeout (10 seconds)
+ *
+ * @returns Connection status
+ */
+- (BOOL)connect;
 
 /**
  * Connect to the server.
  *
  * @returns Connection status
  */
-- (BOOL)connect;
+- (BOOL)connectWithTimeout:(NSNumber *)timeout;
 
 /**
  * Close the session
@@ -73,10 +105,27 @@
                     andPassword:(NSString *)password;
 
 /**
+ * Authenticate by keyboard-interactive
+ *
+ * @returns Authentication success
+ */
+- (BOOL)authenticateByKeyboardInteractive;
+
+/**
  * Setup and connect to an SSH agent
  *
  * @returns Authentication success
  */
 - (BOOL)connectToAgent;
+
+@end
+
+@protocol NMSSHSessionDelegate <NSObject>
+
+@optional
+
+- (NSString *)session:(NMSSHSession *)session keyboardInteractiveRequest:(NSString *)request;
+
+- (void)session:(NMSSHSession *)session didDisconnectWithError:(NSError *)error;
 
 @end

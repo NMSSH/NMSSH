@@ -1,5 +1,4 @@
-#import "NMSSHChannel.h"
-#import "NMSSHSession.h"
+#import "NMSSH.h"
 
 #import "libssh2.h"
 
@@ -9,20 +8,19 @@
 @end
 
 @implementation NMSSHChannel
-@synthesize session, lastResponse, requestPty, ptyTerminalType;
 
 // -----------------------------------------------------------------------------
 // PUBLIC SETUP API
 // -----------------------------------------------------------------------------
 
-- (id)initWithSession:(NMSSHSession *)aSession {
+- (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
-        session = aSession;
-        requestPty = NO;
-        ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
+        _session = session;
+        _requestPty = NO;
+        _ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
 
         // Make sure we were provided a valid session
-        if (![session isKindOfClass:[NMSSHSession class]]) {
+        if (![_session isKindOfClass:[NMSSHSession class]]) {
             return nil;
         }
     }
@@ -34,12 +32,23 @@
 // PUBLIC SHELL EXECUTION API
 // -----------------------------------------------------------------------------
 
-- (NSString *)execute:(NSString *)command error:(NSError **)error {
-    lastResponse = nil;
+- (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error {
+    return [self execute:command error:error timeout:[NSNumber numberWithDouble:0]];
+}
+
+- (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
+    NMSSHLogInfo(@"NMSSH: Exec command %@", command);
+
+    _lastResponse = nil;
 
     // Open up the channel
-    if (!(channel = libssh2_channel_open_session([session rawSession]))) {
-        NSLog(@"NMSSH: Unable to open a session");
+    while( (channel = libssh2_channel_open_session([_session rawSession])) == NULL &&
+		  libssh2_session_last_error([_session rawSession],NULL,NULL,0) ==
+		  LIBSSH2_ERROR_EAGAIN ) {
+        waitsocket([_session sock], [_session rawSession]);
+    }
+    if(channel == NULL){
+        NMSSHLogError(@"NMSSH: Unable to open a session");
         return nil;
     }
 
@@ -59,24 +68,35 @@
                                          userInfo:userInfo];
             }
 
-            NSLog(@"NMSSH: Error requesting pseudo terminal");
+            NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
             [self close];
             return nil;
         }
     }
 
     // Try executing command
-    rc = libssh2_channel_exec(channel, [command UTF8String]);
-    if (rc) {
+    while ((rc = libssh2_channel_exec(channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
+        waitsocket([_session sock], [_session rawSession]);
+    }
+
+    libssh2_channel_wait_closed(channel);
+
+    if (rc != 0) {
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
                                      userInfo:userInfo];
         }
 
-        NSLog(@"NMSSH: Error executing command");
+        NMSSHLogError(@"NMSSH: Error executing command");
         [self close];
         return nil;
+    }
+
+    // Set the timeout for blocking session
+    CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
+    if ([timeout longValue] >= 0) {
+        libssh2_session_set_timeout([_session rawSession], [timeout longValue] * 1000);
     }
 
     // Fetch response from output buffer
@@ -99,21 +119,44 @@
                         desc = @"An unspecified error occurred";
                     }
 
-                    [userInfo setObject:desc forKey:@"description"];
+                    [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
                                              userInfo:userInfo];
+                    return nil;
                 }
             }
 
             if (rc == 0) {
-                lastResponse = [NSString stringWithFormat:@"%s", buffer];
+                _lastResponse = [NSString stringWithFormat:@"%s", buffer];
                 [self close];
-                return lastResponse;
+                return _lastResponse;
+            }
+
+            // Check if the connection timed out
+            if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
+                if (error) {
+                    NSString *desc = @"Connection timed out";
+
+                    [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
+
+                    *error = [NSError errorWithDomain:@"NMSSH"
+                                                 code:NMSSHChannelExecutionTimeout
+                                             userInfo:userInfo];
+                }
+                [self close];
+                return nil;
             }
         }
         while (rc > 0);
+
+        // This is due to blocking that would occur otherwise so we loop on this condition
+        if( rc == LIBSSH2_ERROR_EAGAIN ) {
+            waitsocket([_session sock], [_session rawSession]);
+        } else {
+            break;
+        }
     }
 
     // If we've got this far, it means fetching execution response failed
@@ -123,7 +166,7 @@
                                  userInfo:userInfo];
     }
 
-    NSLog(@"NMSSH: Error fetching response from command");
+    NMSSHLogError(@"NMSSH: Error fetching response from command");
     [self close];
     return nil;
 }
@@ -144,19 +187,19 @@
     // Read local file
     FILE *local = fopen([localPath UTF8String], "rb");
     if (!local) {
-        NSLog(@"NMSSH: Can't read local file");
+        NMSSHLogError(@"NMSSH: Can't read local file");
         return NO;
     }
 
     // Try to send a file via SCP.
     struct stat fileinfo;
     stat([localPath UTF8String], &fileinfo);
-    channel = libssh2_scp_send([session rawSession], [remotePath UTF8String],
+    channel = libssh2_scp_send([_session rawSession], [remotePath UTF8String],
                                fileinfo.st_mode & 0644,
                                (unsigned long)fileinfo.st_size);
 
     if (!channel) {
-        NSLog(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
@@ -176,7 +219,7 @@
             long rc = libssh2_channel_write(channel, ptr, nread);
 
             if (rc < 0) {
-                NSLog(@"NMSSH: Failed writing file");
+                NMSSHLogError(@"NMSSH: Failed writing file");
                 [self close];
                 return NO;
             }
@@ -208,11 +251,11 @@
 
     // Request a file via SCP
     struct stat fileinfo;
-    channel = libssh2_scp_recv([session rawSession], [remotePath UTF8String],
+    channel = libssh2_scp_recv([_session rawSession], [remotePath UTF8String],
                                &fileinfo);
 
     if (!channel) {
-        NSLog(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
@@ -235,7 +278,7 @@
             write(localFile, mem, rc);
         }
         else if (rc < 0) {
-            NSLog(@"NMSSH: Failed to read SCP data");
+            NMSSHLogError(@"NMSSH: Failed to read SCP data");
             close(localFile);
             [self close];
             return NO;
@@ -272,8 +315,40 @@
         case NMSSHChannelPtyTerminalAnsi:
             return "ansi";
     }
+
     // catch invalid values
     return "vanilla";
+}
+
+static int waitsocket(int socket_fd, LIBSSH2_SESSION *session) {
+    struct timeval timeout;
+
+    fd_set fd;
+    fd_set *writefd = NULL;
+    fd_set *readfd = NULL;
+
+    int rc;
+    int dir;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 500000;
+
+    FD_ZERO(&fd);
+    FD_SET(socket_fd, &fd);
+
+    // Now make sure we wait in the correct direction
+    dir = libssh2_session_block_directions(session);
+
+    if (dir & LIBSSH2_SESSION_BLOCK_INBOUND) {
+        readfd = &fd;
+    }
+
+    if (dir & LIBSSH2_SESSION_BLOCK_OUTBOUND) {
+        writefd = &fd;
+    }
+
+    rc = select(socket_fd + 1, readfd, writefd, NULL, &timeout);
+
+    return rc;
 }
 
 @end

@@ -1,24 +1,25 @@
-#import "NMSSHSession.h"
-#import "NMSSHChannel.h"
-#import "NMSFTP.h"
+#import "NMSSH.h"
 
 #import <netdb.h>
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
 @interface NMSSHSession () {
-    int sock;
     LIBSSH2_AGENT *agent;
 }
 @end
 
 @implementation NMSSHSession
-@synthesize session, host, username, connected;
-@synthesize channel, sftp;
+@synthesize channel = _channel, sftp = _sftp;
 
 // -----------------------------------------------------------------------------
 // PUBLIC CONNECTION API
 // -----------------------------------------------------------------------------
+
++ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
+    return [self connectToHost:[NSString stringWithFormat:@"%@:%i", host, port]
+                  withUsername:username];
+}
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
@@ -28,43 +29,134 @@
     return session;
 }
 
-- (id)initWithHost:(NSString *)aHost andUsername:(NSString *)aUsername {
+- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
+    return [self initWithHost:[NSString stringWithFormat:@"%@:%i", host, port]
+                  andUsername:username];
+}
+
+- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
     if ((self = [super init])) {
-        host = aHost;
-        username = aUsername;
-        connected = NO;
+        _host = host;
+        _username = username;
+        _connected = NO;
     }
 
     return self;
 }
 
 - (BOOL)connect {
+    return [self connectWithTimeout:[NSNumber numberWithLong:10]];
+}
+
+- (BOOL)connectWithTimeout:(NSNumber *)timeout {
+    if ([self isConnected]) {
+        [self disconnect];
+    }
+    
     // Try to initialize libssh2
     if (libssh2_init(0) != 0) {
-        NSLog(@"NMSSH: libssh2 initialization failed");
+        NMSSHLogError(@"NMSSH: libssh2 initialization failed");
         return NO;
     }
-
+    
+    NMSSHLogVerbose(@"NMSSH: libssh2 initialized");
+    
     // Try to establish a connection to the server
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    _sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (_sock < 0) {
+        NMSSHLogError(@"NMSSH: Error creating the socket");
+        return NO;
+    }
+    
+    // Set NOSIGPIPE
+    int set = 1;
+    setsockopt(_sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
+    
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
     sin.sin_port = htons([[self port] intValue]);
     sin.sin_addr.s_addr = inet_addr([[self hostIPAddress] UTF8String]);
-    if (connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
-        NSLog(@"NMSSH: Failed connection to socket");
+    
+    // Set non-blocking
+    long arg;
+    if((arg = fcntl(_sock, F_GETFL, NULL)) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
         return NO;
     }
-
+    arg |= O_NONBLOCK;
+    if(fcntl(_sock, F_SETFL, arg) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
+        return NO;
+    }
+    
+    // Trying to connect with timeout
+    int res = connect(_sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in));
+    if (res < 0) {
+        if (errno == EINPROGRESS) {
+            NMSSHLogVerbose(@"NMSSH: EINPROGRESS in connect() - selecting");
+            struct timeval tv;
+            fd_set myset;
+            int valopt;
+            socklen_t lon;
+            do {
+                tv.tv_sec = [timeout longValue];
+                tv.tv_usec = 0;
+                FD_ZERO(&myset);
+                FD_SET(_sock, &myset);
+                res = select(_sock+1, NULL, &myset, NULL, &tv);
+                if (res < 0 && errno != EINTR) {
+                    NMSSHLogError(@"NMSSH: Error connecting");
+                    return NO;
+                } else if (res > 0) {
+                    // Socket selected for write
+                    lon = sizeof(int);
+                    if (getsockopt(_sock, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &lon) < 0) {
+                        NMSSHLogError(@"NMSSH: Error in getsockopt()");
+                        return NO;
+                    }
+                    // Check the value returned...
+                    if (valopt) {
+                        NMSSHLogError(@"NMSSH: Error in delayed connection() %d", valopt);
+                        return NO;
+                    }
+                    NMSSHLogVerbose(@"NMSSH: libssh2 connected");
+                    break;
+                } else {
+                    NMSSHLogError(@"NMSSH: Connection to socket timed out");
+                    return NO;
+                }
+            } while (true);
+        } else {
+            NMSSHLogError(@"NMSSH: Failed connection to socket");
+            return NO;
+        }
+    }
+    
+    // Set to blocking mode again...
+    if((arg = fcntl(_sock, F_GETFL, NULL)) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
+        return NO;
+    }
+    arg &= (~O_NONBLOCK);
+    if(fcntl(_sock, F_SETFL, arg) < 0) {
+        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
+        return NO;
+    }
+    
     // Create a session instance and start it up.
-    session = libssh2_session_init();
-    if (libssh2_session_handshake(session, sock)) {
-        NSLog(@"NMSSH: Failure establishing SSH session");
+    _session = libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self));
+    if (libssh2_session_handshake(_session, _sock)) {
+        NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
-
+    
+    NMSSHLogVerbose(@"NMSSH: SSH session started");
+    
+    // Set a callback for disconnection
+    libssh2_session_callback_set(_session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
+    
     // We managed to successfully setup a connection
-    connected = YES;
+    _connected = YES;
     return [self isConnected];
 }
 
@@ -75,17 +167,19 @@
         agent = nil;
     }
 
-    if (session) {
-        libssh2_session_disconnect(session, "NMSSH: Disconnect");
-        libssh2_session_free(session);
-        session = nil;
+    if (_session) {
+        libssh2_session_disconnect(_session, "NMSSH: Disconnect");
+        libssh2_session_free(_session);
+        _session = nil;
     }
 
-    if (sock) {
-        close(sock);
+    if (_sock) {
+        close(_sock);
     }
 
     libssh2_exit();
+    NMSSHLogVerbose(@"NMSSH: Disconnected");
+    _connected = NO;
 }
 
 // -----------------------------------------------------------------------------
@@ -93,8 +187,8 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)isAuthorized {
-    if (session) {
-        return libssh2_userauth_authenticated(session) == 1;
+    if (_session) {
+        return libssh2_userauth_authenticated(_session) == 1;
     }
     
     return NO;
@@ -106,10 +200,10 @@
     }
 
     // Try to authenticate by password
-    int error = libssh2_userauth_password(session, [username UTF8String],
+    int error = libssh2_userauth_password(_session, [_username UTF8String],
                                            [password UTF8String]);
     if (error) {
-        NSLog(@"NMSSH: Password authentication failed");
+        NMSSHLogError(@"NMSSH: Password authentication failed");
         return NO;
     }
 
@@ -132,17 +226,40 @@
                                                                 withString:@""];
 
     // Try to authenticate with key pair and password
-    int error = libssh2_userauth_publickey_fromfile(session,
-                                                    [username UTF8String],
+    int error = libssh2_userauth_publickey_fromfile(_session,
+                                                    [_username UTF8String],
                                                     [publicKey UTF8String],
                                                     [privateKey UTF8String],
                                                     [password UTF8String]);
 
     if (error) {
-        NSLog(@"NMSSH: Public key authentication failed");
+        NMSSHLogError(@"NMSSH: Public key authentication failed");
         return NO;
     }
 
+    return [self isAuthorized];
+}
+
+- (BOOL)authenticateByKeyboardInteractive {
+    if (![self supportsAuthenticationMethod:@"keyboard-interactive"]) {
+        return NO;
+    }
+    
+    libssh2_session_set_blocking(_session, 1);
+    int rc = (libssh2_userauth_keyboard_interactive(_session, [_username UTF8String], &kb_callback));
+    
+    if (rc != 0) {
+        NMSSHLogError(@"NMSSH: Authentication by keyboard-interactive failed!");
+        return NO;
+    }
+    
+    NMSSHLogVerbose(@"NMSSH: Authentication by keyboard-interactive succeeded.");
+    
+    libssh2_session_set_blocking(_session, 0);
+    if (rc == LIBSSH2_ERROR_EAGAIN) {
+        NMSSHLogVerbose(@"NMSSH: Boned");
+    }
+    
     return [self isAuthorized];
 }
 
@@ -152,21 +269,21 @@
     }
 
     // Try to setup a connection to the SSH-agent
-    agent = libssh2_agent_init(session);
+    agent = libssh2_agent_init(_session);
     if (!agent) {
-        NSLog(@"NMSSH: Could not start a new agent");
+        NMSSHLogError(@"NMSSH: Could not start a new agent");
         return NO;
     }
 
     // Try connecting to the agent
     if (libssh2_agent_connect(agent)) {
-        NSLog(@"NMSSH: Failed connection to agent");
+        NMSSHLogError(@"NMSSH: Failed connection to agent");
         return NO;
     }
 
     // Try to fetch available SSH identities
     if (libssh2_agent_list_identities(agent)) {
-        NSLog(@"NMSSH: Failed to request agent identities");
+        NMSSHLogError(@"NMSSH: Failed to request agent identities");
         return NO;
     }
 
@@ -175,11 +292,11 @@
     while (1) {
         int error = libssh2_agent_get_identity(agent, &identity, prev_identity);
         if (error) {
-            NSLog(@"NMSSH: Failed to find a valid identity for the agent");
+            NMSSHLogError(@"NMSSH: Failed to find a valid identity for the agent");
             return NO;
         }
 
-        error = libssh2_agent_userauth(agent, [username UTF8String], identity);
+        error = libssh2_agent_userauth(agent, [_username UTF8String], identity);
         if (!error) {
             return [self isAuthorized];
         }
@@ -195,19 +312,19 @@
 // -----------------------------------------------------------------------------
 
 - (NMSSHChannel *)channel {
-    if (!channel) {
-        channel = [[NMSSHChannel alloc] initWithSession:self];
+    if (!_channel) {
+        _channel = [[NMSSHChannel alloc] initWithSession:self];
     }
 
-    return channel;
+    return _channel;
 }
 
 - (NMSFTP *)sftp {
-    if (!sftp) {
-        sftp = [[NMSFTP alloc] initWithSession:self];
+    if (!_sftp) {
+        _sftp = [[NMSFTP alloc] initWithSession:self];
     }
 
-    return sftp;
+    return _sftp;
 }
 
 // -----------------------------------------------------------------------------
@@ -215,7 +332,7 @@
 // -----------------------------------------------------------------------------
 
 - (NSString *)hostIPAddress {
-    NSString *addr = [[host componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSString *addr = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
 
     if (![self isIp:addr]) {
         return [self ipFromDomainName:addr];
@@ -227,6 +344,7 @@
 - (BOOL)isIp:(NSString *)address {
     struct in_addr pin;
     int success = inet_aton([address UTF8String], &pin);
+    
     return (success == 1);
 }
 
@@ -242,7 +360,7 @@
 }
 
 - (NSNumber *)port {
-    NSArray *hostComponents = [host componentsSeparatedByString:@":"];
+    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
 
     // If no port was defined, use 22 by default
     if ([hostComponents count] == 1) {
@@ -260,15 +378,69 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)supportsAuthenticationMethod:(NSString *)method {
-    char *userauthlist = libssh2_userauth_list(session, [username UTF8String],
-                                   (unsigned int)strlen([username UTF8String]));
+    char *userauthlist = libssh2_userauth_list(_session, [_username UTF8String],
+                                   (unsigned int)strlen([_username UTF8String]));
 
     if (userauthlist == NULL || strstr(userauthlist, [method UTF8String]) == NULL) {
-        NSLog(@"NMSSH: Authentication by %@ not available for %@", method, host);
+        NMSSHLogInfo(@"NMSSH: Authentication by %@ not available for %@", method, _host);
         return NO;
     }
-
+    NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);
+    
     return YES;
+}
+
+- (NSString *)keyboardInteractiveRequest:(NSString *)request {
+    NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
+    if (_delegate && [_delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
+        return [_delegate session:self keyboardInteractiveRequest:request];
+    }
+    
+    NMSSHLogWarn(@"NMSSH: Keyboard interactive requires a delegate!");
+    
+    return @"";
+}
+
+void kb_callback(const char *name, int name_len, const char *instr, int instr_len,
+                 int num_prompts, const LIBSSH2_USERAUTH_KBDINT_PROMPT *prompts, LIBSSH2_USERAUTH_KBDINT_RESPONSE *res,
+                 void **abstract) {
+    int i;
+    
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+    
+    for (i = 0; i < num_prompts; i++) {
+        NSString *request = [[NSString alloc] initWithBytes:prompts[i].text length:prompts[i].length encoding:NSUTF8StringEncoding];
+        NSString *response = [self keyboardInteractiveRequest:request];
+        
+        if (!response) {
+            response = @"";
+        }
+        
+        res[i].text = strdup([response UTF8String]);
+        res[i].length = strlen([response UTF8String]);
+    }
+}
+
+void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *message, int message_len, const char *language, int language_len, void **abstract) {
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+    
+    // Build a raw error to encapsulate the disconnect
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] initWithCapacity:2];
+    if (message) {
+        NSString *string = [[NSString alloc] initWithBytes:message length:message_len encoding:NSUTF8StringEncoding];
+        [userInfo setObject:string forKey:NSLocalizedDescriptionKey];
+    }
+    if (language) {
+        NSString *string = [[NSString alloc] initWithBytes:language length:language_len encoding:NSUTF8StringEncoding];
+        [userInfo setObject:string forKey:@"language"];
+    }
+    
+    NSError *error = [NSError errorWithDomain:@"NMSSH" code:reason userInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(session:didDisconnectWithError:)]) {
+        [self.delegate session:self didDisconnectWithError:error];
+    }
+    
+    [self disconnect];
 }
 
 @end
