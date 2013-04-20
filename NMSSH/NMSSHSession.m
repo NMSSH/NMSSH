@@ -20,7 +20,7 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, port]
+    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
                   withUsername:username];
 }
 
