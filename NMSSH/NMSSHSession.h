@@ -9,11 +9,19 @@
  */
 @interface NMSSHSession : NSObject
 
-/** Session delegate */
+/// ----------------------------------------------------------------------------
+/// @name Setting the Delegate
+/// ----------------------------------------------------------------------------
+
+/**
+ * The receiver’s `delegate`.
+ *
+ * The `delegate` is sent messages when content is loading.
+ */
 @property (nonatomic, weak) id<NMSSHSessionDelegate> delegate;
 
 /// ----------------------------------------------------------------------------
-/// @name Initialize a session
+/// @name Initialize a new SSH session
 /// ----------------------------------------------------------------------------
 
 /**
@@ -58,26 +66,37 @@
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
 
 /// ----------------------------------------------------------------------------
-/// @name Connection
+/// @name Connection settings
 /// ----------------------------------------------------------------------------
 
-/** Raw libssh2 session instance */
-@property (nonatomic, readonly, getter = rawSession) LIBSSH2_SESSION *session;
-
-/** Get session socket */
-@property (nonatomic, readonly) int sock;
-
-/** Property that keeps track of connection status to the server */
-@property (nonatomic, readonly, getter = isConnected) BOOL connected;
-
-/** Server hostname in the form "{hostname}:{port}" */
+/** Full server hostname in the format `@"{hostname}:{port}"`. */
 @property (nonatomic, readonly) NSString *host;
 
-/** Server port */
+/** The server port to connect to. */
 @property (nonatomic, readonly) NSNumber *port;
 
-/** Server username */
+/** Username that will authenticate against the server. */
 @property (nonatomic, readonly) NSString *username;
+
+/// ----------------------------------------------------------------------------
+/// @name Raw libssh2 session and socket reference
+/// ----------------------------------------------------------------------------
+
+/** Raw libssh2 session instance. */
+@property (nonatomic, readonly, getter = rawSession) LIBSSH2_SESSION *session;
+
+/** Raw session socket. */
+@property (nonatomic, readonly) int sock;
+
+/// ----------------------------------------------------------------------------
+/// @name Open/Close a connection to the server
+/// ----------------------------------------------------------------------------
+
+/**
+ * A Boolean value indicating whether the session connected successfully
+ * (read-only).
+ */
+@property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
 /**
  * Connect to the server using the default timeout (10 seconds)
@@ -103,7 +122,10 @@
 /// @name Authentication
 /// ----------------------------------------------------------------------------
 
-/** Property that keeps track of authentication status */
+/**
+ * A Boolean value indicating whether the session is successfully authorized
+ * (read-only).
+ */
 @property (nonatomic, readonly, getter = isAuthorized) BOOL authorized;
 
 /**
@@ -141,13 +163,13 @@
 - (BOOL)connectToAgent;
 
 /// ----------------------------------------------------------------------------
-/// @name Send and receive data
+/// @name Quick channel/sftp access
 /// ----------------------------------------------------------------------------
 
-/** Get a channel for this session */
+/** Get a pre-configured NMSSHChannel object for the current session (read-only). */
 @property (nonatomic, readonly) NMSSHChannel *channel;
 
-/** Get a SFTP instance for this session */
+/** Get a pre-configured NMSFTP object for the current session (read-only). */
 @property (nonatomic, readonly) NMSFTP *sftp;
 
 @end

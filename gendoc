@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-appledoc --project-name "NMSSH" --project-company "Nine Muses AB" --company-id "se.ninemuses" --output Documentation --no-create-docset NMSSH/
+appledoc --project-name "NMSSH" --project-company "Nine Muses AB" --company-id "se.ninemuses" --output Documentation --no-create-docset --no-repeat-first-par NMSSH/

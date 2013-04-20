@@ -16,7 +16,7 @@
 @implementation NMSSHSession
 
 // -----------------------------------------------------------------------------
-#pragma mark - INITIALIZE A SESSION
+#pragma mark - INITIALIZE A NEW SSH SESSION
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
@@ -48,7 +48,53 @@
 }
 
 // -----------------------------------------------------------------------------
-#pragma mark - CONNECTION
+#pragma mark - CONNECTION SETTINGS
+// -----------------------------------------------------------------------------
+
+- (NSString *)hostIPAddress {
+    NSString *addr = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
+
+    if (![self isIp:addr]) {
+        return [self ipFromDomainName:addr];
+    }
+
+    return addr;
+}
+
+- (BOOL)isIp:(NSString *)address {
+    struct in_addr pin;
+    int success = inet_aton([address UTF8String], &pin);
+
+    return (success == 1);
+}
+
+- (NSString *)ipFromDomainName:(NSString *)address {
+    struct hostent *hostEnt = gethostbyname([address UTF8String]);
+
+    if (hostEnt && hostEnt->h_addr_list && hostEnt->h_addr_list[0]) {
+        struct in_addr *inAddr = (struct in_addr *)hostEnt->h_addr_list[0];
+        return [NSString stringWithFormat:@"%s", inet_ntoa(*inAddr)];
+    }
+
+    return @"";
+}
+
+- (NSNumber *)port {
+    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
+
+    // If no port was defined, use 22 by default
+    if ([hostComponents count] == 1) {
+        return [NSNumber numberWithInt:22];
+    }
+
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+
+    return [formatter numberFromString:[hostComponents objectAtIndex:1]];
+}
+
+// -----------------------------------------------------------------------------
+#pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect {
@@ -199,48 +245,6 @@
     libssh2_exit();
     NMSSHLogVerbose(@"NMSSH: Disconnected");
     [self setConnected:NO];
-}
-
-- (NSString *)hostIPAddress {
-    NSString *addr = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
-
-    if (![self isIp:addr]) {
-        return [self ipFromDomainName:addr];
-    }
-
-    return addr;
-}
-
-- (BOOL)isIp:(NSString *)address {
-    struct in_addr pin;
-    int success = inet_aton([address UTF8String], &pin);
-
-    return (success == 1);
-}
-
-- (NSString *)ipFromDomainName:(NSString *)address {
-    struct hostent *hostEnt = gethostbyname([address UTF8String]);
-
-    if (hostEnt && hostEnt->h_addr_list && hostEnt->h_addr_list[0]) {
-        struct in_addr *inAddr = (struct in_addr *)hostEnt->h_addr_list[0];
-        return [NSString stringWithFormat:@"%s", inet_ntoa(*inAddr)];
-    }
-
-    return @"";
-}
-
-- (NSNumber *)port {
-    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
-
-    // If no port was defined, use 22 by default
-    if ([hostComponents count] == 1) {
-        return [NSNumber numberWithInt:22];
-    }
-
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-    return [formatter numberFromString:[hostComponents objectAtIndex:1]];
 }
 
 // -----------------------------------------------------------------------------
@@ -436,7 +440,7 @@ void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *messa
 }
 
 // -----------------------------------------------------------------------------
-#pragma mark - SEND AND RECEIVE DATA
+#pragma mark - QUICK CHANNEL/SFTP ACCESS
 // -----------------------------------------------------------------------------
 
 - (NMSSHChannel *)channel {
