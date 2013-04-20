@@ -85,6 +85,7 @@
 		E48DA7B815D0DCC100721060 /* NMSFTPTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPTests.m; sourceTree = "<group>"; };
 		E48DA7BB15D0EB2800721060 /* NMSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTP.h; sourceTree = "<group>"; };
 		E48DA7BC15D0EB2800721060 /* NMSFTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTP.m; sourceTree = "<group>"; };
+		E49AA6DB17228C33007101A4 /* NMSSHSessionDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionDelegate.h; sourceTree = "<group>"; };
 		E4D99A9C15DE149D00EB5615 /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = usr/lib/libssl.dylib; sourceTree = SDKROOT; };
 		E4D99AA115DE15A600EB5615 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		E4D99AA315DE15B300EB5615 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -137,6 +138,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E49AA6DA17228C25007101A4 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				E49AA6DB17228C33007101A4 /* NMSSHSessionDelegate.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		E4E96D78158E10FD002E6E0A = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +193,7 @@
 			children = (
 				E4F1CBB117206D640025EBFC /* Config */,
 				E4E96DBD158EFBB4002E6E0A /* libssh2 */,
+				E49AA6DA17228C25007101A4 /* Protocols */,
 				E4E96D8E158E10FD002E6E0A /* Supporting Files */,
 				E4E96D94158E10FD002E6E0A /* NMSSH.h */,
 				E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */,

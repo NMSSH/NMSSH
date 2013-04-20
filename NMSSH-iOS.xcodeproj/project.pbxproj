@@ -16,6 +16,7 @@
 		E44F375F1640FADE0069424F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E44F37521640FADE0069424F /* NMSSHChannel.m */; };
 		E44F37601640FADE0069424F /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F37531640FADE0069424F /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E44F37611640FADE0069424F /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E44F37541640FADE0069424F /* NMSSHSession.m */; };
+		E49AA6DE17228C59007101A4 /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */; };
 		E4B6C50016724DEF001C2C84 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4B6C4AB16724DEF001C2C84 /* libcrypto.a */; };
 		E4B6C50116724DEF001C2C84 /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = E4B6C4AE16724DEF001C2C84 /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E4B6C50216724DEF001C2C84 /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = E4B6C4AF16724DEF001C2C84 /* libssh2_publickey.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -115,6 +116,7 @@
 		E44F37531640FADE0069424F /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
 		E44F37541640FADE0069424F /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
 		E44F37631640FBA10069424F /* NMSSH-iOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "NMSSH-iOS-Info.plist"; path = "NMSSH-iOS/NMSSH-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
+		E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionDelegate.h; sourceTree = "<group>"; };
 		E4B6C4AB16724DEF001C2C84 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		E4B6C4AE16724DEF001C2C84 /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
 		E4B6C4AF16724DEF001C2C84 /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
@@ -249,6 +251,7 @@
 			children = (
 				E4F1CBB61720865E0025EBFC /* Config */,
 				E4B6C4A916724DEF001C2C84 /* Libraries */,
+				E49AA6DC17228C59007101A4 /* Protocols */,
 				E44F37651640FBAA0069424F /* Supporting files */,
 				E44F374C1640FADE0069424F /* NMSFTP.h */,
 				E44F374D1640FADE0069424F /* NMSFTP.m */,
@@ -268,6 +271,14 @@
 				E44F37631640FBA10069424F /* NMSSH-iOS-Info.plist */,
 			);
 			name = "Supporting files";
+			sourceTree = "<group>";
+		};
+		E49AA6DC17228C59007101A4 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		E4B6C4A916724DEF001C2C84 /* Libraries */ = {
@@ -501,6 +512,7 @@
 				E4F1CBBB1720865E0025EBFC /* NMSSHLogger.h in Headers */,
 				E4F1CBBC1720865E0025EBFC /* socket_helper.h in Headers */,
 				E4F1CBBE1720865E0025EBFC /* NMSSH-Prefix.pch in Headers */,
+				E49AA6DE17228C59007101A4 /* NMSSHSessionDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

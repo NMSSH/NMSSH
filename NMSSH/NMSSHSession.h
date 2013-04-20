@@ -1,8 +1,4 @@
-@protocol NMSSHSessionDelegate <NSObject>
-@optional
-- (NSString *)session:(NMSSHSession *)session keyboardInteractiveRequest:(NSString *)request;
-- (void)session:(NMSSHSession *)session didDisconnectWithError:(NSError *)error;
-@end
+#import "NMSSHSessionDelegate.h"
 
 /**
  * NMSSHSession provides functionality to setup a connection to a SSH server.
