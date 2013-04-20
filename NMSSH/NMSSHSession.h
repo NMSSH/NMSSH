@@ -1,8 +1,24 @@
 #import "NMSSHSessionDelegate.h"
 
 /**
- * NMSSHSession provides functionality to setup a connection to a SSH server.
- */
+NMSSHSession provides the functionality required to setup a SSH connection
+and authorize against it.
+
+In it's simplest form it works like this:
+
+    NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
+                                             withUsername:@"user"];
+
+    if (session.isConnected) {
+        NSLog(@"Successfully created a new session");
+    }
+
+    [session authenticateByPassword:@"pass"];
+
+    if (session.isAuthorized) {
+        NSLog(@"Successfully authorized");
+    }
+*/
 @interface NMSSHSession : NSObject
 
 /// ----------------------------------------------------------------------------
@@ -24,7 +40,7 @@
  * Shorthand method for initializing a NMSSHSession object and calling connect.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             @":{portnr}"
+ *             `@":{portnr}"`
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
@@ -32,7 +48,7 @@
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect,
- * and explicitly setting a port number.
+ * (explicitly setting a port number).
  *
  * @param host The server hostname
  * @param port The port number
@@ -45,7 +61,7 @@
  * Create and setup a new NMSSH instance.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             @":{portnr}"
+ *             `@":{portnr}"`
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
