@@ -6,11 +6,11 @@
 
 /**
  * Called when the session is setup to use keyboard interactive authentication,
- * and the server is asking for a password.
+ * and the server is sending back a question (e.g. a password request).
  *
  * @param session The session that is asking
- * @param request Server request
- * @returns A valid password for the session's user
+ * @param request Question from server
+ * @returns A valid response to the given question
  */
 - (NSString *)session:(NMSSHSession *)session keyboardInteractiveRequest:(NSString *)request;
 
