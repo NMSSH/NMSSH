@@ -454,7 +454,7 @@ void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *messa
 // -----------------------------------------------------------------------------
 
 - (NMSSHChannel *)channel {
-    if (!self.channel) {
+    if (!_channel) {
         _channel = [[NMSSHChannel alloc] initWithSession:self];
     }
 
