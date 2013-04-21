@@ -299,6 +299,11 @@
         return NO;
     }
 
+    if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
+        NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten.", localPath);
+        [[NSFileManager defaultManager] removeItemAtPath:localPath error:nil];
+    }
+
     // Open local file in order to write to it
     int localFile = open([localPath UTF8String], O_WRONLY|O_CREAT, 0644);
 
@@ -325,6 +330,7 @@
             return NO;
         }
 
+        memset(mem, 0x0, sizeof(mem));
         got += rc;
     }
 
