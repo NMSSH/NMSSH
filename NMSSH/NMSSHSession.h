@@ -172,7 +172,7 @@ In it's simplest form it works like this:
  *
  * @param authenticationBlock The block to apply to server requests.
  *     The block takes one argument:
- *     @param request Question from server
+ *     (_request_) Question from server
  *     The block returns a NSString object that represents a valid response
  *     to the given question.
  * @returns Authentication success
