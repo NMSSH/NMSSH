@@ -47,8 +47,14 @@
         case NMSSHChannelPtyTerminalVanilla:
             return "vanilla";
 
+		case NMSSHChannelPtyTerminalVT100:
+            return "vt100";
+			
         case NMSSHChannelPtyTerminalVT102:
             return "vt102";
+			
+		case NMSSHChannelPtyTerminalVT220:
+            return "vt220";
 
         case NMSSHChannelPtyTerminalAnsi:
             return "ansi";
