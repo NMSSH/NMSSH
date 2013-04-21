@@ -316,7 +316,7 @@
     }
     
     libssh2_session_set_blocking(self.session, 1);
-	self.kbAuthenticationBlock = authenticationBlock;
+    self.kbAuthenticationBlock = authenticationBlock;
     int rc = libssh2_userauth_keyboard_interactive(self.session, [self.username UTF8String], &kb_callback);
     self.kbAuthenticationBlock = nil;
 	
@@ -396,9 +396,9 @@
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
     NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
 	
-	if (self.kbAuthenticationBlock) {
-		return self.kbAuthenticationBlock(request);
-	} else if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
+    if (self.kbAuthenticationBlock) {
+        return self.kbAuthenticationBlock(request);
+    } else if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
         return [self.delegate session:self keyboardInteractiveRequest:request];
     }
 
