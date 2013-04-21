@@ -398,7 +398,8 @@
 	
     if (self.kbAuthenticationBlock) {
         return self.kbAuthenticationBlock(request);
-    } else if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
+    }
+    else if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
         return [self.delegate session:self keyboardInteractiveRequest:request];
     }
 
