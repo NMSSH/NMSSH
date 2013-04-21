@@ -9,6 +9,8 @@
 @property (nonatomic, strong) NSString *host;
 @property (nonatomic, strong) NSString *username;
 
+@property (nonatomic, copy) NSString *(^kbAuthenticationBlock)(NSString *);
+
 @property (nonatomic, strong) NMSSHChannel *channel;
 @property (nonatomic, strong) NMSFTP *sftp;
 @end
@@ -20,7 +22,7 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, port]
+    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
                   withUsername:username];
 }
 
@@ -305,13 +307,19 @@
 }
 
 - (BOOL)authenticateByKeyboardInteractive {
+    return [self authenticateByKeyboardInteractiveUsingBlock:nil];
+}
+
+- (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock {
     if (![self supportsAuthenticationMethod:@"keyboard-interactive"]) {
         return NO;
     }
     
     libssh2_session_set_blocking(self.session, 1);
+    self.kbAuthenticationBlock = authenticationBlock;
     int rc = libssh2_userauth_keyboard_interactive(self.session, [self.username UTF8String], &kb_callback);
-    
+    self.kbAuthenticationBlock = nil;
+	
     if (rc != 0) {
         NMSSHLogError(@"NMSSH: Authentication by keyboard-interactive failed!");
         return NO;
@@ -387,12 +395,15 @@
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
     NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
-
-    if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
+	
+    if (self.kbAuthenticationBlock) {
+        return self.kbAuthenticationBlock(request);
+    }
+    else if (self.delegate && [self.delegate respondsToSelector:@selector(session:keyboardInteractiveRequest:)]) {
         return [self.delegate session:self keyboardInteractiveRequest:request];
     }
 
-    NMSSHLogWarn(@"NMSSH: Keyboard interactive requires a delegate!");
+    NMSSHLogWarn(@"NMSSH: Keyboard interactive requires a delegate that responds to session:keyboardInteractiveRequest: or a block!");
 
     return @"";
 }
@@ -444,7 +455,7 @@ void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *messa
 // -----------------------------------------------------------------------------
 
 - (NMSSHChannel *)channel {
-    if (!self.channel) {
+    if (!_channel) {
         _channel = [[NMSSHChannel alloc] initWithSession:self];
     }
 

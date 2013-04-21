@@ -161,11 +161,23 @@ In it's simplest form it works like this:
                     andPassword:(NSString *)password;
 
 /**
- * Authenticate by keyboard-interactive
+ * Authenticate by keyboard-interactive using delegate.
  *
  * @returns Authentication success
  */
 - (BOOL)authenticateByKeyboardInteractive;
+
+/**
+ * Authenticate by keyboard-interactive using block.
+ *
+ * @param authenticationBlock The block to apply to server requests.
+ *     The block takes one argument:
+ *     (_request_) Question from server
+ *     The block returns a NSString object that represents a valid response
+ *     to the given question.
+ * @returns Authentication success
+ */
+- (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock;
 
 /**
  * Setup and connect to an SSH agent

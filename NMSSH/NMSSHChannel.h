@@ -5,11 +5,13 @@ enum {
     NMSSHChannelExecutionTimeout
 };
 
-enum {
+typedef enum {
     NMSSHChannelPtyTerminalVanilla,
+    NMSSHChannelPtyTerminalVT100,
     NMSSHChannelPtyTerminalVT102,
+    NMSSHChannelPtyTerminalVT220,
     NMSSHChannelPtyTerminalAnsi
-};
+} NMSSHChannelPtyTerminal;
 
 /**
  * NMSSHChannel provides functionality to work with SSH shells and SCP.
@@ -42,7 +44,7 @@ enum {
 @property (nonatomic, assign) BOOL requestPty;
 
 /** Terminal emulation mode if a PTY is requested, defaults to vanilla */
-@property (nonatomic, assign) unsigned int ptyTerminalType;
+@property (nonatomic, assign) NMSSHChannelPtyTerminal ptyTerminalType;
 
 /**
  * Execute a shell command on the server.
