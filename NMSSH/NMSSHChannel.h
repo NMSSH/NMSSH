@@ -7,9 +7,9 @@ enum {
 
 typedef enum {
     NMSSHChannelPtyTerminalVanilla,
-	NMSSHChannelPtyTerminalVT100,
+    NMSSHChannelPtyTerminalVT100,
     NMSSHChannelPtyTerminalVT102,
-	NMSSHChannelPtyTerminalVT220,
+    NMSSHChannelPtyTerminalVT220,
     NMSSHChannelPtyTerminalAnsi
 } NMSSHChannelPtyTerminal;
 
