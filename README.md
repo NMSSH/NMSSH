@@ -6,14 +6,12 @@ The framework was initially built for usage in [Kleio](http://9muses.se/kleio) â
 
 Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdborg).
 
-## Usage
-
-### How do I install it?
+## Installation
 
 * Build the framework and add it to your project. Consult the Wiki for detailed information about how to [build for OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project) or [build for iOS](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-iOS-project).
 * Add `#include <NMSSH/NMSSH.h>` to your source file.
 
-### What does it look like?
+## What does it look like?
 
 ```objc
 NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
