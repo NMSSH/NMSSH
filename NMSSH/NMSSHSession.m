@@ -114,7 +114,7 @@
         return NO;
     }
     
-    NMSSHLogVerbose(@"NMSSH: libssh2 initialized");
+	NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
     
     // Try to establish a connection to the server
     [self setSock:socket(AF_INET, SOCK_STREAM, 0)];
