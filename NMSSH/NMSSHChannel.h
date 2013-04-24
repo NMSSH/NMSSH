@@ -2,7 +2,8 @@ enum {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,
     NMSSHChannelRequestPtyError,
-    NMSSHChannelExecutionTimeout
+    NMSSHChannelExecutionTimeout,
+    NMSSHChannelAllocationError
 };
 
 typedef enum {

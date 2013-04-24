@@ -30,12 +30,92 @@
     return self;
 }
 
+- (BOOL)start:(NSError *__autoreleasing *)error {
+    // Open up the channel
+    LIBSSH2_CHANNEL *channel;
+    while ((channel = libssh2_channel_open_session(self.session.rawSession)) == NULL &&
+           libssh2_session_last_error(self.session.rawSession, NULL, NULL, 0) ==
+           LIBSSH2_ERROR_EAGAIN) {
+        waitsocket(self.session.sock, self.session.rawSession);
+    }
+    
+    if (channel == NULL){
+        NMSSHLogError(@"NMSSH: Unable to open a session");
+        if (error) {
+            *error = [NSError errorWithDomain:@"NMSSH"
+                                         code:NMSSHChannelAllocationError
+                                     userInfo:@{ NSLocalizedDescriptionKey : @"Channel allocation error" }];
+        }
+        
+        return nil;
+    }
+    
+    [self setChannel:channel];
+    
+    // If requested, try to allocate a pty
+    int rc = 0;
+    
+    if (self.requestPty) {
+        while ((rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName)) == LIBSSH2_ERROR_EAGAIN) {
+            waitsocket(self.session.sock, self.session.rawSession);
+        }
+        
+        if (rc != 0) {
+            if (error) {
+                NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Error requesting %s pty: %@", self.ptyTerminalName, [self libssh2ErrorDescription:rc]] };
+                
+                *error = [NSError errorWithDomain:@"NMSSH"
+                                             code:NMSSHChannelRequestPtyError
+                                         userInfo:userInfo];
+            }
+            
+            NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
+            [self close];
+            
+            return NO;
+        }
+    }
+    
+    return YES;
+}
+
 - (void)close {
     if (self.channel) {
         libssh2_channel_close(self.channel);
         libssh2_channel_free(self.channel);
         [self setChannel:nil];
     }
+}
+
+- (NSString *)libssh2ErrorDescription:(int)error {
+    if (error >= 0) {
+        return @"";
+    }
+    
+    switch (error) {
+        case LIBSSH2_ERROR_ALLOC:
+            return @"internal allocation memory error";
+            
+        case LIBSSH2_ERROR_SOCKET_SEND:
+            return @"unable to send data on socket";
+            
+        case LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED:
+            return @"request denied";
+            
+        case LIBSSH2_ERROR_CHANNEL_CLOSED:
+            return @"channel has been closed";
+            
+        case LIBSSH2_ERROR_CHANNEL_EOF_SENT:
+            return @"channel has been requested to be closed";
+            
+        case LIBSSH2_ERROR_CHANNEL_FAILURE:
+            return @"channel failure";
+            
+        case LIBSSH2_ERROR_EAGAIN:
+            return @"";
+    }
+    
+    return [NSString stringWithFormat:@"unknown error [%i]", error];
 }
 
 // -----------------------------------------------------------------------------
@@ -71,45 +151,16 @@
 - (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
     NMSSHLogInfo(@"NMSSH: Exec command %@", command);
 
-    [self setLastResponse:nil];
-
-    // Open up the channel
-    LIBSSH2_CHANNEL *channel;
-    while ((channel = libssh2_channel_open_session(self.session.rawSession)) == NULL &&
-		  libssh2_session_last_error(self.session.rawSession, NULL, NULL, 0) ==
-		  LIBSSH2_ERROR_EAGAIN) {
-        waitsocket(self.session.sock, self.session.rawSession);
-    }
-
-    if (channel == NULL){
-        NMSSHLogError(@"NMSSH: Unable to open a session");
+    // In case of error...
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command forKey:@"command"];
+    
+    if (![self start:error]) {
         return nil;
     }
-
-    [self setChannel:channel];
-
-    // In case of error...
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command
-                                                                       forKey:@"command"];
-
-    // If requested, try to allocate a pty
+    
+    [self setLastResponse:nil];
+    
     int rc = 0;
-
-    if (self.requestPty) {
-        rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName);
-        if (rc) {
-            if (error) {
-                *error = [NSError errorWithDomain:@"NMSSH"
-                                             code:NMSSHChannelRequestPtyError
-                                         userInfo:userInfo];
-            }
-
-            NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
-            [self close];
-
-            return nil;
-        }
-    }
 
     // Try executing command
     while ((rc = libssh2_channel_exec(self.channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
@@ -120,6 +171,7 @@
 
     if (rc != 0) {
         if (error) {
+            [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedDescriptionKey];
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
                                      userInfo:userInfo];
@@ -148,8 +200,7 @@
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
-                    libssh2_channel_read_stderr(self.channel, errorBuffer,
-                                                (ssize_t)sizeof(errorBuffer));
+                    libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer));
 
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
                     if (!desc) {
@@ -157,6 +208,7 @@
                     }
 
                     [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
+                    [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedFailureReasonErrorKey];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
@@ -200,6 +252,7 @@
 
     // If we've got this far, it means fetching execution response failed
     if (error) {
+        [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedDescriptionKey];
         *error = [NSError errorWithDomain:@"NMSSH"
                                      code:NMSSHChannelExecutionResponseError
                                  userInfo:userInfo];
