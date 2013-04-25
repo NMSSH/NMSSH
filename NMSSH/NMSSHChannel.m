@@ -5,6 +5,7 @@
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_CHANNEL *channel;
 
+@property (nonatomic, readwrite) NMSSHChannelType type;
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
 @end
@@ -21,7 +22,7 @@
         [self setRequestPty:NO];
         [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
         
-        _type = NMSSHChannelTypeClosed;
+        self.type = NMSSHChannelTypeClosed;
         
         // Make sure we were provided a valid session
         if (![self.session isKindOfClass:[NMSSHSession class]]) {
@@ -106,7 +107,7 @@
             waitsocket(self.session.sock, self.session.rawSession);
         };
         libssh2_channel_free(self.channel);
-        _type = NMSSHChannelTypeClosed;
+        self.type = NMSSHChannelTypeClosed;
         [self setChannel:NULL];
     }
 }
@@ -138,6 +139,9 @@
         case LIBSSH2_ERROR_SCP_PROTOCOL:
             return @"scp protocol error";
         
+        case LIBSSH2_ERROR_TIMEOUT:
+            return @"timeout";
+            
         case LIBSSH2_ERROR_BAD_USE:
             return @"bad use";
         
@@ -192,7 +196,7 @@
     [self setLastResponse:nil];
     
     int rc = 0;
-    _type = NMSSHChannelTypeExec;
+    self.type = NMSSHChannelTypeExec;
 
     // Try executing command
     while ((rc = libssh2_channel_exec(self.channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
@@ -214,9 +218,6 @@
 
     // Set the timeout for blocking session
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
-    if ([timeout longValue] >= 0) {
-        libssh2_session_set_timeout(self.session.rawSession, [timeout longValue] * 1000);
-    }
 
     // Fetch response from output buffer
     for (;;) {
@@ -310,10 +311,10 @@
     }
     
     int rc = 0;
-    _type = NMSSHChannelTypeShell;
+    self.type = NMSSHChannelTypeShell;
     
     // Try opening the shell
-    while((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
+    while ((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
         waitsocket([self.session sock], [self.session rawSession]);
     }
     
@@ -471,7 +472,7 @@
         return NO;
     }
     
-    _type = NMSSHChannelTypeSCP;
+    self.type = NMSSHChannelTypeSCP;
 
     // Wait for file transfer to finish
     char mem[1024];
@@ -521,7 +522,7 @@
         return NO;
     }
     
-    _type = NMSSHChannelTypeSCP;
+    self.type = NMSSHChannelTypeSCP;
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
         NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten.", localPath);

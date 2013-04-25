@@ -43,6 +43,10 @@ static NSMutableArray *threadLocks;
 
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
     if ((self = [super init])) {
+        [self setSession:NULL];
+        [self setAgent:NULL];
+        [self setChannel:nil];
+        [self setSftp:nil];
         [self setHost:host];
         [self setUsername:username];
         [self setConnected:NO];
@@ -95,6 +99,20 @@ static NSMutableArray *threadLocks;
     [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
     
     return [formatter numberFromString:[hostComponents objectAtIndex:1]];
+}
+
+- (NSNumber *)timeout {
+    if (self.session) {
+        return @(libssh2_session_get_timeout(self.session) / 1000);
+    }
+    
+    return @0;
+}
+
+- (void)setTimeout:(NSNumber *)timeout {
+    if (self.session) {
+        libssh2_session_set_timeout(self.session, [timeout longValue] * 1000);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -258,20 +276,35 @@ static NSMutableArray *threadLocks;
     CRYPTO_set_dynlock_lock_callback(NULL);
     CRYPTO_set_dynlock_destroy_callback(NULL);
     CRYPTO_THREADID_set_callback(NULL);
+    
     if (threadLocks) {
         [threadLocks removeAllObjects];
+    }
+    
+    if (self.channel) {
+        if ([self.channel type] == NMSSHChannelTypeShell) {
+            [self.channel closeShell];
+        }
+        [self setChannel:nil];
+    }
+    
+    if (self.sftp) {
+        if ([self.sftp isConnected]) {
+            [self.sftp disconnect];
+        }
+        [self setSftp:nil];
     }
     
     if (self.agent) {
         libssh2_agent_disconnect(self.agent);
         libssh2_agent_free(self.agent);
-        [self setAgent:nil];
+        [self setAgent:NULL];
     }
     
     if (self.session) {
         libssh2_session_disconnect(self.session, "NMSSH: Disconnect");
         libssh2_session_free(self.session);
-        [self setSession:nil];
+        [self setSession:NULL];
     }
     
     if (self.sock) {
