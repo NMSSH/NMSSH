@@ -33,9 +33,9 @@
     return self;
 }
 
-- (BOOL)start:(NSError *__autoreleasing *)error {
+- (BOOL)openSession:(NSError *__autoreleasing *)error {
     if (self.channel != NULL) {
-        [self close];
+        [self closeSession];
     }
     
     // Open up the channel
@@ -59,9 +59,20 @@
     
     [self setChannel:channel];
     
-    // If requested, try to allocate a pty
     int rc = 0;
     
+    // Try to set environment variables
+    if (self.environmentVariables) {
+        for (NSString *key in self.environmentVariables) {
+            if ([key isKindOfClass:[NSString class]] && [[self.environmentVariables objectForKey:key] isKindOfClass:[NSString class]]) {
+                while ((rc = libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
+                    waitsocket(self.session.sock, self.session.rawSession);
+                }
+            }
+        }
+    }
+    
+    // If requested, try to allocate a pty
     if (self.requestPty) {
         while ((rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName)) == LIBSSH2_ERROR_EAGAIN) {
             waitsocket(self.session.sock, self.session.rawSession);
@@ -77,7 +88,7 @@
             }
             
             NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
-            [self close];
+            [self closeSession];
             
             return NO;
         }
@@ -86,7 +97,7 @@
     return YES;
 }
 
-- (void)close {
+- (void)closeSession {
     if (self.channel) {
         if (libssh2_channel_get_exit_status(self.channel) == 0) {
             int rc;
@@ -189,7 +200,7 @@
     // In case of error...
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command forKey:@"command"];
     
-    if (![self start:error]) {
+    if (![self openSession:error]) {
         return nil;
     }
     
@@ -212,7 +223,7 @@
         }
 
         NMSSHLogError(@"NMSSH: Error executing command");
-        [self close];
+        [self closeSession];
         return nil;
     }
 
@@ -252,7 +263,7 @@
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
                                              userInfo:userInfo];
-                    [self close];
+                    [self closeSession];
                     return nil;
                 }
             }
@@ -260,7 +271,7 @@
             if (libssh2_channel_eof(self.channel) == 1) {
                 NSString *response = [NSString stringWithFormat:@"%s", buffer];
                 [self setLastResponse:response];
-                [self close];
+                [self closeSession];
 
                 return self.lastResponse;
             }
@@ -277,7 +288,7 @@
                                              userInfo:userInfo];
                 }
 
-                [self close];
+                [self closeSession];
                 return nil;
             }
         } while (rc > 0);
@@ -298,7 +309,7 @@
     }
 
     NMSSHLogError(@"NMSSH: Error fetching response from command");
-    [self close];
+    [self closeSession];
 
     return nil;
 }
@@ -306,7 +317,7 @@
 - (BOOL)startShell:(NSError *__autoreleasing *)error  {
     NMSSHLogInfo(@"NMSSH: Starting shell");
     
-    if (![self start:error]) {
+    if (![self openSession:error]) {
         return NO;
     }
     
@@ -326,7 +337,7 @@
                                      userInfo:@{ NSLocalizedDescriptionKey : [self libssh2ErrorDescription:rc] }];
         }
         
-        [self close];
+        [self closeSession];
         return NO;
     }
     
@@ -371,7 +382,7 @@
                 // Check if the channel is closed
                 if (rc == LIBSSH2_ERROR_CHANNEL_CLOSED || self.channel == NULL || libssh2_channel_eof(self.channel) == 1) {
                     if (libssh2_channel_eof(self.channel) == 1) {
-                        [self close];
+                        [self closeSession];
                     }
                     NMSSHLogVerbose(@"NMSSH: Channel closed, stop reading");
                     return ;
@@ -390,7 +401,7 @@
 }
 
 - (void)closeShell {
-    [self close];
+    [self closeSession];
 }
 
 - (BOOL)write:(NSString *)command error:(NSError *__autoreleasing *)error {
@@ -487,7 +498,7 @@
 
             if (rc < 0) {
                 NMSSHLogError(@"NMSSH: Failed writing file");
-                [self close];
+                [self closeSession];
                 return NO;
             }
             else {
@@ -498,7 +509,7 @@
         } while (nread);
     };
 
-    [self close];
+    [self closeSession];
 
     return YES;
 }
@@ -550,7 +561,7 @@
         else if (rc < 0) {
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
             close(localFile);
-            [self close];
+            [self closeSession];
 
             return NO;
         }
@@ -560,7 +571,7 @@
     }
 
     close(localFile);
-    [self close];
+    [self closeSession];
 
     return YES;
 }
