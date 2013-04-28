@@ -17,6 +17,7 @@
 		E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = E428160A1596629A00CF680C /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E428160E1596629A00CF680C /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = E428160B1596629A00CF680C /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E46A02E015919BE3007049AB /* ConfigHelper.m */; };
+		E4814268172BC4F700283132 /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E49AA6DB17228C33007101A4 /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E48DA7B915D0DCC100721060 /* NMSFTPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7B815D0DCC100721060 /* NMSFTPTests.m */; };
 		E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = E48DA7BB15D0EB2800721060 /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E48DA7BE15D0EB2800721060 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7BC15D0EB2800721060 /* NMSFTP.m */; };
@@ -287,6 +288,7 @@
 			files = (
 				E42815FE15962B7600CF680C /* NMSSH.h in Headers */,
 				E42815C21593D95200CF680C /* NMSSHSession.h in Headers */,
+				E4814268172BC4F700283132 /* NMSSHSessionDelegate.h in Headers */,
 				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
 				E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */,
 				E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */,
