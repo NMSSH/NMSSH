@@ -5,6 +5,8 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 
+@class NMSSHSession, NMSSHChannel, NMSFTP;
+
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
 #import "NMSFTP.h"
