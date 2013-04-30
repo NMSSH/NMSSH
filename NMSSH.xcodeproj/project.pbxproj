@@ -71,6 +71,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
 		E40D7BBE15DCCAFB002F4B41 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
 		E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionTests.h; sourceTree = "<group>"; };
 		E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSessionTests.m; sourceTree = "<group>"; };
@@ -141,6 +142,7 @@
 		E49AA6DA17228C25007101A4 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */,
 				E49AA6DB17228C33007101A4 /* NMSSHSessionDelegate.h */,
 			);
 			path = Protocols;

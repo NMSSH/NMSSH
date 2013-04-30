@@ -15,8 +15,6 @@
 @property (nonatomic, strong) NMSFTP *sftp;
 @end
 
-static NSMutableArray *threadLocks;
-
 @implementation NMSSHSession
 
 // -----------------------------------------------------------------------------
@@ -43,10 +41,6 @@ static NSMutableArray *threadLocks;
 
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
     if ((self = [super init])) {
-        [self setSession:NULL];
-        [self setAgent:NULL];
-        [self setChannel:nil];
-        [self setSftp:nil];
         [self setHost:host];
         [self setUsername:username];
         [self setConnected:NO];
@@ -127,31 +121,7 @@ static NSMutableArray *threadLocks;
     if (self.isConnected) {
         [self disconnect];
     }
-    
-    if (!threadLocks) {
-        threadLocks = [[NSMutableArray alloc] init];
-        NMSSHLogVerbose(@"NMSSH: Alloc threadLock array");
-    }
-    [threadLocks removeAllObjects];
-    
-    NMSSHLogVerbose(@"NMSSH: OpenSSL version = %s", SSLeay_version(SSLEAY_VERSION));
-    
-    if (SSLEAY_VERSION_NUMBER < 0x1000000f) {
-        NMSSHLogError(@"NMSSH: OpenSSL 1.0.0 or higher required!");
-        return NO;
-    }
-    
-    for (int i = 0; i < CRYPTO_num_locks(); i++) {
-        [threadLocks addObject:[[NSLock alloc] init]];
-    }
-    
-    // Set crypto callback for multi-thread
-    CRYPTO_set_locking_callback(&crypto_locking_callback);
-    CRYPTO_THREADID_set_callback(&crypto_threadid_callback);
-    CRYPTO_set_dynlock_create_callback(&crypto_dyn_create_callback);
-    CRYPTO_set_dynlock_lock_callback(&crypto_dyn_lock_callback);
-    CRYPTO_set_dynlock_destroy_callback(&crypto_dyn_destroy_callback);
-    
+
     // Try to initialize libssh2
     if (libssh2_init(0) != 0) {
         NMSSHLogError(@"NMSSH: libssh2 initialization failed");
@@ -271,16 +241,6 @@ static NSMutableArray *threadLocks;
 }
 
 - (void)disconnect {
-    CRYPTO_set_locking_callback(NULL);
-    CRYPTO_set_dynlock_create_callback(NULL);
-    CRYPTO_set_dynlock_lock_callback(NULL);
-    CRYPTO_set_dynlock_destroy_callback(NULL);
-    CRYPTO_THREADID_set_callback(NULL);
-    
-    if (threadLocks) {
-        [threadLocks removeAllObjects];
-    }
-    
     if (self.channel) {
         if ([self.channel type] == NMSSHChannelTypeShell) {
             [self.channel closeShell];
@@ -315,45 +275,6 @@ static NSMutableArray *threadLocks;
     libssh2_exit();
     NMSSHLogVerbose(@"NMSSH: Disconnected");
     [self setConnected:NO];
-}
-
-void crypto_locking_callback(int mode, int type, const char *file, int line) {
-    if (mode & CRYPTO_LOCK) {
-        [[threadLocks objectAtIndex:type] lock];
-    }
-    else {
-        [[threadLocks objectAtIndex:type] unlock];
-    }
-}
-
-void crypto_threadid_callback(CRYPTO_THREADID *id) {
-	CRYPTO_THREADID_set_numeric(id, (unsigned long)pthread_self());
-}
-
-struct CRYPTO_dynlock_value *crypto_dyn_create_callback(const char *file, int line) {
-    struct CRYPTO_dynlock_value *value;
-
-    value = (struct CRYPTO_dynlock_value *)malloc(sizeof(struct CRYPTO_dynlock_value));
-    if (!value) {
-        return NULL;
-    }
-    pthread_mutex_init(&value->mutex, NULL);
-    
-    return value;
-}
-
-void crypto_dyn_lock_callback(int mode, struct CRYPTO_dynlock_value *l, const char *file, int line) {
-    if (mode & CRYPTO_LOCK) {
-        pthread_mutex_lock(&l->mutex);
-    }
-    else {
-        pthread_mutex_unlock(&l->mutex);
-    }
-}
-
-void crypto_dyn_destroy_callback(struct CRYPTO_dynlock_value *l, const char *file, int line) {
-    pthread_mutex_destroy(&l->mutex);
-    free(l);
 }
 
 // -----------------------------------------------------------------------------

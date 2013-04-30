@@ -88,6 +88,7 @@
 		18F9D60717260D2B00D49BB2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B617260D2B00D49BB2 /* libcrypto.a */; };
 		18F9D60817260D2B00D49BB2 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B717260D2B00D49BB2 /* libssh2.a */; };
 		18F9D60917260D2B00D49BB2 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B817260D2B00D49BB2 /* libssl.a */; };
+		18F9DABE17302F13004CECAA /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */; };
 		E414A890164E428A00CEC12D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E414A88F164E428A00CEC12D /* libz.dylib */; };
 		E44F37331640FA960069424F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44F37321640FA960069424F /* Foundation.framework */; };
 		E44F37591640FADE0069424F /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F374C1640FADE0069424F /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -186,6 +187,7 @@
 		18F9D5B617260D2B00D49BB2 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
 		18F9D5B717260D2B00D49BB2 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
 		18F9D5B817260D2B00D49BB2 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
 		E414A88F164E428A00CEC12D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		E44F372F1640FA960069424F /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework.static; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E44F37321640FA960069424F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -388,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */,
+				18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -505,6 +508,7 @@
 				18F9D60417260D2B00D49BB2 /* x509.h in Headers */,
 				18F9D60517260D2B00D49BB2 /* x509_vfy.h in Headers */,
 				18F9D60617260D2B00D49BB2 /* x509v3.h in Headers */,
+				18F9DABE17302F13004CECAA /* NMSSHChannelDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
