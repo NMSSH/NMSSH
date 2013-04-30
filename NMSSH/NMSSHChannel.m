@@ -21,8 +21,8 @@
         [self setSession:session];
         [self setRequestPty:NO];
         [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
-        
-        self.type = NMSSHChannelTypeClosed;
+
+        [self setType:NMSSHChannelTypeClosed];
         
         // Make sure we were provided a valid session
         if (![self.session isKindOfClass:[NMSSHSession class]]) {
@@ -101,24 +101,27 @@
     if (self.channel) {
         if (libssh2_channel_get_exit_status(self.channel) == 0) {
             int rc;
-            while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN){
+            while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
                 waitsocket(self.session.sock, self.session.rawSession);
-            };
+            }
+
             if (rc == 0) {
-                while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN){
+                while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
                     waitsocket(self.session.sock, self.session.rawSession);
-                };
-                while (libssh2_channel_wait_closed(self.channel) == LIBSSH2_ERROR_EAGAIN){
+                }
+
+                while (libssh2_channel_wait_closed(self.channel) == LIBSSH2_ERROR_EAGAIN) {
                     waitsocket(self.session.sock, self.session.rawSession);
-                };
+                }
             }
         }
         
         while (libssh2_channel_close(self.channel) == LIBSSH2_ERROR_EAGAIN) {
             waitsocket(self.session.sock, self.session.rawSession);
-        };
+        }
+
         libssh2_channel_free(self.channel);
-        self.type = NMSSHChannelTypeClosed;
+        [self setType:NMSSHChannelTypeClosed];
         [self setChannel:NULL];
     }
 }
@@ -207,7 +210,7 @@
     [self setLastResponse:nil];
     
     int rc = 0;
-    self.type = NMSSHChannelTypeExec;
+    [self setType:NMSSHChannelTypeExec];
 
     // Try executing command
     while ((rc = libssh2_channel_exec(self.channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
@@ -326,7 +329,7 @@
     }
     
     int rc = 0;
-    self.type = NMSSHChannelTypeShell;
+    [self setType:NMSSHChannelTypeShell];
     
     // Try opening the shell
     while ((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
@@ -365,6 +368,7 @@
                 if (erc > 0) {
                     errorBuffer[erc] = '\0';
                     NSString *error = [NSString stringWithFormat:@"%s", errorBuffer];
+
                     if (self.delegate) {
                         [self.delegate channel:self didReadError:error];
                     }
@@ -378,6 +382,7 @@
                     buffer[rc] = '\0';
                     NSString *response = [NSString stringWithFormat:@"%s", buffer];
                     [self setLastResponse:response];
+
                     if (self.delegate) {
                         [self.delegate channel:self didReadData:response];
                     }
@@ -388,6 +393,7 @@
                     if (libssh2_channel_eof(self.channel) == 1) {
                         [self closeSession];
                     }
+
                     NMSSHLogVerbose(@"NMSSH: Channel closed, stop reading");
                     return ;
                 }
@@ -486,8 +492,8 @@
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
-    
-    self.type = NMSSHChannelTypeSCP;
+
+    [self setType:NMSSHChannelTypeSCP];
 
     // Wait for file transfer to finish
     char mem[1024];
@@ -536,8 +542,8 @@
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
-    
-    self.type = NMSSHChannelTypeSCP;
+
+    [self setType:NMSSHChannelTypeSCP];
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
         NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten.", localPath);
