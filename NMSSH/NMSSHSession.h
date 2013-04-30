@@ -90,6 +90,9 @@ In it's simplest form it works like this:
 /** Username that will authenticate against the server. */
 @property (nonatomic, readonly) NSString *username;
 
+/** Timeout for libssh2 blocking functions. */
+@property (nonatomic) NSNumber *timeout;
+
 /// ----------------------------------------------------------------------------
 /// @name Raw libssh2 session and socket reference
 /// ----------------------------------------------------------------------------

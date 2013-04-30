@@ -1,7 +1,8 @@
 Documentation/
 NMSSHTests/Settings/config.yml
 .DS_Store
-*.xcworkspacedata
+xcworkspacedata
+xcuserdata
 *.xcuserstate
 *.xcscheme
 *.plist

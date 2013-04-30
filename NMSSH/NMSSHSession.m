@@ -95,6 +95,20 @@
     return [formatter numberFromString:[hostComponents objectAtIndex:1]];
 }
 
+- (NSNumber *)timeout {
+    if (self.session) {
+        return @(libssh2_session_get_timeout(self.session) / 1000);
+    }
+
+    return @0;
+}
+
+- (void)setTimeout:(NSNumber *)timeout {
+    if (self.session) {
+        libssh2_session_set_timeout(self.session, [timeout longValue] * 1000);
+    }
+}
+
 // -----------------------------------------------------------------------------
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
@@ -107,31 +121,31 @@
     if (self.isConnected) {
         [self disconnect];
     }
-    
+
     // Try to initialize libssh2
     if (libssh2_init(0) != 0) {
         NMSSHLogError(@"NMSSH: libssh2 initialization failed");
         return NO;
     }
-    
-    NMSSHLogVerbose(@"NMSSH: libssh2 initialized");
-    
+
+    NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
+
     // Try to establish a connection to the server
     [self setSock:socket(AF_INET, SOCK_STREAM, 0)];
     if (self.sock < 0) {
         NMSSHLogError(@"NMSSH: Error creating the socket");
         return NO;
     }
-    
+
     // Set NOSIGPIPE
     int set = 1;
     setsockopt(_sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-    
+
     struct sockaddr_in sin;
     sin.sin_family = AF_INET;
     sin.sin_port = htons([self.port intValue]);
     sin.sin_addr.s_addr = inet_addr([self.hostIPAddress UTF8String]);
-    
+
     // Set non-blocking
     long arg;
     if ((arg = fcntl(self.sock, F_GETFL, NULL)) < 0) {
@@ -144,7 +158,7 @@
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
         return NO;
     }
-    
+
     // Trying to connect with timeout
     int res = connect(self.sock, (struct sockaddr *)(&sin), sizeof(struct sockaddr_in));
     if (res < 0) {
@@ -180,7 +194,7 @@
                         NMSSHLogError(@"NMSSH: Error in delayed connection() %d", valopt);
                         return NO;
                     }
-                    
+
                     NMSSHLogVerbose(@"NMSSH: libssh2 connected");
                     break;
                 }
@@ -195,7 +209,7 @@
             return NO;
         }
     }
-    
+
     // Set to blocking mode again...
     if ((arg = fcntl(self.sock, F_GETFL, NULL)) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
@@ -207,19 +221,19 @@
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
         return NO;
     }
-    
+
     // Create a session instance and start it up.
     [self setSession:libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self))];
     if (libssh2_session_handshake(self.session, self.sock)) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         return NO;
     }
-    
+
     NMSSHLogVerbose(@"NMSSH: SSH session started");
-    
+
     // Set a callback for disconnection
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
-    
+
     // We managed to successfully setup a connection
     [self setConnected:YES];
 
@@ -227,16 +241,30 @@
 }
 
 - (void)disconnect {
+    if (self.channel) {
+        if ([self.channel type] == NMSSHChannelTypeShell) {
+            [self.channel closeShell];
+        }
+        [self setChannel:nil];
+    }
+
+    if (self.sftp) {
+        if ([self.sftp isConnected]) {
+            [self.sftp disconnect];
+        }
+        [self setSftp:nil];
+    }
+
     if (self.agent) {
         libssh2_agent_disconnect(self.agent);
         libssh2_agent_free(self.agent);
-        [self setAgent:nil];
+        [self setAgent:NULL];
     }
 
     if (self.session) {
         libssh2_session_disconnect(self.session, "NMSSH: Disconnect");
         libssh2_session_free(self.session);
-        [self setSession:nil];
+        [self setSession:NULL];
     }
 
     if (self.sock) {
@@ -257,7 +285,7 @@
     if (self.session) {
         return libssh2_userauth_authenticated(self.session) == 1;
     }
-    
+
     return NO;
 }
 
@@ -314,24 +342,24 @@
     if (![self supportsAuthenticationMethod:@"keyboard-interactive"]) {
         return NO;
     }
-    
+
     libssh2_session_set_blocking(self.session, 1);
     self.kbAuthenticationBlock = authenticationBlock;
     int rc = libssh2_userauth_keyboard_interactive(self.session, [self.username UTF8String], &kb_callback);
     self.kbAuthenticationBlock = nil;
-	
+
     if (rc != 0) {
         NMSSHLogError(@"NMSSH: Authentication by keyboard-interactive failed!");
         return NO;
     }
-    
+
     NMSSHLogVerbose(@"NMSSH: Authentication by keyboard-interactive succeeded.");
-    
+
     libssh2_session_set_blocking(self.session, 0);
     if (rc == LIBSSH2_ERROR_EAGAIN) {
         NMSSHLogVerbose(@"NMSSH: Boned");
     }
-    
+
     return self.isAuthorized;
 }
 
@@ -395,7 +423,7 @@
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
     NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
-	
+
     if (self.kbAuthenticationBlock) {
         return self.kbAuthenticationBlock(request);
     }
