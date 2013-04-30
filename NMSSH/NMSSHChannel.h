@@ -1,8 +1,14 @@
+#import "NMSSHChannelDelegate.h"
+
 enum {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,
     NMSSHChannelRequestPtyError,
-    NMSSHChannelExecutionTimeout
+    NMSSHChannelExecutionTimeout,
+    NMSSHChannelAllocationError,
+    NMSSHChannelRequestShellError,
+    NMSSHChannelWriteError,
+    NMSSHChannelReadError
 };
 
 typedef enum {
@@ -13,6 +19,14 @@ typedef enum {
     NMSSHChannelPtyTerminalAnsi
 } NMSSHChannelPtyTerminal;
 
+typedef enum {
+    NMSSHChannelTypeClosed, // Channel = NULL
+    NMSSHChannelTypeExec,
+    NMSSHChannelTypeShell,
+    NMSSHChannelTypeSCP,
+    NMSSHChannelTypeSubsystem // Not supported by NMSSH framework
+} NMSSHChannelType;
+
 /**
  * NMSSHChannel provides functionality to work with SSH shells and SCP.
  */
@@ -22,8 +36,22 @@ typedef enum {
 @property (nonatomic, readonly) NMSSHSession *session;
 
 /// ----------------------------------------------------------------------------
+/// @name Setting the Delegate
+/// ----------------------------------------------------------------------------
+
+/**
+ * The receiver’s `delegate`.
+ *
+ * You can use the `delegate` to receive asynchronous read from a shell.
+ */
+@property (nonatomic, weak) id<NMSSHChannelDelegate> delegate;
+
+/// ----------------------------------------------------------------------------
 /// @name Initializer
 /// ----------------------------------------------------------------------------
+
+/** Current channel type or `NMSSHChannelTypeClosed` if the channel is closed */
+@property (nonatomic, readonly) NMSSHChannelType type;
 
 /**
  * Create a new NMSSHChannel instance.
@@ -46,11 +74,14 @@ typedef enum {
 /** Terminal emulation mode if a PTY is requested, defaults to vanilla */
 @property (nonatomic, assign) NMSSHChannelPtyTerminal ptyTerminalType;
 
+/** User-defined environment variables for the session, defaults to nil */
+@property (nonatomic, strong) NSDictionary *environmentVariables;
+
 /**
  * Execute a shell command on the server.
  *
  * If an error occurs, it will return nil and populate the error object.
- * If requestPty is enabled request a pseude terminal before running the
+ * If requestPty is enabled request a pseudo terminal before running the
  * command.
  *
  * @param command Any shell script that is available on the server
@@ -63,6 +94,8 @@ typedef enum {
  * Execute a shell command on the server with a given timeout.
  *
  * If an error occurs or the connection timed out, it will return nil and populate the error object.
+ * If requestPty is enabled request a pseudo terminal before running the
+ * command.
  *
  * @param command Any shell script that is available on the server
  * @param error Error handler
@@ -70,6 +103,46 @@ typedef enum {
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
+
+/**
+ * Request a remote shell on the channel.
+ *
+ * If an error occurs, it will return NO and populate the error object.
+ * If requestPty is enabled request a pseudo terminal before running the
+ * command.
+ *
+ * @param error Error handler
+ * @returns Shell initialization success
+ */
+- (BOOL)startShell:(NSError **)error;
+
+/**
+ * Close a remote shell on an active channel.
+ */
+- (void)closeShell;
+
+/**
+ * Write a command on the remote shell.
+ *
+ * If an error occurs or the connection timed out, it will return NO and populate the error object.
+ *
+ * @param command Any command that is available on the server
+ * @param error Error handler
+ * @returns Shell write success
+ */
+- (BOOL)write:(NSString *)command error:(NSError **)error;
+
+/**
+ * Write a command on the remote shell with a given timeout.
+ *
+ * If an error occurs or the connection timed out, it will return NO and populate the error object.
+ *
+ * @param command Any command that is available on the server
+ * @param error Error handler
+ * @param timeout The time to wait (in seconds) before giving up on the request
+ * @returns Shell write success
+ */
+- (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
 
 /// ----------------------------------------------------------------------------
 /// @name SCP file transfer
