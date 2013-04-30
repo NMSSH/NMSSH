@@ -23,7 +23,7 @@
         [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
 
         [self setType:NMSSHChannelTypeClosed];
-        
+
         // Make sure we were provided a valid session
         if (![self.session isKindOfClass:[NMSSHSession class]]) {
             @throw @"You have to provide a valid NMSSHSession!";
@@ -37,7 +37,7 @@
     if (self.channel != NULL) {
         [self closeSession];
     }
-    
+
     // Open up the channel
     LIBSSH2_CHANNEL *channel;
     while ((channel = libssh2_channel_open_session(self.session.rawSession)) == NULL &&
@@ -45,7 +45,7 @@
            LIBSSH2_ERROR_EAGAIN) {
         waitsocket(self.session.sock, self.session.rawSession);
     }
-    
+
     if (channel == NULL){
         NMSSHLogError(@"NMSSH: Unable to open a session");
         if (error) {
@@ -53,14 +53,14 @@
                                          code:NMSSHChannelAllocationError
                                      userInfo:@{ NSLocalizedDescriptionKey : @"Channel allocation error" }];
         }
-        
+
         return NO;
     }
-    
+
     [self setChannel:channel];
-    
+
     int rc = 0;
-    
+
     // Try to set environment variables
     if (self.environmentVariables) {
         for (NSString *key in self.environmentVariables) {
@@ -71,29 +71,29 @@
             }
         }
     }
-    
+
     // If requested, try to allocate a pty
     if (self.requestPty) {
         while ((rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName)) == LIBSSH2_ERROR_EAGAIN) {
             waitsocket(self.session.sock, self.session.rawSession);
         }
-        
+
         if (rc != 0) {
             if (error) {
                 NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Error requesting %s pty: %@", self.ptyTerminalName, [self libssh2ErrorDescription:rc]] };
-                
+
                 *error = [NSError errorWithDomain:@"NMSSH"
                                              code:NMSSHChannelRequestPtyError
                                          userInfo:userInfo];
             }
-            
+
             NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
             [self closeSession];
-            
+
             return NO;
         }
     }
-    
+
     return YES;
 }
 
@@ -115,7 +115,7 @@
                 }
             }
         }
-        
+
         while (libssh2_channel_close(self.channel) == LIBSSH2_ERROR_EAGAIN) {
             waitsocket(self.session.sock, self.session.rawSession);
         }
@@ -130,40 +130,40 @@
     if (errorCode > 0) {
         return @"";
     }
-    
+
     switch (errorCode) {
         case LIBSSH2_ERROR_ALLOC:
             return @"internal allocation memory error";
-            
+
         case LIBSSH2_ERROR_SOCKET_SEND:
             return @"unable to send data on socket";
-            
+
         case LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED:
             return @"request denied";
-            
+
         case LIBSSH2_ERROR_CHANNEL_CLOSED:
             return @"channel has been closed";
-            
+
         case LIBSSH2_ERROR_CHANNEL_EOF_SENT:
             return @"channel has been requested to be closed";
-            
+
         case LIBSSH2_ERROR_CHANNEL_FAILURE:
             return @"channel failure";
-            
+
         case LIBSSH2_ERROR_SCP_PROTOCOL:
             return @"scp protocol error";
-        
+
         case LIBSSH2_ERROR_TIMEOUT:
             return @"timeout";
-            
+
         case LIBSSH2_ERROR_BAD_USE:
             return @"bad use";
-        
+
         case LIBSSH2_ERROR_NONE:
         case LIBSSH2_ERROR_EAGAIN:
             return @"";
     }
-    
+
     return [NSString stringWithFormat:@"unknown error [%i]", errorCode];
 }
 
@@ -178,10 +178,10 @@
 
         case NMSSHChannelPtyTerminalVT100:
             return "vt100";
-			
+
         case NMSSHChannelPtyTerminalVT102:
             return "vt102";
-			
+
         case NMSSHChannelPtyTerminalVT220:
             return "vt220";
 
@@ -202,13 +202,13 @@
 
     // In case of error...
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command forKey:@"command"];
-    
+
     if (![self openSession:error]) {
         return nil;
     }
-    
+
     [self setLastResponse:nil];
-    
+
     int rc = 0;
     [self setType:NMSSHChannelTypeExec];
 
@@ -238,19 +238,19 @@
         long rc;
         char buffer[0x4000];
         char errorBuffer[0x4000];
-        
+
         do {
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
-            
+
             if (rc > 0) {
                 buffer[rc] = '\0';
             }
-            
+
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
                     rc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
-                    
+
                     if (rc > 0) {
                         errorBuffer[rc] = '\0';
                     }
@@ -270,7 +270,7 @@
                     return nil;
                 }
             }
-            
+
             if (libssh2_channel_eof(self.channel) == 1) {
                 NSString *response = [NSString stringWithFormat:@"%s", buffer];
                 [self setLastResponse:response];
@@ -299,10 +299,10 @@
         if (rc != LIBSSH2_ERROR_EAGAIN) {
             break;
         }
-        
+
         waitsocket(self.session.sock, self.session.rawSession);
     }
-    
+
     // If we've got this far, it means fetching execution response failed
     if (error) {
         [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedDescriptionKey];
@@ -323,19 +323,19 @@
 
 - (BOOL)startShell:(NSError *__autoreleasing *)error  {
     NMSSHLogInfo(@"NMSSH: Starting shell");
-    
+
     if (![self openSession:error]) {
         return NO;
     }
-    
+
     int rc = 0;
     [self setType:NMSSHChannelTypeShell];
-    
+
     // Try opening the shell
     while ((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
         waitsocket([self.session sock], [self.session rawSession]);
     }
-    
+
     if (rc != 0) {
         NMSSHLogError(@"NMSSH: Shell request error");
         if (error) {
@@ -343,15 +343,15 @@
                                          code:NMSSHChannelRequestShellError
                                      userInfo:@{ NSLocalizedDescriptionKey : [self libssh2ErrorDescription:rc] }];
         }
-        
+
         [self closeSession];
         return NO;
     }
-    
+
     NMSSHLogVerbose(@"NMSSH: Shell allocated");
-    
+
     [self setLastResponse:nil];
-    
+
     // Fetch response from output buffer
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         for (;;) {
@@ -359,11 +359,11 @@
             long erc;
             char buffer[0x4000];
             char errorBuffer[0x4000];
-            
+
             do {
                 rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
                 erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
-                
+
                 // A new error has been read
                 if (erc > 0) {
                     errorBuffer[erc] = '\0';
@@ -376,7 +376,7 @@
                         NMSSHLogError(@"NMSSH: Received error from shell '%@'", error);
                     }
                 }
-                
+
                 // A new message has been read
                 if (rc > 0) {
                     buffer[rc] = '\0';
@@ -387,7 +387,7 @@
                         [self.delegate channel:self didReadData:response];
                     }
                 }
-                
+
                 // Check if the channel is closed
                 if (rc == LIBSSH2_ERROR_CHANNEL_CLOSED || self.channel == NULL || libssh2_channel_eof(self.channel) == 1) {
                     if (libssh2_channel_eof(self.channel) == 1) {
@@ -398,15 +398,15 @@
                     return ;
                 }
             } while (rc > 0);
-            
+
             if (rc != LIBSSH2_ERROR_EAGAIN) {
                 break;
             }
-            
+
             waitsocket(self.session.sock, self.session.rawSession);
         }
     });
-    
+
     return YES;
 }
 
@@ -423,31 +423,31 @@
         NMSSHLogError(@"NMSSH: Shell required");
         return NO;
     }
-    
+
     NMSSHLogVerbose(@"NMSSH: Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
     int rc;
-    
+
     // Set the timeout
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
-    
+
     // Try writing on shell
     while ((rc = libssh2_channel_write(self.channel, [command UTF8String], strlen([command UTF8String]))) == LIBSSH2_ERROR_EAGAIN) {
         // Check if the connection timed out
         if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
             if (error) {
                 NSString *desc = @"Connection timed out";
-                                
+
                 *error = [NSError errorWithDomain:@"NMSSH"
                                              code:NMSSHChannelExecutionTimeout
                                          userInfo:@{ NSLocalizedDescriptionKey : desc }];
             }
-            
+
             return NO;
         }
-        
+
         waitsocket(self.session.sock, self.session.rawSession);
     }
-    
+
     if (rc < 0) {
         NMSSHLogError(@"NMSSH: Error writing on the shell");
         if (error) {
@@ -457,7 +457,7 @@
                                                  @"command"                : command }];
         }
     }
-    
+
     return YES;
 }
 
