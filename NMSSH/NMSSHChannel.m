@@ -314,6 +314,10 @@
     return nil;
 }
 
+// -----------------------------------------------------------------------------
+#pragma mark - REMOTE SHELL SESSION
+// -----------------------------------------------------------------------------
+
 - (BOOL)startShell:(NSError *__autoreleasing *)error  {
     NMSSHLogInfo(@"NMSSH: Starting shell");
     

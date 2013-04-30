@@ -74,9 +74,6 @@ typedef enum {
 /** Terminal emulation mode if a PTY is requested, defaults to vanilla */
 @property (nonatomic, assign) NMSSHChannelPtyTerminal ptyTerminalType;
 
-/** User-defined environment variables for the session, defaults to nil */
-@property (nonatomic, strong) NSDictionary *environmentVariables;
-
 /**
  * Execute a shell command on the server.
  *
@@ -103,6 +100,13 @@ typedef enum {
  * @returns Shell command response
  */
 - (NSString *)execute:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
+
+/// ----------------------------------------------------------------------------
+/// @name Remote shell session
+/// ----------------------------------------------------------------------------
+
+/** User-defined environment variables for the session, defaults to nil */
+@property (nonatomic, strong) NSDictionary *environmentVariables;
 
 /**
  * Request a remote shell on the channel.
