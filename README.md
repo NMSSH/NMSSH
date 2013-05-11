@@ -2,8 +2,6 @@
 
 NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2.
 
-The framework was initially built for usage in [Kleio](http://9muses.se/kleio) – a Mac OSX application that simplifies deployment.
-
 Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdborg).
 
 ## Installation
