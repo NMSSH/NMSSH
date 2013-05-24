@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A04ECAE174F51E8006DD8E7 /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E40D7BBF15DCCAFB002F4B41 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E40D7BBE15DCCAFB002F4B41 /* libssh2.a */; };
 		E42815BC1593D13800CF680C /* YAML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
 		E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */; };
@@ -291,6 +292,7 @@
 				E42815FE15962B7600CF680C /* NMSSH.h in Headers */,
 				E42815C21593D95200CF680C /* NMSSHSession.h in Headers */,
 				E4814268172BC4F700283132 /* NMSSHSessionDelegate.h in Headers */,
+				4A04ECAE174F51E8006DD8E7 /* NMSSHChannelDelegate.h in Headers */,
 				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
 				E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */,
 				E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */,
