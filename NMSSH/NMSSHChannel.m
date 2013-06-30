@@ -8,6 +8,7 @@
 @property (nonatomic, readwrite) NMSSHChannelType type;
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
+@property (nonatomic, assign) dispatch_queue_t channelQueue;
 @end
 
 @implementation NMSSHChannel
@@ -21,7 +22,7 @@
         [self setSession:session];
         [self setRequestPty:NO];
         [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
-
+        [self setChannelQueue:dispatch_queue_create("com.NMSSH.channelQueue", DISPATCH_QUEUE_CONCURRENT)];
         [self setType:NMSSHChannelTypeClosed];
 
         // Make sure we were provided a valid session
@@ -353,7 +354,7 @@
     [self setLastResponse:nil];
 
     // Fetch response from output buffer
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+    dispatch_async(self.channelQueue, ^{
         for (;;) {
             long rc;
             long erc;
