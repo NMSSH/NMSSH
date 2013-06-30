@@ -8,7 +8,12 @@
 @property (nonatomic, readwrite) NMSSHChannelType type;
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
+
+#if OS_OBJECT_USE_OBJC
+@property (nonatomic, strong) dispatch_queue_t channelQueue;
+#else
 @property (nonatomic, assign) dispatch_queue_t channelQueue;
+#endif
 @end
 
 @implementation NMSSHChannel
@@ -38,6 +43,9 @@
     if (self.channel != NULL) {
         [self closeSession];
     }
+    
+    // Set non-blocking mode
+    libssh2_session_set_blocking(self.session.rawSession, 0);
 
     // Open up the channel
     LIBSSH2_CHANNEL *channel;
