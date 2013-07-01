@@ -91,7 +91,7 @@ In it's simplest form it works like this:
 @property (nonatomic, readonly) NSString *username;
 
 /** Timeout for libssh2 blocking functions. */
-@property (nonatomic) NSNumber *timeout;
+@property (nonatomic, strong) NSNumber *timeout;
 
 /// ----------------------------------------------------------------------------
 /// @name Raw libssh2 session and socket reference
