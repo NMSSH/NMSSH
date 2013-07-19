@@ -135,7 +135,7 @@
     }
 }
 
-- (NSString *)libssh2ErrorDescription:(int)errorCode {
+- (NSString *)libssh2ErrorDescription:(ssize_t)errorCode {
     if (errorCode > 0) {
         return @"";
     }
@@ -173,7 +173,7 @@
             return @"";
     }
 
-    return [NSString stringWithFormat:@"unknown error [%i]", errorCode];
+    return [NSString stringWithFormat:@"unknown error [%zi]", errorCode];
 }
 
 // -----------------------------------------------------------------------------
@@ -244,15 +244,17 @@
 
     // Fetch response from output buffer
     for (;;) {
-        long rc;
+        ssize_t rc;
         char buffer[0x4000];
         char errorBuffer[0x4000];
-
+        NSMutableString *response = [[NSMutableString alloc] init];
+        
         do {
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
 
             if (rc > 0) {
                 buffer[rc] = '\0';
+                [response appendFormat:@"%s", buffer];
             }
 
             // Store all errors that might occur
@@ -281,8 +283,11 @@
             }
 
             if (libssh2_channel_eof(self.channel) == 1) {
-                NSString *response = [NSString stringWithFormat:@"%s", buffer];
-                [self setLastResponse:response];
+                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                    buffer[rc] = '\0';
+                    [response appendFormat:@"%s", buffer];
+                }
+                [self setLastResponse:[response copy]];
                 [self closeSession];
 
                 return self.lastResponse;
@@ -364,8 +369,8 @@
     // Fetch response from output buffer
     dispatch_async(self.channelQueue, ^{
         for (;;) {
-            long rc;
-            long erc;
+            ssize_t rc;
+            ssize_t erc;
             char buffer[0x4000];
             char errorBuffer[0x4000];
 
@@ -389,11 +394,16 @@
                 // A new message has been read
                 if (rc > 0) {
                     buffer[rc] = '\0';
-                    NSString *response = [NSString stringWithFormat:@"%s", buffer];
-                    [self setLastResponse:response];
+                    NSMutableString *response = [[NSMutableString alloc] initWithFormat:@"%s", buffer];
+                    while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                        buffer[rc] = '\0';
+                        [response appendFormat:@"%s", buffer];
+                    }
+                    
+                    [self setLastResponse:[response copy]];
 
                     if (self.delegate) {
-                        [self.delegate channel:self didReadData:response];
+                        [self.delegate channel:self didReadData:self.lastResponse];
                     }
                 }
 

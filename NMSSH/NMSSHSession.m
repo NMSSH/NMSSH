@@ -209,7 +209,7 @@
             return NO;
         }
     }
-    
+
     // Set to blocking mode again...
     if ((arg = fcntl(self.sock, F_GETFL, NULL)) < 0) {
         NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
@@ -230,7 +230,7 @@
     }
 
     NMSSHLogVerbose(@"NMSSH: SSH session started");
-        
+
     // Set a callback for disconnection
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
 
