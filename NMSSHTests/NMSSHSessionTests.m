@@ -128,6 +128,7 @@
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPublicKey:publicKey
+                                          privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:password],
                     @"Authentication with valid public key doesn't throw"
                     @"exception");
@@ -145,6 +146,7 @@
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPublicKey:publicKey
+                                          privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:nil],
                     @"Public key authentication with invalid password doesn't"
                     @"throw exception");
@@ -164,6 +166,7 @@
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPublicKey:publicKey
+                                          privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:nil],
                     @"Authentication with invalid public key doesn't throw"
                     @"exception");
@@ -183,6 +186,7 @@
     session = [NMSSHSession connectToHost:host withUsername:username];
 
     STAssertNoThrow([session authenticateByPublicKey:publicKey
+                                          privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:password],
                     @"Public key authentication with invalid user doesn't"
                     @"throw exception");

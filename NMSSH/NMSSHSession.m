@@ -305,6 +305,7 @@
 }
 
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                     privateKey:(NSString *)privateKey
                     andPassword:(NSString *)password {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
         return NO;
@@ -315,15 +316,14 @@
     }
 
     // Get absolute paths for private/public key pair
-    publicKey = [publicKey stringByExpandingTildeInPath];
-    NSString *privateKey = [publicKey stringByReplacingOccurrencesOfString:@".pub"
-                                                                withString:@""];
+    const char *pubKey = [[publicKey stringByExpandingTildeInPath] UTF8String] ?: NULL;
+    const char *privKey = [[privateKey stringByExpandingTildeInPath] UTF8String] ?: NULL;
 
     // Try to authenticate with key pair and password
     int error = libssh2_userauth_publickey_fromfile(self.session,
                                                     [self.username UTF8String],
-                                                    [publicKey UTF8String],
-                                                    [privateKey UTF8String],
+                                                    pubKey,
+                                                    privKey,
                                                     [password UTF8String]);
 
     if (error) {
