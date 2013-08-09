@@ -1,6 +1,8 @@
 #import "NMSSHChannel.h"
 #import "socket_helper.h"
 
+#define kNMSSHChannelBufferSize 1024*1024
+
 @interface NMSSHChannel ()
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_CHANNEL *channel;
@@ -245,12 +247,12 @@
     // Fetch response from output buffer
     for (;;) {
         ssize_t rc;
-        char buffer[0x4000];
-        char errorBuffer[0x4000];
+        char buffer[kNMSSHChannelBufferSize];
+        char errorBuffer[kNMSSHChannelBufferSize];
         NSMutableString *response = [[NSMutableString alloc] init];
         
         do {
-            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
+            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer) - 1);
 
             if (rc > 0) {
                 buffer[rc] = '\0';
