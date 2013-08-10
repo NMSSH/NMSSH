@@ -243,11 +243,11 @@
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
 
     // Fetch response from output buffer
+    NSMutableString *response = [[NSMutableString alloc] init];
     for (;;) {
         ssize_t rc;
         char buffer[0x4000];
         char errorBuffer[0x4000];
-        NSMutableString *response = [[NSMutableString alloc] init];
         
         do {
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
@@ -260,10 +260,10 @@
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
-                    rc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
+                    ssize_t erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
 
-                    if (rc > 0) {
-                        errorBuffer[rc] = '\0';
+                    if (erc > 0) {
+                        errorBuffer[erc] = '\0';
                     }
 
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
@@ -272,7 +272,7 @@
                     }
 
                     [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
-                    [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedFailureReasonErrorKey];
+                    [userInfo setObject:[self libssh2ErrorDescription:erc] forKey:NSLocalizedFailureReasonErrorKey];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
@@ -285,6 +285,7 @@
                     buffer[rc] = '\0';
                     [response appendFormat:@"%s", buffer];
                 }
+
                 [self setLastResponse:[response copy]];
                 [self closeSession];
 
@@ -307,6 +308,7 @@
                     buffer[rc] = '\0';
                     [response appendFormat:@"%s", buffer];
                 }
+
                 [self setLastResponse:[response copy]];
                 [self closeSession];
 
