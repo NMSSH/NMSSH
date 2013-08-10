@@ -277,12 +277,10 @@
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
                                              userInfo:userInfo];
-                    [self closeSession];
-                    return nil;
                 }
             }
 
-            if (libssh2_channel_eof(self.channel) == 1) {
+            if (libssh2_channel_eof(self.channel) == 1 || rc == 0) {
                 while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
                     buffer[rc] = '\0';
                     [response appendFormat:@"%s", buffer];
@@ -305,8 +303,14 @@
                                              userInfo:userInfo];
                 }
 
+                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                    buffer[rc] = '\0';
+                    [response appendFormat:@"%s", buffer];
+                }
+                [self setLastResponse:[response copy]];
                 [self closeSession];
-                return nil;
+
+                return self.lastResponse;
             }
         } while (rc > 0);
 
