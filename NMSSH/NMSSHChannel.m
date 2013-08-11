@@ -1,8 +1,6 @@
 #import "NMSSHChannel.h"
 #import "socket_helper.h"
 
-#define kNMSSHChannelBufferSize 1024*1024
-
 @interface NMSSHChannel ()
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_CHANNEL *channel;
@@ -45,7 +43,7 @@
     if (self.channel != NULL) {
         [self closeSession];
     }
-    
+
     // Set non-blocking mode
     libssh2_session_set_blocking(self.session.rawSession, 0);
 
@@ -245,12 +243,12 @@
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
 
     // Fetch response from output buffer
+    NSMutableString *response = [[NSMutableString alloc] init];
     for (;;) {
         ssize_t rc;
-        char buffer[kNMSSHChannelBufferSize];
-        char errorBuffer[kNMSSHChannelBufferSize];
-        NSMutableString *response = [[NSMutableString alloc] init];
-        
+        char buffer[0x4000];
+        char errorBuffer[0x4000];
+
         do {
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer) - 1);
 
@@ -262,10 +260,10 @@
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
-                    rc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
+                    ssize_t erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
 
-                    if (rc > 0) {
-                        errorBuffer[rc] = '\0';
+                    if (erc > 0) {
+                        errorBuffer[erc] = '\0';
                     }
 
                     NSString *desc = [NSString stringWithUTF8String:errorBuffer];
@@ -274,21 +272,20 @@
                     }
 
                     [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
-                    [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedFailureReasonErrorKey];
+                    [userInfo setObject:[self libssh2ErrorDescription:erc] forKey:NSLocalizedFailureReasonErrorKey];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
                                              userInfo:userInfo];
-                    [self closeSession];
-                    return nil;
                 }
             }
 
-            if (libssh2_channel_eof(self.channel) == 1) {
+            if (libssh2_channel_eof(self.channel) == 1 || rc == 0) {
                 while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
                     buffer[rc] = '\0';
                     [response appendFormat:@"%s", buffer];
                 }
+
                 [self setLastResponse:[response copy]];
                 [self closeSession];
 
@@ -307,8 +304,15 @@
                                              userInfo:userInfo];
                 }
 
+                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                    buffer[rc] = '\0';
+                    [response appendFormat:@"%s", buffer];
+                }
+
+                [self setLastResponse:[response copy]];
                 [self closeSession];
-                return nil;
+
+                return self.lastResponse;
             }
         } while (rc > 0);
 
@@ -401,7 +405,7 @@
                         buffer[rc] = '\0';
                         [response appendFormat:@"%s", buffer];
                     }
-                    
+
                     [self setLastResponse:[response copy]];
 
                     if (self.delegate) {
