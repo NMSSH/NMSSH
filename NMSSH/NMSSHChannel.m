@@ -248,7 +248,7 @@
     NSMutableString *response = [[NSMutableString alloc] init];
     for (;;) {
         ssize_t rc;
-        char buffer[0x4000];
+        char buffer[kNMSSHBufferSize];
         char errorBuffer[0x4000];
 
         do {
@@ -379,7 +379,7 @@
         for (;;) {
             ssize_t rc;
             ssize_t erc;
-            char buffer[0x4000];
+            char buffer[kNMSSHBufferSize];
             char errorBuffer[0x4000];
 
             do {
@@ -523,7 +523,7 @@
     [self setType:NMSSHChannelTypeSCP];
 
     // Wait for file transfer to finish
-    char mem[1024];
+    char mem[kNMSSHBufferSize];
     size_t nread;
     char *ptr;
     while ((nread = fread(mem, 1, sizeof(mem), local)) > 0) {
@@ -583,7 +583,7 @@
     // Save data to local file
     off_t got = 0;
     while (got < fileinfo.st_size) {
-        char mem[1024];
+        char mem[kNMSSHBufferSize];
         long long amount = sizeof(mem);
 
         if ((fileinfo.st_size - got) < amount) {
