@@ -6,5 +6,5 @@ xcuserdata
 *.xcuserstate
 *.xcscheme
 *.plist
-
+NMSSH.framework
 *.xcworkspacedata

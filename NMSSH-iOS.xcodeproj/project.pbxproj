@@ -6,562 +6,574 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		18A0965D17D6A97C008B76FB /* NMSSH Framework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 18A0965E17D6A97C008B76FB /* Build configuration list for PBXAggregateTarget "NMSSH Framework" */;
+			buildPhases = (
+				18A0966117D6A992008B76FB /* ShellScript */,
+				18A0966217D6A994008B76FB /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "NMSSH Framework";
+			productName = "NMSSH Framework";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
-		18F9D5B917260D2B00D49BB2 /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56617260D2A00D49BB2 /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		18F9D5BA17260D2B00D49BB2 /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56717260D2A00D49BB2 /* libssh2_publickey.h */; };
-		18F9D5BB17260D2B00D49BB2 /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56817260D2A00D49BB2 /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		18F9D5BC17260D2B00D49BB2 /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56A17260D2A00D49BB2 /* aes.h */; };
-		18F9D5BD17260D2B00D49BB2 /* asn1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56B17260D2A00D49BB2 /* asn1.h */; };
-		18F9D5BE17260D2B00D49BB2 /* asn1_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56C17260D2A00D49BB2 /* asn1_mac.h */; };
-		18F9D5BF17260D2B00D49BB2 /* asn1t.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56D17260D2A00D49BB2 /* asn1t.h */; };
-		18F9D5C017260D2B00D49BB2 /* bio.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56E17260D2A00D49BB2 /* bio.h */; };
-		18F9D5C117260D2B00D49BB2 /* blowfish.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D56F17260D2A00D49BB2 /* blowfish.h */; };
-		18F9D5C217260D2B00D49BB2 /* bn.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57017260D2A00D49BB2 /* bn.h */; };
-		18F9D5C317260D2B00D49BB2 /* buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57117260D2A00D49BB2 /* buffer.h */; };
-		18F9D5C417260D2B00D49BB2 /* camellia.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57217260D2A00D49BB2 /* camellia.h */; };
-		18F9D5C517260D2B00D49BB2 /* cast.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57317260D2A00D49BB2 /* cast.h */; };
-		18F9D5C617260D2B00D49BB2 /* cmac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57417260D2A00D49BB2 /* cmac.h */; };
-		18F9D5C717260D2B00D49BB2 /* cms.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57517260D2A00D49BB2 /* cms.h */; };
-		18F9D5C817260D2B00D49BB2 /* comp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57617260D2A00D49BB2 /* comp.h */; };
-		18F9D5C917260D2B00D49BB2 /* conf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57717260D2A00D49BB2 /* conf.h */; };
-		18F9D5CA17260D2B00D49BB2 /* conf_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57817260D2A00D49BB2 /* conf_api.h */; };
-		18F9D5CB17260D2B00D49BB2 /* crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57917260D2A00D49BB2 /* crypto.h */; };
-		18F9D5CC17260D2B00D49BB2 /* des.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57A17260D2A00D49BB2 /* des.h */; };
-		18F9D5CD17260D2B00D49BB2 /* des_old.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57B17260D2A00D49BB2 /* des_old.h */; };
-		18F9D5CE17260D2B00D49BB2 /* dh.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57C17260D2A00D49BB2 /* dh.h */; };
-		18F9D5CF17260D2B00D49BB2 /* dsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57D17260D2A00D49BB2 /* dsa.h */; };
-		18F9D5D017260D2B00D49BB2 /* dso.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57E17260D2A00D49BB2 /* dso.h */; };
-		18F9D5D117260D2B00D49BB2 /* dtls1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D57F17260D2A00D49BB2 /* dtls1.h */; };
-		18F9D5D217260D2B00D49BB2 /* e_os2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58017260D2A00D49BB2 /* e_os2.h */; };
-		18F9D5D317260D2B00D49BB2 /* ebcdic.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58117260D2A00D49BB2 /* ebcdic.h */; };
-		18F9D5D417260D2B00D49BB2 /* ec.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58217260D2A00D49BB2 /* ec.h */; };
-		18F9D5D517260D2B00D49BB2 /* ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58317260D2A00D49BB2 /* ecdh.h */; };
-		18F9D5D617260D2B00D49BB2 /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58417260D2A00D49BB2 /* ecdsa.h */; };
-		18F9D5D717260D2B00D49BB2 /* engine.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58517260D2A00D49BB2 /* engine.h */; };
-		18F9D5D817260D2B00D49BB2 /* err.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58617260D2A00D49BB2 /* err.h */; };
-		18F9D5D917260D2B00D49BB2 /* evp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58717260D2A00D49BB2 /* evp.h */; };
-		18F9D5DA17260D2B00D49BB2 /* hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58817260D2A00D49BB2 /* hmac.h */; };
-		18F9D5DB17260D2B00D49BB2 /* idea.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58917260D2A00D49BB2 /* idea.h */; };
-		18F9D5DC17260D2B00D49BB2 /* krb5_asn.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58A17260D2A00D49BB2 /* krb5_asn.h */; };
-		18F9D5DD17260D2B00D49BB2 /* kssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58B17260D2A00D49BB2 /* kssl.h */; };
-		18F9D5DE17260D2B00D49BB2 /* lhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58C17260D2A00D49BB2 /* lhash.h */; };
-		18F9D5DF17260D2B00D49BB2 /* md4.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58D17260D2A00D49BB2 /* md4.h */; };
-		18F9D5E017260D2B00D49BB2 /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58E17260D2A00D49BB2 /* md5.h */; };
-		18F9D5E117260D2B00D49BB2 /* mdc2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D58F17260D2A00D49BB2 /* mdc2.h */; };
-		18F9D5E217260D2B00D49BB2 /* modes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59017260D2A00D49BB2 /* modes.h */; };
-		18F9D5E317260D2B00D49BB2 /* obj_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59117260D2A00D49BB2 /* obj_mac.h */; };
-		18F9D5E417260D2B00D49BB2 /* objects.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59217260D2A00D49BB2 /* objects.h */; };
-		18F9D5E517260D2B00D49BB2 /* ocsp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59317260D2A00D49BB2 /* ocsp.h */; };
-		18F9D5E617260D2B00D49BB2 /* opensslconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59417260D2A00D49BB2 /* opensslconf.h */; };
-		18F9D5E717260D2B00D49BB2 /* opensslv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59517260D2A00D49BB2 /* opensslv.h */; };
-		18F9D5E817260D2B00D49BB2 /* ossl_typ.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59617260D2A00D49BB2 /* ossl_typ.h */; };
-		18F9D5E917260D2B00D49BB2 /* pem.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59717260D2A00D49BB2 /* pem.h */; };
-		18F9D5EA17260D2B00D49BB2 /* pem2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59817260D2A00D49BB2 /* pem2.h */; };
-		18F9D5EB17260D2B00D49BB2 /* pkcs12.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59917260D2A00D49BB2 /* pkcs12.h */; };
-		18F9D5EC17260D2B00D49BB2 /* pkcs7.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59A17260D2A00D49BB2 /* pkcs7.h */; };
-		18F9D5ED17260D2B00D49BB2 /* pqueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59B17260D2A00D49BB2 /* pqueue.h */; };
-		18F9D5EE17260D2B00D49BB2 /* rand.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59C17260D2A00D49BB2 /* rand.h */; };
-		18F9D5EF17260D2B00D49BB2 /* rc2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59D17260D2A00D49BB2 /* rc2.h */; };
-		18F9D5F017260D2B00D49BB2 /* rc4.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59E17260D2A00D49BB2 /* rc4.h */; };
-		18F9D5F117260D2B00D49BB2 /* ripemd.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D59F17260D2A00D49BB2 /* ripemd.h */; };
-		18F9D5F217260D2B00D49BB2 /* rsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A017260D2A00D49BB2 /* rsa.h */; };
-		18F9D5F317260D2B00D49BB2 /* safestack.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A117260D2A00D49BB2 /* safestack.h */; };
-		18F9D5F417260D2B00D49BB2 /* seed.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A217260D2A00D49BB2 /* seed.h */; };
-		18F9D5F517260D2B00D49BB2 /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A317260D2A00D49BB2 /* sha.h */; };
-		18F9D5F617260D2B00D49BB2 /* srp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A417260D2A00D49BB2 /* srp.h */; };
-		18F9D5F717260D2B00D49BB2 /* srtp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A517260D2A00D49BB2 /* srtp.h */; };
-		18F9D5F817260D2B00D49BB2 /* ssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A617260D2A00D49BB2 /* ssl.h */; };
-		18F9D5F917260D2B00D49BB2 /* ssl2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A717260D2A00D49BB2 /* ssl2.h */; };
-		18F9D5FA17260D2B00D49BB2 /* ssl23.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A817260D2A00D49BB2 /* ssl23.h */; };
-		18F9D5FB17260D2B00D49BB2 /* ssl3.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5A917260D2A00D49BB2 /* ssl3.h */; };
-		18F9D5FC17260D2B00D49BB2 /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AA17260D2A00D49BB2 /* stack.h */; };
-		18F9D5FD17260D2B00D49BB2 /* symhacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AB17260D2A00D49BB2 /* symhacks.h */; };
-		18F9D5FE17260D2B00D49BB2 /* tls1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AC17260D2A00D49BB2 /* tls1.h */; };
-		18F9D5FF17260D2B00D49BB2 /* ts.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AD17260D2A00D49BB2 /* ts.h */; };
-		18F9D60017260D2B00D49BB2 /* txt_db.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AE17260D2B00D49BB2 /* txt_db.h */; };
-		18F9D60117260D2B00D49BB2 /* ui.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5AF17260D2B00D49BB2 /* ui.h */; };
-		18F9D60217260D2B00D49BB2 /* ui_compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5B017260D2B00D49BB2 /* ui_compat.h */; };
-		18F9D60317260D2B00D49BB2 /* whrlpool.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5B117260D2B00D49BB2 /* whrlpool.h */; };
-		18F9D60417260D2B00D49BB2 /* x509.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5B217260D2B00D49BB2 /* x509.h */; };
-		18F9D60517260D2B00D49BB2 /* x509_vfy.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5B317260D2B00D49BB2 /* x509_vfy.h */; };
-		18F9D60617260D2B00D49BB2 /* x509v3.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9D5B417260D2B00D49BB2 /* x509v3.h */; };
-		18F9D60717260D2B00D49BB2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B617260D2B00D49BB2 /* libcrypto.a */; };
-		18F9D60817260D2B00D49BB2 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B717260D2B00D49BB2 /* libssh2.a */; };
-		18F9D60917260D2B00D49BB2 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F9D5B817260D2B00D49BB2 /* libssl.a */; };
-		18F9DABE17302F13004CECAA /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E414A890164E428A00CEC12D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E414A88F164E428A00CEC12D /* libz.dylib */; };
-		E44F37331640FA960069424F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E44F37321640FA960069424F /* Foundation.framework */; };
-		E44F37591640FADE0069424F /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F374C1640FADE0069424F /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E44F375A1640FADE0069424F /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E44F374D1640FADE0069424F /* NMSFTP.m */; };
-		E44F375D1640FADE0069424F /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F37501640FADE0069424F /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E44F375E1640FADE0069424F /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F37511640FADE0069424F /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E44F375F1640FADE0069424F /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = E44F37521640FADE0069424F /* NMSSHChannel.m */; };
-		E44F37601640FADE0069424F /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = E44F37531640FADE0069424F /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E44F37611640FADE0069424F /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E44F37541640FADE0069424F /* NMSSHSession.m */; };
-		E49AA6DE17228C59007101A4 /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E4F1CBBB1720865E0025EBFC /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */; };
-		E4F1CBBC1720865E0025EBFC /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBB81720865E0025EBFC /* socket_helper.h */; };
-		E4F1CBBD1720865E0025EBFC /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4F1CBB91720865E0025EBFC /* socket_helper.m */; };
-		E4F1CBBE1720865E0025EBFC /* NMSSH-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */; };
+		1849AE1117D6C2A200680D89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A0963017D6A85F008B76FB /* Foundation.framework */; };
+		18A0966717D6AA3D008B76FB /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966417D6AA3D008B76FB /* NMSSHLogger.h */; };
+		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
+		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
+		18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A0967217D6AA51008B76FB /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966B17D6AA51008B76FB /* NMSFTP.m */; };
+		18A0967317D6AA51008B76FB /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966C17D6AA51008B76FB /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A0967417D6AA51008B76FB /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966D17D6AA51008B76FB /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A0967517D6AA51008B76FB /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966E17D6AA51008B76FB /* NMSSHChannel.m */; };
+		18A0967617D6AA51008B76FB /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966F17D6AA51008B76FB /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A0967717D6AA51008B76FB /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0967017D6AA51008B76FB /* NMSSHSession.m */; };
+		18A0967B17D6AA64008B76FB /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0967917D6AA64008B76FB /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A0967C17D6AA64008B76FB /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0967A17D6AA64008B76FB /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A096D317D6AA7B008B76FB /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968017D6AA7B008B76FB /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A096D417D6AA7B008B76FB /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968117D6AA7B008B76FB /* libssh2_publickey.h */; };
+		18A096D517D6AA7B008B76FB /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968217D6AA7B008B76FB /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18A096D617D6AA7B008B76FB /* aes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968417D6AA7B008B76FB /* aes.h */; };
+		18A096D717D6AA7B008B76FB /* asn1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968517D6AA7B008B76FB /* asn1.h */; };
+		18A096D817D6AA7B008B76FB /* asn1_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968617D6AA7B008B76FB /* asn1_mac.h */; };
+		18A096D917D6AA7B008B76FB /* asn1t.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968717D6AA7B008B76FB /* asn1t.h */; };
+		18A096DA17D6AA7B008B76FB /* bio.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968817D6AA7B008B76FB /* bio.h */; };
+		18A096DB17D6AA7B008B76FB /* blowfish.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968917D6AA7B008B76FB /* blowfish.h */; };
+		18A096DC17D6AA7B008B76FB /* bn.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968A17D6AA7B008B76FB /* bn.h */; };
+		18A096DD17D6AA7B008B76FB /* buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968B17D6AA7B008B76FB /* buffer.h */; };
+		18A096DE17D6AA7B008B76FB /* camellia.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968C17D6AA7B008B76FB /* camellia.h */; };
+		18A096DF17D6AA7B008B76FB /* cast.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968D17D6AA7B008B76FB /* cast.h */; };
+		18A096E017D6AA7B008B76FB /* cmac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968E17D6AA7B008B76FB /* cmac.h */; };
+		18A096E117D6AA7B008B76FB /* cms.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968F17D6AA7B008B76FB /* cms.h */; };
+		18A096E217D6AA7B008B76FB /* comp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969017D6AA7B008B76FB /* comp.h */; };
+		18A096E317D6AA7B008B76FB /* conf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969117D6AA7B008B76FB /* conf.h */; };
+		18A096E417D6AA7B008B76FB /* conf_api.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969217D6AA7B008B76FB /* conf_api.h */; };
+		18A096E517D6AA7B008B76FB /* crypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969317D6AA7B008B76FB /* crypto.h */; };
+		18A096E617D6AA7B008B76FB /* des.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969417D6AA7B008B76FB /* des.h */; };
+		18A096E717D6AA7B008B76FB /* des_old.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969517D6AA7B008B76FB /* des_old.h */; };
+		18A096E817D6AA7B008B76FB /* dh.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969617D6AA7B008B76FB /* dh.h */; };
+		18A096E917D6AA7B008B76FB /* dsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969717D6AA7B008B76FB /* dsa.h */; };
+		18A096EA17D6AA7B008B76FB /* dso.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969817D6AA7B008B76FB /* dso.h */; };
+		18A096EB17D6AA7B008B76FB /* dtls1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969917D6AA7B008B76FB /* dtls1.h */; };
+		18A096EC17D6AA7B008B76FB /* e_os2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969A17D6AA7B008B76FB /* e_os2.h */; };
+		18A096ED17D6AA7B008B76FB /* ebcdic.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969B17D6AA7B008B76FB /* ebcdic.h */; };
+		18A096EE17D6AA7B008B76FB /* ec.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969C17D6AA7B008B76FB /* ec.h */; };
+		18A096EF17D6AA7B008B76FB /* ecdh.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969D17D6AA7B008B76FB /* ecdh.h */; };
+		18A096F017D6AA7B008B76FB /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969E17D6AA7B008B76FB /* ecdsa.h */; };
+		18A096F117D6AA7B008B76FB /* engine.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0969F17D6AA7B008B76FB /* engine.h */; };
+		18A096F217D6AA7B008B76FB /* err.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A017D6AA7B008B76FB /* err.h */; };
+		18A096F317D6AA7B008B76FB /* evp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A117D6AA7B008B76FB /* evp.h */; };
+		18A096F417D6AA7B008B76FB /* hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A217D6AA7B008B76FB /* hmac.h */; };
+		18A096F517D6AA7B008B76FB /* idea.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A317D6AA7B008B76FB /* idea.h */; };
+		18A096F617D6AA7B008B76FB /* krb5_asn.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A417D6AA7B008B76FB /* krb5_asn.h */; };
+		18A096F717D6AA7B008B76FB /* kssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A517D6AA7B008B76FB /* kssl.h */; };
+		18A096F817D6AA7B008B76FB /* lhash.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A617D6AA7B008B76FB /* lhash.h */; };
+		18A096F917D6AA7B008B76FB /* md4.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A717D6AA7B008B76FB /* md4.h */; };
+		18A096FA17D6AA7B008B76FB /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A817D6AA7B008B76FB /* md5.h */; };
+		18A096FB17D6AA7B008B76FB /* mdc2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096A917D6AA7B008B76FB /* mdc2.h */; };
+		18A096FC17D6AA7B008B76FB /* modes.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AA17D6AA7B008B76FB /* modes.h */; };
+		18A096FD17D6AA7B008B76FB /* obj_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AB17D6AA7B008B76FB /* obj_mac.h */; };
+		18A096FE17D6AA7B008B76FB /* objects.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AC17D6AA7B008B76FB /* objects.h */; };
+		18A096FF17D6AA7B008B76FB /* ocsp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AD17D6AA7B008B76FB /* ocsp.h */; };
+		18A0970017D6AA7B008B76FB /* opensslconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AE17D6AA7B008B76FB /* opensslconf.h */; };
+		18A0970117D6AA7B008B76FB /* opensslv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AF17D6AA7B008B76FB /* opensslv.h */; };
+		18A0970217D6AA7B008B76FB /* ossl_typ.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B017D6AA7B008B76FB /* ossl_typ.h */; };
+		18A0970317D6AA7B008B76FB /* pem.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B117D6AA7B008B76FB /* pem.h */; };
+		18A0970417D6AA7B008B76FB /* pem2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B217D6AA7B008B76FB /* pem2.h */; };
+		18A0970517D6AA7B008B76FB /* pkcs12.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B317D6AA7B008B76FB /* pkcs12.h */; };
+		18A0970617D6AA7B008B76FB /* pkcs7.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B417D6AA7B008B76FB /* pkcs7.h */; };
+		18A0970717D6AA7B008B76FB /* pqueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B517D6AA7B008B76FB /* pqueue.h */; };
+		18A0970817D6AA7B008B76FB /* rand.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B617D6AA7B008B76FB /* rand.h */; };
+		18A0970917D6AA7B008B76FB /* rc2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B717D6AA7B008B76FB /* rc2.h */; };
+		18A0970A17D6AA7B008B76FB /* rc4.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B817D6AA7B008B76FB /* rc4.h */; };
+		18A0970B17D6AA7B008B76FB /* ripemd.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B917D6AA7B008B76FB /* ripemd.h */; };
+		18A0970C17D6AA7B008B76FB /* rsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BA17D6AA7B008B76FB /* rsa.h */; };
+		18A0970D17D6AA7B008B76FB /* safestack.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BB17D6AA7B008B76FB /* safestack.h */; };
+		18A0970E17D6AA7B008B76FB /* seed.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BC17D6AA7B008B76FB /* seed.h */; };
+		18A0970F17D6AA7B008B76FB /* sha.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BD17D6AA7B008B76FB /* sha.h */; };
+		18A0971017D6AA7B008B76FB /* srp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BE17D6AA7B008B76FB /* srp.h */; };
+		18A0971117D6AA7B008B76FB /* srtp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096BF17D6AA7B008B76FB /* srtp.h */; };
+		18A0971217D6AA7B008B76FB /* ssl.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C017D6AA7B008B76FB /* ssl.h */; };
+		18A0971317D6AA7B008B76FB /* ssl2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C117D6AA7B008B76FB /* ssl2.h */; };
+		18A0971417D6AA7B008B76FB /* ssl23.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C217D6AA7B008B76FB /* ssl23.h */; };
+		18A0971517D6AA7B008B76FB /* ssl3.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C317D6AA7B008B76FB /* ssl3.h */; };
+		18A0971617D6AA7B008B76FB /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C417D6AA7B008B76FB /* stack.h */; };
+		18A0971717D6AA7B008B76FB /* symhacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C517D6AA7B008B76FB /* symhacks.h */; };
+		18A0971817D6AA7B008B76FB /* tls1.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C617D6AA7B008B76FB /* tls1.h */; };
+		18A0971917D6AA7B008B76FB /* ts.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C717D6AA7B008B76FB /* ts.h */; };
+		18A0971A17D6AA7B008B76FB /* txt_db.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C817D6AA7B008B76FB /* txt_db.h */; };
+		18A0971B17D6AA7B008B76FB /* ui.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096C917D6AA7B008B76FB /* ui.h */; };
+		18A0971C17D6AA7B008B76FB /* ui_compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096CA17D6AA7B008B76FB /* ui_compat.h */; };
+		18A0971D17D6AA7B008B76FB /* whrlpool.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096CB17D6AA7B008B76FB /* whrlpool.h */; };
+		18A0971E17D6AA7B008B76FB /* x509.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096CC17D6AA7B008B76FB /* x509.h */; };
+		18A0971F17D6AA7B008B76FB /* x509_vfy.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096CD17D6AA7B008B76FB /* x509_vfy.h */; };
+		18A0972017D6AA7B008B76FB /* x509v3.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096CE17D6AA7B008B76FB /* x509v3.h */; };
+		18A0972117D6AA7B008B76FB /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D017D6AA7B008B76FB /* libcrypto.a */; };
+		18A0972217D6AA7C008B76FB /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D117D6AA7B008B76FB /* libssh2.a */; };
+		18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D217D6AA7B008B76FB /* libssl.a */; };
+		18A0972517D6AAA8008B76FB /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A0972417D6AAA8008B76FB /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		18F9D56617260D2A00D49BB2 /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
-		18F9D56717260D2A00D49BB2 /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
-		18F9D56817260D2A00D49BB2 /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
-		18F9D56A17260D2A00D49BB2 /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
-		18F9D56B17260D2A00D49BB2 /* asn1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1.h; sourceTree = "<group>"; };
-		18F9D56C17260D2A00D49BB2 /* asn1_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1_mac.h; sourceTree = "<group>"; };
-		18F9D56D17260D2A00D49BB2 /* asn1t.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1t.h; sourceTree = "<group>"; };
-		18F9D56E17260D2A00D49BB2 /* bio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bio.h; sourceTree = "<group>"; };
-		18F9D56F17260D2A00D49BB2 /* blowfish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blowfish.h; sourceTree = "<group>"; };
-		18F9D57017260D2A00D49BB2 /* bn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bn.h; sourceTree = "<group>"; };
-		18F9D57117260D2A00D49BB2 /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
-		18F9D57217260D2A00D49BB2 /* camellia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camellia.h; sourceTree = "<group>"; };
-		18F9D57317260D2A00D49BB2 /* cast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cast.h; sourceTree = "<group>"; };
-		18F9D57417260D2A00D49BB2 /* cmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmac.h; sourceTree = "<group>"; };
-		18F9D57517260D2A00D49BB2 /* cms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cms.h; sourceTree = "<group>"; };
-		18F9D57617260D2A00D49BB2 /* comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = comp.h; sourceTree = "<group>"; };
-		18F9D57717260D2A00D49BB2 /* conf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conf.h; sourceTree = "<group>"; };
-		18F9D57817260D2A00D49BB2 /* conf_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conf_api.h; sourceTree = "<group>"; };
-		18F9D57917260D2A00D49BB2 /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypto.h; sourceTree = "<group>"; };
-		18F9D57A17260D2A00D49BB2 /* des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des.h; sourceTree = "<group>"; };
-		18F9D57B17260D2A00D49BB2 /* des_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des_old.h; sourceTree = "<group>"; };
-		18F9D57C17260D2A00D49BB2 /* dh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dh.h; sourceTree = "<group>"; };
-		18F9D57D17260D2A00D49BB2 /* dsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dsa.h; sourceTree = "<group>"; };
-		18F9D57E17260D2A00D49BB2 /* dso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dso.h; sourceTree = "<group>"; };
-		18F9D57F17260D2A00D49BB2 /* dtls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtls1.h; sourceTree = "<group>"; };
-		18F9D58017260D2A00D49BB2 /* e_os2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = e_os2.h; sourceTree = "<group>"; };
-		18F9D58117260D2A00D49BB2 /* ebcdic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ebcdic.h; sourceTree = "<group>"; };
-		18F9D58217260D2A00D49BB2 /* ec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ec.h; sourceTree = "<group>"; };
-		18F9D58317260D2A00D49BB2 /* ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdh.h; sourceTree = "<group>"; };
-		18F9D58417260D2A00D49BB2 /* ecdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
-		18F9D58517260D2A00D49BB2 /* engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine.h; sourceTree = "<group>"; };
-		18F9D58617260D2A00D49BB2 /* err.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = err.h; sourceTree = "<group>"; };
-		18F9D58717260D2A00D49BB2 /* evp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = evp.h; sourceTree = "<group>"; };
-		18F9D58817260D2A00D49BB2 /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
-		18F9D58917260D2A00D49BB2 /* idea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idea.h; sourceTree = "<group>"; };
-		18F9D58A17260D2A00D49BB2 /* krb5_asn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krb5_asn.h; sourceTree = "<group>"; };
-		18F9D58B17260D2A00D49BB2 /* kssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kssl.h; sourceTree = "<group>"; };
-		18F9D58C17260D2A00D49BB2 /* lhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lhash.h; sourceTree = "<group>"; };
-		18F9D58D17260D2A00D49BB2 /* md4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md4.h; sourceTree = "<group>"; };
-		18F9D58E17260D2A00D49BB2 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		18F9D58F17260D2A00D49BB2 /* mdc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mdc2.h; sourceTree = "<group>"; };
-		18F9D59017260D2A00D49BB2 /* modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modes.h; sourceTree = "<group>"; };
-		18F9D59117260D2A00D49BB2 /* obj_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obj_mac.h; sourceTree = "<group>"; };
-		18F9D59217260D2A00D49BB2 /* objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objects.h; sourceTree = "<group>"; };
-		18F9D59317260D2A00D49BB2 /* ocsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocsp.h; sourceTree = "<group>"; };
-		18F9D59417260D2A00D49BB2 /* opensslconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslconf.h; sourceTree = "<group>"; };
-		18F9D59517260D2A00D49BB2 /* opensslv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslv.h; sourceTree = "<group>"; };
-		18F9D59617260D2A00D49BB2 /* ossl_typ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ossl_typ.h; sourceTree = "<group>"; };
-		18F9D59717260D2A00D49BB2 /* pem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pem.h; sourceTree = "<group>"; };
-		18F9D59817260D2A00D49BB2 /* pem2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pem2.h; sourceTree = "<group>"; };
-		18F9D59917260D2A00D49BB2 /* pkcs12.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pkcs12.h; sourceTree = "<group>"; };
-		18F9D59A17260D2A00D49BB2 /* pkcs7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pkcs7.h; sourceTree = "<group>"; };
-		18F9D59B17260D2A00D49BB2 /* pqueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pqueue.h; sourceTree = "<group>"; };
-		18F9D59C17260D2A00D49BB2 /* rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rand.h; sourceTree = "<group>"; };
-		18F9D59D17260D2A00D49BB2 /* rc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc2.h; sourceTree = "<group>"; };
-		18F9D59E17260D2A00D49BB2 /* rc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc4.h; sourceTree = "<group>"; };
-		18F9D59F17260D2A00D49BB2 /* ripemd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ripemd.h; sourceTree = "<group>"; };
-		18F9D5A017260D2A00D49BB2 /* rsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rsa.h; sourceTree = "<group>"; };
-		18F9D5A117260D2A00D49BB2 /* safestack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = safestack.h; sourceTree = "<group>"; };
-		18F9D5A217260D2A00D49BB2 /* seed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = seed.h; sourceTree = "<group>"; };
-		18F9D5A317260D2A00D49BB2 /* sha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha.h; sourceTree = "<group>"; };
-		18F9D5A417260D2A00D49BB2 /* srp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = srp.h; sourceTree = "<group>"; };
-		18F9D5A517260D2A00D49BB2 /* srtp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = srtp.h; sourceTree = "<group>"; };
-		18F9D5A617260D2A00D49BB2 /* ssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl.h; sourceTree = "<group>"; };
-		18F9D5A717260D2A00D49BB2 /* ssl2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl2.h; sourceTree = "<group>"; };
-		18F9D5A817260D2A00D49BB2 /* ssl23.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl23.h; sourceTree = "<group>"; };
-		18F9D5A917260D2A00D49BB2 /* ssl3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl3.h; sourceTree = "<group>"; };
-		18F9D5AA17260D2A00D49BB2 /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
-		18F9D5AB17260D2A00D49BB2 /* symhacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symhacks.h; sourceTree = "<group>"; };
-		18F9D5AC17260D2A00D49BB2 /* tls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.h; sourceTree = "<group>"; };
-		18F9D5AD17260D2A00D49BB2 /* ts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ts.h; sourceTree = "<group>"; };
-		18F9D5AE17260D2B00D49BB2 /* txt_db.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txt_db.h; sourceTree = "<group>"; };
-		18F9D5AF17260D2B00D49BB2 /* ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui.h; sourceTree = "<group>"; };
-		18F9D5B017260D2B00D49BB2 /* ui_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui_compat.h; sourceTree = "<group>"; };
-		18F9D5B117260D2B00D49BB2 /* whrlpool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = whrlpool.h; sourceTree = "<group>"; };
-		18F9D5B217260D2B00D49BB2 /* x509.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509.h; sourceTree = "<group>"; };
-		18F9D5B317260D2B00D49BB2 /* x509_vfy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509_vfy.h; sourceTree = "<group>"; };
-		18F9D5B417260D2B00D49BB2 /* x509v3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509v3.h; sourceTree = "<group>"; };
-		18F9D5B617260D2B00D49BB2 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
-		18F9D5B717260D2B00D49BB2 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
-		18F9D5B817260D2B00D49BB2 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
-		18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
-		E414A88F164E428A00CEC12D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		E44F372F1640FA960069424F /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework.static; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E44F37321640FA960069424F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		E44F374C1640FADE0069424F /* NMSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTP.h; sourceTree = "<group>"; };
-		E44F374D1640FADE0069424F /* NMSFTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTP.m; sourceTree = "<group>"; };
-		E44F37501640FADE0069424F /* NMSSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSH.h; sourceTree = "<group>"; };
-		E44F37511640FADE0069424F /* NMSSHChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannel.h; sourceTree = "<group>"; };
-		E44F37521640FADE0069424F /* NMSSHChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannel.m; sourceTree = "<group>"; };
-		E44F37531640FADE0069424F /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
-		E44F37541640FADE0069424F /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
-		E44F37631640FBA10069424F /* NMSSH-iOS-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "NMSSH-iOS-Info.plist"; path = "NMSSH-iOS/NMSSH-iOS-Info.plist"; sourceTree = SOURCE_ROOT; };
-		E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionDelegate.h; sourceTree = "<group>"; };
-		E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHLogger.h; sourceTree = "<group>"; };
-		E4F1CBB81720865E0025EBFC /* socket_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_helper.h; sourceTree = "<group>"; };
-		E4F1CBB91720865E0025EBFC /* socket_helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socket_helper.m; sourceTree = "<group>"; };
-		E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
+		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
+		18A0966417D6AA3D008B76FB /* NMSSHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHLogger.h; sourceTree = "<group>"; };
+		18A0966517D6AA3D008B76FB /* socket_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_helper.h; sourceTree = "<group>"; };
+		18A0966617D6AA3D008B76FB /* socket_helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socket_helper.m; sourceTree = "<group>"; };
+		18A0966A17D6AA51008B76FB /* NMSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTP.h; sourceTree = "<group>"; };
+		18A0966B17D6AA51008B76FB /* NMSFTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTP.m; sourceTree = "<group>"; };
+		18A0966C17D6AA51008B76FB /* NMSSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSH.h; sourceTree = "<group>"; };
+		18A0966D17D6AA51008B76FB /* NMSSHChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannel.h; sourceTree = "<group>"; };
+		18A0966E17D6AA51008B76FB /* NMSSHChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannel.m; sourceTree = "<group>"; };
+		18A0966F17D6AA51008B76FB /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
+		18A0967017D6AA51008B76FB /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
+		18A0967917D6AA64008B76FB /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
+		18A0967A17D6AA64008B76FB /* NMSSHSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionDelegate.h; sourceTree = "<group>"; };
+		18A0968017D6AA7B008B76FB /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
+		18A0968117D6AA7B008B76FB /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
+		18A0968217D6AA7B008B76FB /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
+		18A0968417D6AA7B008B76FB /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
+		18A0968517D6AA7B008B76FB /* asn1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1.h; sourceTree = "<group>"; };
+		18A0968617D6AA7B008B76FB /* asn1_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1_mac.h; sourceTree = "<group>"; };
+		18A0968717D6AA7B008B76FB /* asn1t.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = asn1t.h; sourceTree = "<group>"; };
+		18A0968817D6AA7B008B76FB /* bio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bio.h; sourceTree = "<group>"; };
+		18A0968917D6AA7B008B76FB /* blowfish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blowfish.h; sourceTree = "<group>"; };
+		18A0968A17D6AA7B008B76FB /* bn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bn.h; sourceTree = "<group>"; };
+		18A0968B17D6AA7B008B76FB /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = buffer.h; sourceTree = "<group>"; };
+		18A0968C17D6AA7B008B76FB /* camellia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camellia.h; sourceTree = "<group>"; };
+		18A0968D17D6AA7B008B76FB /* cast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cast.h; sourceTree = "<group>"; };
+		18A0968E17D6AA7B008B76FB /* cmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmac.h; sourceTree = "<group>"; };
+		18A0968F17D6AA7B008B76FB /* cms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cms.h; sourceTree = "<group>"; };
+		18A0969017D6AA7B008B76FB /* comp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = comp.h; sourceTree = "<group>"; };
+		18A0969117D6AA7B008B76FB /* conf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conf.h; sourceTree = "<group>"; };
+		18A0969217D6AA7B008B76FB /* conf_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = conf_api.h; sourceTree = "<group>"; };
+		18A0969317D6AA7B008B76FB /* crypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypto.h; sourceTree = "<group>"; };
+		18A0969417D6AA7B008B76FB /* des.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des.h; sourceTree = "<group>"; };
+		18A0969517D6AA7B008B76FB /* des_old.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des_old.h; sourceTree = "<group>"; };
+		18A0969617D6AA7B008B76FB /* dh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dh.h; sourceTree = "<group>"; };
+		18A0969717D6AA7B008B76FB /* dsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dsa.h; sourceTree = "<group>"; };
+		18A0969817D6AA7B008B76FB /* dso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dso.h; sourceTree = "<group>"; };
+		18A0969917D6AA7B008B76FB /* dtls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtls1.h; sourceTree = "<group>"; };
+		18A0969A17D6AA7B008B76FB /* e_os2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = e_os2.h; sourceTree = "<group>"; };
+		18A0969B17D6AA7B008B76FB /* ebcdic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ebcdic.h; sourceTree = "<group>"; };
+		18A0969C17D6AA7B008B76FB /* ec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ec.h; sourceTree = "<group>"; };
+		18A0969D17D6AA7B008B76FB /* ecdh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdh.h; sourceTree = "<group>"; };
+		18A0969E17D6AA7B008B76FB /* ecdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ecdsa.h; sourceTree = "<group>"; };
+		18A0969F17D6AA7B008B76FB /* engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = engine.h; sourceTree = "<group>"; };
+		18A096A017D6AA7B008B76FB /* err.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = err.h; sourceTree = "<group>"; };
+		18A096A117D6AA7B008B76FB /* evp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = evp.h; sourceTree = "<group>"; };
+		18A096A217D6AA7B008B76FB /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
+		18A096A317D6AA7B008B76FB /* idea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idea.h; sourceTree = "<group>"; };
+		18A096A417D6AA7B008B76FB /* krb5_asn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = krb5_asn.h; sourceTree = "<group>"; };
+		18A096A517D6AA7B008B76FB /* kssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kssl.h; sourceTree = "<group>"; };
+		18A096A617D6AA7B008B76FB /* lhash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lhash.h; sourceTree = "<group>"; };
+		18A096A717D6AA7B008B76FB /* md4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md4.h; sourceTree = "<group>"; };
+		18A096A817D6AA7B008B76FB /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
+		18A096A917D6AA7B008B76FB /* mdc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mdc2.h; sourceTree = "<group>"; };
+		18A096AA17D6AA7B008B76FB /* modes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = modes.h; sourceTree = "<group>"; };
+		18A096AB17D6AA7B008B76FB /* obj_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obj_mac.h; sourceTree = "<group>"; };
+		18A096AC17D6AA7B008B76FB /* objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objects.h; sourceTree = "<group>"; };
+		18A096AD17D6AA7B008B76FB /* ocsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocsp.h; sourceTree = "<group>"; };
+		18A096AE17D6AA7B008B76FB /* opensslconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslconf.h; sourceTree = "<group>"; };
+		18A096AF17D6AA7B008B76FB /* opensslv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslv.h; sourceTree = "<group>"; };
+		18A096B017D6AA7B008B76FB /* ossl_typ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ossl_typ.h; sourceTree = "<group>"; };
+		18A096B117D6AA7B008B76FB /* pem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pem.h; sourceTree = "<group>"; };
+		18A096B217D6AA7B008B76FB /* pem2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pem2.h; sourceTree = "<group>"; };
+		18A096B317D6AA7B008B76FB /* pkcs12.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pkcs12.h; sourceTree = "<group>"; };
+		18A096B417D6AA7B008B76FB /* pkcs7.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pkcs7.h; sourceTree = "<group>"; };
+		18A096B517D6AA7B008B76FB /* pqueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pqueue.h; sourceTree = "<group>"; };
+		18A096B617D6AA7B008B76FB /* rand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rand.h; sourceTree = "<group>"; };
+		18A096B717D6AA7B008B76FB /* rc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc2.h; sourceTree = "<group>"; };
+		18A096B817D6AA7B008B76FB /* rc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc4.h; sourceTree = "<group>"; };
+		18A096B917D6AA7B008B76FB /* ripemd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ripemd.h; sourceTree = "<group>"; };
+		18A096BA17D6AA7B008B76FB /* rsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rsa.h; sourceTree = "<group>"; };
+		18A096BB17D6AA7B008B76FB /* safestack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = safestack.h; sourceTree = "<group>"; };
+		18A096BC17D6AA7B008B76FB /* seed.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = seed.h; sourceTree = "<group>"; };
+		18A096BD17D6AA7B008B76FB /* sha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha.h; sourceTree = "<group>"; };
+		18A096BE17D6AA7B008B76FB /* srp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = srp.h; sourceTree = "<group>"; };
+		18A096BF17D6AA7B008B76FB /* srtp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = srtp.h; sourceTree = "<group>"; };
+		18A096C017D6AA7B008B76FB /* ssl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl.h; sourceTree = "<group>"; };
+		18A096C117D6AA7B008B76FB /* ssl2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl2.h; sourceTree = "<group>"; };
+		18A096C217D6AA7B008B76FB /* ssl23.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl23.h; sourceTree = "<group>"; };
+		18A096C317D6AA7B008B76FB /* ssl3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl3.h; sourceTree = "<group>"; };
+		18A096C417D6AA7B008B76FB /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
+		18A096C517D6AA7B008B76FB /* symhacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symhacks.h; sourceTree = "<group>"; };
+		18A096C617D6AA7B008B76FB /* tls1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tls1.h; sourceTree = "<group>"; };
+		18A096C717D6AA7B008B76FB /* ts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ts.h; sourceTree = "<group>"; };
+		18A096C817D6AA7B008B76FB /* txt_db.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = txt_db.h; sourceTree = "<group>"; };
+		18A096C917D6AA7B008B76FB /* ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui.h; sourceTree = "<group>"; };
+		18A096CA17D6AA7B008B76FB /* ui_compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ui_compat.h; sourceTree = "<group>"; };
+		18A096CB17D6AA7B008B76FB /* whrlpool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = whrlpool.h; sourceTree = "<group>"; };
+		18A096CC17D6AA7B008B76FB /* x509.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509.h; sourceTree = "<group>"; };
+		18A096CD17D6AA7B008B76FB /* x509_vfy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509_vfy.h; sourceTree = "<group>"; };
+		18A096CE17D6AA7B008B76FB /* x509v3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509v3.h; sourceTree = "<group>"; };
+		18A096D017D6AA7B008B76FB /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
+		18A096D117D6AA7B008B76FB /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
+		18A096D217D6AA7B008B76FB /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		18A0972417D6AAA8008B76FB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		E44F372A1640FA960069424F /* Frameworks */ = {
+		18A0964C17D6A8C4008B76FB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E44F37331640FA960069424F /* Foundation.framework in Frameworks */,
-				E414A890164E428A00CEC12D /* libz.dylib in Frameworks */,
-				18F9D60717260D2B00D49BB2 /* libcrypto.a in Frameworks */,
-				18F9D60817260D2B00D49BB2 /* libssh2.a in Frameworks */,
-				18F9D60917260D2B00D49BB2 /* libssl.a in Frameworks */,
+				1849AE1117D6C2A200680D89 /* Foundation.framework in Frameworks */,
+				18A0972517D6AAA8008B76FB /* libz.dylib in Frameworks */,
+				18A0972117D6AA7B008B76FB /* libcrypto.a in Frameworks */,
+				18A0972217D6AA7C008B76FB /* libssh2.a in Frameworks */,
+				18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		18F9D56417260D2A00D49BB2 /* include */ = {
+		18A0962217D6A85F008B76FB = {
 			isa = PBXGroup;
 			children = (
-				18F9D56517260D2A00D49BB2 /* libssh2 */,
-				18F9D56917260D2A00D49BB2 /* openssl */,
-			);
-			path = include;
-			sourceTree = "<group>";
-		};
-		18F9D56517260D2A00D49BB2 /* libssh2 */ = {
-			isa = PBXGroup;
-			children = (
-				18F9D56617260D2A00D49BB2 /* libssh2.h */,
-				18F9D56717260D2A00D49BB2 /* libssh2_publickey.h */,
-				18F9D56817260D2A00D49BB2 /* libssh2_sftp.h */,
-			);
-			path = libssh2;
-			sourceTree = "<group>";
-		};
-		18F9D56917260D2A00D49BB2 /* openssl */ = {
-			isa = PBXGroup;
-			children = (
-				18F9D56A17260D2A00D49BB2 /* aes.h */,
-				18F9D56B17260D2A00D49BB2 /* asn1.h */,
-				18F9D56C17260D2A00D49BB2 /* asn1_mac.h */,
-				18F9D56D17260D2A00D49BB2 /* asn1t.h */,
-				18F9D56E17260D2A00D49BB2 /* bio.h */,
-				18F9D56F17260D2A00D49BB2 /* blowfish.h */,
-				18F9D57017260D2A00D49BB2 /* bn.h */,
-				18F9D57117260D2A00D49BB2 /* buffer.h */,
-				18F9D57217260D2A00D49BB2 /* camellia.h */,
-				18F9D57317260D2A00D49BB2 /* cast.h */,
-				18F9D57417260D2A00D49BB2 /* cmac.h */,
-				18F9D57517260D2A00D49BB2 /* cms.h */,
-				18F9D57617260D2A00D49BB2 /* comp.h */,
-				18F9D57717260D2A00D49BB2 /* conf.h */,
-				18F9D57817260D2A00D49BB2 /* conf_api.h */,
-				18F9D57917260D2A00D49BB2 /* crypto.h */,
-				18F9D57A17260D2A00D49BB2 /* des.h */,
-				18F9D57B17260D2A00D49BB2 /* des_old.h */,
-				18F9D57C17260D2A00D49BB2 /* dh.h */,
-				18F9D57D17260D2A00D49BB2 /* dsa.h */,
-				18F9D57E17260D2A00D49BB2 /* dso.h */,
-				18F9D57F17260D2A00D49BB2 /* dtls1.h */,
-				18F9D58017260D2A00D49BB2 /* e_os2.h */,
-				18F9D58117260D2A00D49BB2 /* ebcdic.h */,
-				18F9D58217260D2A00D49BB2 /* ec.h */,
-				18F9D58317260D2A00D49BB2 /* ecdh.h */,
-				18F9D58417260D2A00D49BB2 /* ecdsa.h */,
-				18F9D58517260D2A00D49BB2 /* engine.h */,
-				18F9D58617260D2A00D49BB2 /* err.h */,
-				18F9D58717260D2A00D49BB2 /* evp.h */,
-				18F9D58817260D2A00D49BB2 /* hmac.h */,
-				18F9D58917260D2A00D49BB2 /* idea.h */,
-				18F9D58A17260D2A00D49BB2 /* krb5_asn.h */,
-				18F9D58B17260D2A00D49BB2 /* kssl.h */,
-				18F9D58C17260D2A00D49BB2 /* lhash.h */,
-				18F9D58D17260D2A00D49BB2 /* md4.h */,
-				18F9D58E17260D2A00D49BB2 /* md5.h */,
-				18F9D58F17260D2A00D49BB2 /* mdc2.h */,
-				18F9D59017260D2A00D49BB2 /* modes.h */,
-				18F9D59117260D2A00D49BB2 /* obj_mac.h */,
-				18F9D59217260D2A00D49BB2 /* objects.h */,
-				18F9D59317260D2A00D49BB2 /* ocsp.h */,
-				18F9D59417260D2A00D49BB2 /* opensslconf.h */,
-				18F9D59517260D2A00D49BB2 /* opensslv.h */,
-				18F9D59617260D2A00D49BB2 /* ossl_typ.h */,
-				18F9D59717260D2A00D49BB2 /* pem.h */,
-				18F9D59817260D2A00D49BB2 /* pem2.h */,
-				18F9D59917260D2A00D49BB2 /* pkcs12.h */,
-				18F9D59A17260D2A00D49BB2 /* pkcs7.h */,
-				18F9D59B17260D2A00D49BB2 /* pqueue.h */,
-				18F9D59C17260D2A00D49BB2 /* rand.h */,
-				18F9D59D17260D2A00D49BB2 /* rc2.h */,
-				18F9D59E17260D2A00D49BB2 /* rc4.h */,
-				18F9D59F17260D2A00D49BB2 /* ripemd.h */,
-				18F9D5A017260D2A00D49BB2 /* rsa.h */,
-				18F9D5A117260D2A00D49BB2 /* safestack.h */,
-				18F9D5A217260D2A00D49BB2 /* seed.h */,
-				18F9D5A317260D2A00D49BB2 /* sha.h */,
-				18F9D5A417260D2A00D49BB2 /* srp.h */,
-				18F9D5A517260D2A00D49BB2 /* srtp.h */,
-				18F9D5A617260D2A00D49BB2 /* ssl.h */,
-				18F9D5A717260D2A00D49BB2 /* ssl2.h */,
-				18F9D5A817260D2A00D49BB2 /* ssl23.h */,
-				18F9D5A917260D2A00D49BB2 /* ssl3.h */,
-				18F9D5AA17260D2A00D49BB2 /* stack.h */,
-				18F9D5AB17260D2A00D49BB2 /* symhacks.h */,
-				18F9D5AC17260D2A00D49BB2 /* tls1.h */,
-				18F9D5AD17260D2A00D49BB2 /* ts.h */,
-				18F9D5AE17260D2B00D49BB2 /* txt_db.h */,
-				18F9D5AF17260D2B00D49BB2 /* ui.h */,
-				18F9D5B017260D2B00D49BB2 /* ui_compat.h */,
-				18F9D5B117260D2B00D49BB2 /* whrlpool.h */,
-				18F9D5B217260D2B00D49BB2 /* x509.h */,
-				18F9D5B317260D2B00D49BB2 /* x509_vfy.h */,
-				18F9D5B417260D2B00D49BB2 /* x509v3.h */,
-			);
-			path = openssl;
-			sourceTree = "<group>";
-		};
-		18F9D5B517260D2B00D49BB2 /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				18F9D5B617260D2B00D49BB2 /* libcrypto.a */,
-				18F9D5B717260D2B00D49BB2 /* libssh2.a */,
-				18F9D5B817260D2B00D49BB2 /* libssl.a */,
-			);
-			path = lib;
-			sourceTree = "<group>";
-		};
-		E44F37221640FA960069424F = {
-			isa = PBXGroup;
-			children = (
-				E44F37461640FADE0069424F /* NMSSH */,
-				E44F37311640FA960069424F /* Frameworks */,
-				E44F37301640FA960069424F /* Products */,
+				18A0965217D6A8C4008B76FB /* NMSSH */,
+				18A0962D17D6A85F008B76FB /* Frameworks */,
+				18A0962C17D6A85F008B76FB /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		E44F37301640FA960069424F /* Products */ = {
+		18A0962C17D6A85F008B76FB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E44F372F1640FA960069424F /* NMSSH.framework */,
+				18A0964F17D6A8C4008B76FB /* NMSSH.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E44F37311640FA960069424F /* Frameworks */ = {
+		18A0962D17D6A85F008B76FB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E414A88F164E428A00CEC12D /* libz.dylib */,
-				E44F37321640FA960069424F /* Foundation.framework */,
+				18A0972417D6AAA8008B76FB /* libz.dylib */,
+				18A0963017D6A85F008B76FB /* Foundation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E44F37461640FADE0069424F /* NMSSH */ = {
+		18A0965217D6A8C4008B76FB /* NMSSH */ = {
 			isa = PBXGroup;
 			children = (
-				E4F1CBB61720865E0025EBFC /* Config */,
-				E4B6C4A916724DEF001C2C84 /* Libraries */,
-				E49AA6DC17228C59007101A4 /* Protocols */,
-				E44F37651640FBAA0069424F /* Supporting files */,
-				E44F374C1640FADE0069424F /* NMSFTP.h */,
-				E44F374D1640FADE0069424F /* NMSFTP.m */,
-				E44F37501640FADE0069424F /* NMSSH.h */,
-				E44F37511640FADE0069424F /* NMSSHChannel.h */,
-				E44F37521640FADE0069424F /* NMSSHChannel.m */,
-				E44F37531640FADE0069424F /* NMSSHSession.h */,
-				E44F37541640FADE0069424F /* NMSSHSession.m */,
+				18A0966A17D6AA51008B76FB /* NMSFTP.h */,
+				18A0966B17D6AA51008B76FB /* NMSFTP.m */,
+				18A0966C17D6AA51008B76FB /* NMSSH.h */,
+				18A0966D17D6AA51008B76FB /* NMSSHChannel.h */,
+				18A0966E17D6AA51008B76FB /* NMSSHChannel.m */,
+				18A0966F17D6AA51008B76FB /* NMSSHSession.h */,
+				18A0967017D6AA51008B76FB /* NMSSHSession.m */,
+				18A0967D17D6AA7B008B76FB /* Libraries */,
+				18A0967817D6AA64008B76FB /* Protocols */,
+				18A0966317D6AA3D008B76FB /* Config */,
+				18A0965317D6A8C4008B76FB /* Supporting Files */,
 			);
 			path = NMSSH;
 			sourceTree = "<group>";
 		};
-		E44F37651640FBAA0069424F /* Supporting files */ = {
+		18A0965317D6A8C4008B76FB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E4F1CBBA1720865E0025EBFC /* NMSSH-Prefix.pch */,
-				E44F37631640FBA10069424F /* NMSSH-iOS-Info.plist */,
+				18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */,
 			);
-			name = "Supporting files";
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E49AA6DC17228C59007101A4 /* Protocols */ = {
+		18A0966317D6AA3D008B76FB /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				E49AA6DD17228C59007101A4 /* NMSSHSessionDelegate.h */,
-				18F9DABD17302F13004CECAA /* NMSSHChannelDelegate.h */,
+				18A0966417D6AA3D008B76FB /* NMSSHLogger.h */,
+				18A0966517D6AA3D008B76FB /* socket_helper.h */,
+				18A0966617D6AA3D008B76FB /* socket_helper.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		18A0967817D6AA64008B76FB /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				18A0967917D6AA64008B76FB /* NMSSHChannelDelegate.h */,
+				18A0967A17D6AA64008B76FB /* NMSSHSessionDelegate.h */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
 		};
-		E4B6C4A916724DEF001C2C84 /* Libraries */ = {
+		18A0967D17D6AA7B008B76FB /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				18F9D56417260D2A00D49BB2 /* include */,
-				18F9D5B517260D2B00D49BB2 /* lib */,
+				18A0967E17D6AA7B008B76FB /* include */,
+				18A096CF17D6AA7B008B76FB /* lib */,
 			);
 			name = Libraries;
 			path = "NMSSH-iOS/Libraries";
 			sourceTree = SOURCE_ROOT;
 		};
-		E4F1CBB61720865E0025EBFC /* Config */ = {
+		18A0967E17D6AA7B008B76FB /* include */ = {
 			isa = PBXGroup;
 			children = (
-				E4F1CBB71720865E0025EBFC /* NMSSHLogger.h */,
-				E4F1CBB81720865E0025EBFC /* socket_helper.h */,
-				E4F1CBB91720865E0025EBFC /* socket_helper.m */,
+				18A0967F17D6AA7B008B76FB /* libssh2 */,
+				18A0968317D6AA7B008B76FB /* openssl */,
 			);
-			path = Config;
+			path = include;
+			sourceTree = "<group>";
+		};
+		18A0967F17D6AA7B008B76FB /* libssh2 */ = {
+			isa = PBXGroup;
+			children = (
+				18A0968017D6AA7B008B76FB /* libssh2.h */,
+				18A0968117D6AA7B008B76FB /* libssh2_publickey.h */,
+				18A0968217D6AA7B008B76FB /* libssh2_sftp.h */,
+			);
+			path = libssh2;
+			sourceTree = "<group>";
+		};
+		18A0968317D6AA7B008B76FB /* openssl */ = {
+			isa = PBXGroup;
+			children = (
+				18A0968417D6AA7B008B76FB /* aes.h */,
+				18A0968517D6AA7B008B76FB /* asn1.h */,
+				18A0968617D6AA7B008B76FB /* asn1_mac.h */,
+				18A0968717D6AA7B008B76FB /* asn1t.h */,
+				18A0968817D6AA7B008B76FB /* bio.h */,
+				18A0968917D6AA7B008B76FB /* blowfish.h */,
+				18A0968A17D6AA7B008B76FB /* bn.h */,
+				18A0968B17D6AA7B008B76FB /* buffer.h */,
+				18A0968C17D6AA7B008B76FB /* camellia.h */,
+				18A0968D17D6AA7B008B76FB /* cast.h */,
+				18A0968E17D6AA7B008B76FB /* cmac.h */,
+				18A0968F17D6AA7B008B76FB /* cms.h */,
+				18A0969017D6AA7B008B76FB /* comp.h */,
+				18A0969117D6AA7B008B76FB /* conf.h */,
+				18A0969217D6AA7B008B76FB /* conf_api.h */,
+				18A0969317D6AA7B008B76FB /* crypto.h */,
+				18A0969417D6AA7B008B76FB /* des.h */,
+				18A0969517D6AA7B008B76FB /* des_old.h */,
+				18A0969617D6AA7B008B76FB /* dh.h */,
+				18A0969717D6AA7B008B76FB /* dsa.h */,
+				18A0969817D6AA7B008B76FB /* dso.h */,
+				18A0969917D6AA7B008B76FB /* dtls1.h */,
+				18A0969A17D6AA7B008B76FB /* e_os2.h */,
+				18A0969B17D6AA7B008B76FB /* ebcdic.h */,
+				18A0969C17D6AA7B008B76FB /* ec.h */,
+				18A0969D17D6AA7B008B76FB /* ecdh.h */,
+				18A0969E17D6AA7B008B76FB /* ecdsa.h */,
+				18A0969F17D6AA7B008B76FB /* engine.h */,
+				18A096A017D6AA7B008B76FB /* err.h */,
+				18A096A117D6AA7B008B76FB /* evp.h */,
+				18A096A217D6AA7B008B76FB /* hmac.h */,
+				18A096A317D6AA7B008B76FB /* idea.h */,
+				18A096A417D6AA7B008B76FB /* krb5_asn.h */,
+				18A096A517D6AA7B008B76FB /* kssl.h */,
+				18A096A617D6AA7B008B76FB /* lhash.h */,
+				18A096A717D6AA7B008B76FB /* md4.h */,
+				18A096A817D6AA7B008B76FB /* md5.h */,
+				18A096A917D6AA7B008B76FB /* mdc2.h */,
+				18A096AA17D6AA7B008B76FB /* modes.h */,
+				18A096AB17D6AA7B008B76FB /* obj_mac.h */,
+				18A096AC17D6AA7B008B76FB /* objects.h */,
+				18A096AD17D6AA7B008B76FB /* ocsp.h */,
+				18A096AE17D6AA7B008B76FB /* opensslconf.h */,
+				18A096AF17D6AA7B008B76FB /* opensslv.h */,
+				18A096B017D6AA7B008B76FB /* ossl_typ.h */,
+				18A096B117D6AA7B008B76FB /* pem.h */,
+				18A096B217D6AA7B008B76FB /* pem2.h */,
+				18A096B317D6AA7B008B76FB /* pkcs12.h */,
+				18A096B417D6AA7B008B76FB /* pkcs7.h */,
+				18A096B517D6AA7B008B76FB /* pqueue.h */,
+				18A096B617D6AA7B008B76FB /* rand.h */,
+				18A096B717D6AA7B008B76FB /* rc2.h */,
+				18A096B817D6AA7B008B76FB /* rc4.h */,
+				18A096B917D6AA7B008B76FB /* ripemd.h */,
+				18A096BA17D6AA7B008B76FB /* rsa.h */,
+				18A096BB17D6AA7B008B76FB /* safestack.h */,
+				18A096BC17D6AA7B008B76FB /* seed.h */,
+				18A096BD17D6AA7B008B76FB /* sha.h */,
+				18A096BE17D6AA7B008B76FB /* srp.h */,
+				18A096BF17D6AA7B008B76FB /* srtp.h */,
+				18A096C017D6AA7B008B76FB /* ssl.h */,
+				18A096C117D6AA7B008B76FB /* ssl2.h */,
+				18A096C217D6AA7B008B76FB /* ssl23.h */,
+				18A096C317D6AA7B008B76FB /* ssl3.h */,
+				18A096C417D6AA7B008B76FB /* stack.h */,
+				18A096C517D6AA7B008B76FB /* symhacks.h */,
+				18A096C617D6AA7B008B76FB /* tls1.h */,
+				18A096C717D6AA7B008B76FB /* ts.h */,
+				18A096C817D6AA7B008B76FB /* txt_db.h */,
+				18A096C917D6AA7B008B76FB /* ui.h */,
+				18A096CA17D6AA7B008B76FB /* ui_compat.h */,
+				18A096CB17D6AA7B008B76FB /* whrlpool.h */,
+				18A096CC17D6AA7B008B76FB /* x509.h */,
+				18A096CD17D6AA7B008B76FB /* x509_vfy.h */,
+				18A096CE17D6AA7B008B76FB /* x509v3.h */,
+			);
+			path = openssl;
+			sourceTree = "<group>";
+		};
+		18A096CF17D6AA7B008B76FB /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				18A096D017D6AA7B008B76FB /* libcrypto.a */,
+				18A096D117D6AA7B008B76FB /* libssh2.a */,
+				18A096D217D6AA7B008B76FB /* libssl.a */,
+			);
+			path = lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		E44F372B1640FA960069424F /* Headers */ = {
+		18A0965C17D6A956008B76FB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18F9D5B917260D2B00D49BB2 /* libssh2.h in Headers */,
-				18F9D5BB17260D2B00D49BB2 /* libssh2_sftp.h in Headers */,
-				E44F37591640FADE0069424F /* NMSFTP.h in Headers */,
-				E44F375D1640FADE0069424F /* NMSSH.h in Headers */,
-				E44F375E1640FADE0069424F /* NMSSHChannel.h in Headers */,
-				18F9DABE17302F13004CECAA /* NMSSHChannelDelegate.h in Headers */,
-				E44F37601640FADE0069424F /* NMSSHSession.h in Headers */,
-				E49AA6DE17228C59007101A4 /* NMSSHSessionDelegate.h in Headers */,
-				E4F1CBBB1720865E0025EBFC /* NMSSHLogger.h in Headers */,
-				E4F1CBBC1720865E0025EBFC /* socket_helper.h in Headers */,
-				E4F1CBBE1720865E0025EBFC /* NMSSH-Prefix.pch in Headers */,
-				18F9D5BA17260D2B00D49BB2 /* libssh2_publickey.h in Headers */,
-				18F9D5BC17260D2B00D49BB2 /* aes.h in Headers */,
-				18F9D5BD17260D2B00D49BB2 /* asn1.h in Headers */,
-				18F9D5BE17260D2B00D49BB2 /* asn1_mac.h in Headers */,
-				18F9D5BF17260D2B00D49BB2 /* asn1t.h in Headers */,
-				18F9D5C017260D2B00D49BB2 /* bio.h in Headers */,
-				18F9D5C117260D2B00D49BB2 /* blowfish.h in Headers */,
-				18F9D5C217260D2B00D49BB2 /* bn.h in Headers */,
-				18F9D5C317260D2B00D49BB2 /* buffer.h in Headers */,
-				18F9D5C417260D2B00D49BB2 /* camellia.h in Headers */,
-				18F9D5C517260D2B00D49BB2 /* cast.h in Headers */,
-				18F9D5C617260D2B00D49BB2 /* cmac.h in Headers */,
-				18F9D5C717260D2B00D49BB2 /* cms.h in Headers */,
-				18F9D5C817260D2B00D49BB2 /* comp.h in Headers */,
-				18F9D5C917260D2B00D49BB2 /* conf.h in Headers */,
-				18F9D5CA17260D2B00D49BB2 /* conf_api.h in Headers */,
-				18F9D5CB17260D2B00D49BB2 /* crypto.h in Headers */,
-				18F9D5CC17260D2B00D49BB2 /* des.h in Headers */,
-				18F9D5CD17260D2B00D49BB2 /* des_old.h in Headers */,
-				18F9D5CE17260D2B00D49BB2 /* dh.h in Headers */,
-				18F9D5CF17260D2B00D49BB2 /* dsa.h in Headers */,
-				18F9D5D017260D2B00D49BB2 /* dso.h in Headers */,
-				18F9D5D117260D2B00D49BB2 /* dtls1.h in Headers */,
-				18F9D5D217260D2B00D49BB2 /* e_os2.h in Headers */,
-				18F9D5D317260D2B00D49BB2 /* ebcdic.h in Headers */,
-				18F9D5D417260D2B00D49BB2 /* ec.h in Headers */,
-				18F9D5D517260D2B00D49BB2 /* ecdh.h in Headers */,
-				18F9D5D617260D2B00D49BB2 /* ecdsa.h in Headers */,
-				18F9D5D717260D2B00D49BB2 /* engine.h in Headers */,
-				18F9D5D817260D2B00D49BB2 /* err.h in Headers */,
-				18F9D5D917260D2B00D49BB2 /* evp.h in Headers */,
-				18F9D5DA17260D2B00D49BB2 /* hmac.h in Headers */,
-				18F9D5DB17260D2B00D49BB2 /* idea.h in Headers */,
-				18F9D5DC17260D2B00D49BB2 /* krb5_asn.h in Headers */,
-				18F9D5DD17260D2B00D49BB2 /* kssl.h in Headers */,
-				18F9D5DE17260D2B00D49BB2 /* lhash.h in Headers */,
-				18F9D5DF17260D2B00D49BB2 /* md4.h in Headers */,
-				18F9D5E017260D2B00D49BB2 /* md5.h in Headers */,
-				18F9D5E117260D2B00D49BB2 /* mdc2.h in Headers */,
-				18F9D5E217260D2B00D49BB2 /* modes.h in Headers */,
-				18F9D5E317260D2B00D49BB2 /* obj_mac.h in Headers */,
-				18F9D5E417260D2B00D49BB2 /* objects.h in Headers */,
-				18F9D5E517260D2B00D49BB2 /* ocsp.h in Headers */,
-				18F9D5E617260D2B00D49BB2 /* opensslconf.h in Headers */,
-				18F9D5E717260D2B00D49BB2 /* opensslv.h in Headers */,
-				18F9D5E817260D2B00D49BB2 /* ossl_typ.h in Headers */,
-				18F9D5E917260D2B00D49BB2 /* pem.h in Headers */,
-				18F9D5EA17260D2B00D49BB2 /* pem2.h in Headers */,
-				18F9D5EB17260D2B00D49BB2 /* pkcs12.h in Headers */,
-				18F9D5EC17260D2B00D49BB2 /* pkcs7.h in Headers */,
-				18F9D5ED17260D2B00D49BB2 /* pqueue.h in Headers */,
-				18F9D5EE17260D2B00D49BB2 /* rand.h in Headers */,
-				18F9D5EF17260D2B00D49BB2 /* rc2.h in Headers */,
-				18F9D5F017260D2B00D49BB2 /* rc4.h in Headers */,
-				18F9D5F117260D2B00D49BB2 /* ripemd.h in Headers */,
-				18F9D5F217260D2B00D49BB2 /* rsa.h in Headers */,
-				18F9D5F317260D2B00D49BB2 /* safestack.h in Headers */,
-				18F9D5F417260D2B00D49BB2 /* seed.h in Headers */,
-				18F9D5F517260D2B00D49BB2 /* sha.h in Headers */,
-				18F9D5F617260D2B00D49BB2 /* srp.h in Headers */,
-				18F9D5F717260D2B00D49BB2 /* srtp.h in Headers */,
-				18F9D5F817260D2B00D49BB2 /* ssl.h in Headers */,
-				18F9D5F917260D2B00D49BB2 /* ssl2.h in Headers */,
-				18F9D5FA17260D2B00D49BB2 /* ssl23.h in Headers */,
-				18F9D5FB17260D2B00D49BB2 /* ssl3.h in Headers */,
-				18F9D5FC17260D2B00D49BB2 /* stack.h in Headers */,
-				18F9D5FD17260D2B00D49BB2 /* symhacks.h in Headers */,
-				18F9D5FE17260D2B00D49BB2 /* tls1.h in Headers */,
-				18F9D5FF17260D2B00D49BB2 /* ts.h in Headers */,
-				18F9D60017260D2B00D49BB2 /* txt_db.h in Headers */,
-				18F9D60117260D2B00D49BB2 /* ui.h in Headers */,
-				18F9D60217260D2B00D49BB2 /* ui_compat.h in Headers */,
-				18F9D60317260D2B00D49BB2 /* whrlpool.h in Headers */,
-				18F9D60417260D2B00D49BB2 /* x509.h in Headers */,
-				18F9D60517260D2B00D49BB2 /* x509_vfy.h in Headers */,
-				18F9D60617260D2B00D49BB2 /* x509v3.h in Headers */,
+				18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */,
+				18A0967317D6AA51008B76FB /* NMSSH.h in Headers */,
+				18A0967417D6AA51008B76FB /* NMSSHChannel.h in Headers */,
+				18A0967617D6AA51008B76FB /* NMSSHSession.h in Headers */,
+				18A0967B17D6AA64008B76FB /* NMSSHChannelDelegate.h in Headers */,
+				18A0967C17D6AA64008B76FB /* NMSSHSessionDelegate.h in Headers */,
+				18A096D317D6AA7B008B76FB /* libssh2.h in Headers */,
+				18A096D517D6AA7B008B76FB /* libssh2_sftp.h in Headers */,
+				18A0966717D6AA3D008B76FB /* NMSSHLogger.h in Headers */,
+				18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */,
+				18A096D417D6AA7B008B76FB /* libssh2_publickey.h in Headers */,
+				18A096D617D6AA7B008B76FB /* aes.h in Headers */,
+				18A096D717D6AA7B008B76FB /* asn1.h in Headers */,
+				18A096D817D6AA7B008B76FB /* asn1_mac.h in Headers */,
+				18A096D917D6AA7B008B76FB /* asn1t.h in Headers */,
+				18A096DA17D6AA7B008B76FB /* bio.h in Headers */,
+				18A096DB17D6AA7B008B76FB /* blowfish.h in Headers */,
+				18A096DC17D6AA7B008B76FB /* bn.h in Headers */,
+				18A096DD17D6AA7B008B76FB /* buffer.h in Headers */,
+				18A096DE17D6AA7B008B76FB /* camellia.h in Headers */,
+				18A096DF17D6AA7B008B76FB /* cast.h in Headers */,
+				18A096E017D6AA7B008B76FB /* cmac.h in Headers */,
+				18A096E117D6AA7B008B76FB /* cms.h in Headers */,
+				18A096E217D6AA7B008B76FB /* comp.h in Headers */,
+				18A096E317D6AA7B008B76FB /* conf.h in Headers */,
+				18A096E417D6AA7B008B76FB /* conf_api.h in Headers */,
+				18A096E517D6AA7B008B76FB /* crypto.h in Headers */,
+				18A096E617D6AA7B008B76FB /* des.h in Headers */,
+				18A096E717D6AA7B008B76FB /* des_old.h in Headers */,
+				18A096E817D6AA7B008B76FB /* dh.h in Headers */,
+				18A096E917D6AA7B008B76FB /* dsa.h in Headers */,
+				18A096EA17D6AA7B008B76FB /* dso.h in Headers */,
+				18A096EB17D6AA7B008B76FB /* dtls1.h in Headers */,
+				18A096EC17D6AA7B008B76FB /* e_os2.h in Headers */,
+				18A096ED17D6AA7B008B76FB /* ebcdic.h in Headers */,
+				18A096EE17D6AA7B008B76FB /* ec.h in Headers */,
+				18A096EF17D6AA7B008B76FB /* ecdh.h in Headers */,
+				18A096F017D6AA7B008B76FB /* ecdsa.h in Headers */,
+				18A096F117D6AA7B008B76FB /* engine.h in Headers */,
+				18A096F217D6AA7B008B76FB /* err.h in Headers */,
+				18A096F317D6AA7B008B76FB /* evp.h in Headers */,
+				18A096F417D6AA7B008B76FB /* hmac.h in Headers */,
+				18A096F517D6AA7B008B76FB /* idea.h in Headers */,
+				18A096F617D6AA7B008B76FB /* krb5_asn.h in Headers */,
+				18A096F717D6AA7B008B76FB /* kssl.h in Headers */,
+				18A096F817D6AA7B008B76FB /* lhash.h in Headers */,
+				18A096F917D6AA7B008B76FB /* md4.h in Headers */,
+				18A096FA17D6AA7B008B76FB /* md5.h in Headers */,
+				18A096FB17D6AA7B008B76FB /* mdc2.h in Headers */,
+				18A096FC17D6AA7B008B76FB /* modes.h in Headers */,
+				18A096FD17D6AA7B008B76FB /* obj_mac.h in Headers */,
+				18A096FE17D6AA7B008B76FB /* objects.h in Headers */,
+				18A096FF17D6AA7B008B76FB /* ocsp.h in Headers */,
+				18A0970017D6AA7B008B76FB /* opensslconf.h in Headers */,
+				18A0970117D6AA7B008B76FB /* opensslv.h in Headers */,
+				18A0970217D6AA7B008B76FB /* ossl_typ.h in Headers */,
+				18A0970317D6AA7B008B76FB /* pem.h in Headers */,
+				18A0970417D6AA7B008B76FB /* pem2.h in Headers */,
+				18A0970517D6AA7B008B76FB /* pkcs12.h in Headers */,
+				18A0970617D6AA7B008B76FB /* pkcs7.h in Headers */,
+				18A0970717D6AA7B008B76FB /* pqueue.h in Headers */,
+				18A0970817D6AA7B008B76FB /* rand.h in Headers */,
+				18A0970917D6AA7B008B76FB /* rc2.h in Headers */,
+				18A0970A17D6AA7B008B76FB /* rc4.h in Headers */,
+				18A0970B17D6AA7B008B76FB /* ripemd.h in Headers */,
+				18A0970C17D6AA7B008B76FB /* rsa.h in Headers */,
+				18A0970D17D6AA7B008B76FB /* safestack.h in Headers */,
+				18A0970E17D6AA7B008B76FB /* seed.h in Headers */,
+				18A0970F17D6AA7B008B76FB /* sha.h in Headers */,
+				18A0971017D6AA7B008B76FB /* srp.h in Headers */,
+				18A0971117D6AA7B008B76FB /* srtp.h in Headers */,
+				18A0971217D6AA7B008B76FB /* ssl.h in Headers */,
+				18A0971317D6AA7B008B76FB /* ssl2.h in Headers */,
+				18A0971417D6AA7B008B76FB /* ssl23.h in Headers */,
+				18A0971517D6AA7B008B76FB /* ssl3.h in Headers */,
+				18A0971617D6AA7B008B76FB /* stack.h in Headers */,
+				18A0971717D6AA7B008B76FB /* symhacks.h in Headers */,
+				18A0971817D6AA7B008B76FB /* tls1.h in Headers */,
+				18A0971917D6AA7B008B76FB /* ts.h in Headers */,
+				18A0971A17D6AA7B008B76FB /* txt_db.h in Headers */,
+				18A0971B17D6AA7B008B76FB /* ui.h in Headers */,
+				18A0971C17D6AA7B008B76FB /* ui_compat.h in Headers */,
+				18A0971D17D6AA7B008B76FB /* whrlpool.h in Headers */,
+				18A0971E17D6AA7B008B76FB /* x509.h in Headers */,
+				18A0971F17D6AA7B008B76FB /* x509_vfy.h in Headers */,
+				18A0972017D6AA7B008B76FB /* x509v3.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		E44F372E1640FA960069424F /* NMSSH-iOS */ = {
+		18A0964E17D6A8C4008B76FB /* NMSSH */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E44F37401640FA960069424F /* Build configuration list for PBXNativeTarget "NMSSH-iOS" */;
+			buildConfigurationList = 18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH" */;
 			buildPhases = (
-				E44F37291640FA960069424F /* Sources */,
-				E44F372A1640FA960069424F /* Frameworks */,
-				E44F372B1640FA960069424F /* Headers */,
-				E44F372C1640FA960069424F /* Resources */,
-				E44F372D1640FA960069424F /* ShellScript */,
+				18A0964B17D6A8C4008B76FB /* Sources */,
+				18A0964C17D6A8C4008B76FB /* Frameworks */,
+				18A0964D17D6A8C4008B76FB /* Resources */,
+				18A0965C17D6A956008B76FB /* Headers */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "NMSSH-iOS";
-			productName = "NMSSH-iOS";
-			productReference = E44F372F1640FA960069424F /* NMSSH.framework */;
-			productType = "com.apple.product-type.framework.static";
+			name = NMSSH;
+			productName = NMSSH;
+			productReference = 18A0964F17D6A8C4008B76FB /* NMSSH.framework */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		E44F37241640FA960069424F /* Project object */ = {
+		18A0962317D6A85F008B76FB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = NMSSH;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Nine Muses AB";
 			};
-			buildConfigurationList = E44F37271640FA960069424F /* Build configuration list for PBXProject "NMSSH-iOS" */;
+			buildConfigurationList = 18A0962617D6A85F008B76FB /* Build configuration list for PBXProject "NMSSH-iOS" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = E44F37221640FA960069424F;
-			productRefGroup = E44F37301640FA960069424F /* Products */;
+			mainGroup = 18A0962217D6A85F008B76FB;
+			productRefGroup = 18A0962C17D6A85F008B76FB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E44F372E1640FA960069424F /* NMSSH-iOS */,
+				18A0964E17D6A8C4008B76FB /* NMSSH */,
+				18A0965D17D6A97C008B76FB /* NMSSH Framework */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		E44F372C1640FA960069424F /* Resources */ = {
+		18A0964D17D6A8C4008B76FB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -571,7 +583,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E44F372D1640FA960069424F /* ShellScript */ = {
+		18A0966117D6A992008B76FB /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -581,35 +593,52 @@
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /usr/bin/python;
-			shellScript = "# TAG: BUILD SCRIPT (do not remove this comment)\n# Build script generated using https://github.com/kstenerud/iOS-Universal-Framework Mk 8 (beta 2012-06-16)\nimport logging\n\n\n##############################################################################\n#\n# Configuration\n#\n##############################################################################\n\n# Select which kind of framework to build.\n#\n# Note: Due to issues with Xcode's build process, if you select\n#       'embeddedframework', it will still show the regular framework\n#       (as a symlink) along side of the embedded framework. Be sure to\n#       instruct your users to copy/move the embedded framework in this case!\n#\n# If your framework contains resources such as images, nibs, momds, plists,\n# zipfiles and such, choose 'embeddedframework'.\n#\n# If your framework contains no resources, choose 'framework'.\n#\nconfig_framework_type = 'framework'\n#config_framework_type = 'embeddedframework'\n\n# Open the build directory in Finder when the universal framework is\n# successfully built.\n#\n# This value can be overridden by setting the UFW_OPEN_BUILD_DIR env variable\n# to True or False.\n#\n# Recommended setting: True\n#\nconfig_open_build_dir = True\n\n# If true, ensures that all public headers are stored in the framework under\n# the same directory hierarchy as they were in the source tree.\n#\n# Xcode by default places all headers at the same top level, but every other\n# build tool in the known universe preserves directory structure. For simple\n# libraries it doesn't really matter much, but for ports of existing software\n# packages or for bigger libraries, it makes sense to have more structure.\n#\n# The default is set to \"False\" since that's what most Xcode users are used to.\n#\n# Recommended setting: True for deep hierarchy projects, False otherwise.\n#\nconfig_deep_header_hierarchy = False\n\n# Specify where the top of the public header hierarchy is. This path is\n# relative to the project's dir (PROJECT_DIR). You can reference environment\n# variables using templating syntax (e.g. \"${TARGET_NAME}/Some/Subdir\")\n#\n# NOTE: Only used if config_deep_header_hierarchy is True.\n#\n# If this is set to None, the script will attempt to figure out for itself\n# where the top of the header hierarchy is by looking for common path prefixes\n# in the public header files. This process can fail if:\n# - You only have one public header file.\n# - Your source header files don't all have a common root.\n#\n# A common approach is to use \"${TARGET_NAME}\", working under the assumption\n# that all of your header files share the common root of a directory under\n# your project with the same name as your target (which is the Xcode default).\n#\n# Recommended setting: \"${TARGET_NAME}\"\n#\nconfig_deep_header_top = \"${TARGET_NAME}\"\n\n# Warn when \"DerivedData\" is detected in any of the header, library, or\n# framework search paths. In almost all cases, references to directories under\n# DerivedData are added as a result of an Xcode bug and must be manually\n# removed.\n#\n# Recommended setting: True\n#\nconfig_warn_derived_data = True\n\n# Warn if no headers were marked public in this framework.\n#\n# Recommended setting: True\n#\nconfig_warn_no_public_headers = True\n\n# Cause the build to fail if any warnings are issued.\n#\n# Recommended setting: True\n#\nconfig_fail_on_warnings = True\n\n# Minimum log level\n#\n# Recommended setting: logging.INFO\n#\nconfig_log_level = logging.INFO\n\n\n##############################################################################\n#\n# Don't touch anything below here unless you know what you're doing.\n#\n##############################################################################\n\nimport collections\nimport json\nimport os\nimport re\nimport shlex\nimport shutil\nimport string\nimport subprocess\nimport sys\nimport time\nimport traceback\n\n\n##############################################################################\n#\n# Globals\n#\n##############################################################################\n\nlog = logging.getLogger('UFW')\n\nissued_warnings = False\n\n\n##############################################################################\n#\n# Classes\n#\n##############################################################################\n\n# Allows the slave build to communicate with the master build.\n#\nclass BuildState:\n\n    def __init__(self):\n        self.reload()\n\n    def reset(self):\n        self.slave_platform = None\n        self.slave_architectures = []\n        self.slave_linked_archive_paths = []\n        self.slave_built_fw_path = None\n        self.slave_built_embedded_fw_path = None\n\n    def set_slave_properties(self, architectures,\n                             linked_archive_paths,\n                             built_fw_path,\n                             built_embedded_fw_path):\n        self.slave_platform = os.environ['PLATFORM_NAME']\n        self.slave_architectures = architectures\n        self.slave_linked_archive_paths = linked_archive_paths\n        self.slave_built_fw_path = built_fw_path\n        self.slave_built_embedded_fw_path = built_embedded_fw_path\n\n    def get_save_path(self):\n        return os.path.join(os.environ['PROJECT_TEMP_DIR'], \"ufw_build_state.json\")\n\n    def persist(self):\n        filename = self.get_save_path()\n        parent = os.path.dirname(filename)\n        if not os.path.isdir(parent):\n            os.makedirs(parent)\n        with open(filename, \"w\") as f:\n            f.write(json.dumps(self.__dict__))\n\n    def reload(self):\n        self.reset()\n        filename = self.get_save_path()\n        if os.path.exists(filename):\n            with open(filename, \"r\") as f:\n                new_dict = json.loads(f.read())\n                if new_dict is not None:\n                    self.__dict__ = dict(self.__dict__.items() + new_dict.items())\n\n\n# Holds information about the current project and build environment.\n#\nclass Project:\n\n    def __init__(self, filename):\n        sourcecode_types = ['sourcecode.c.c',\n                            'sourcecode.c.objc',\n                            'sourcecode.cpp.cpp',\n                            'sourcecode.cpp.objcpp',\n                            'sourcecode.asm.asm',\n                            'sourcecode.asm.llvm',\n                            'sourcecode.nasm']\n\n        self.build_state = BuildState()\n        self.project_data = self.load_from_file(filename)\n        self.target = filter(lambda x: x['name'] == os.environ['TARGET_NAME'], self.project_data['targets'])[0]\n        self.public_headers = self.get_build_phase_files('PBXHeadersBuildPhase', lambda x: x.get('settings', False) and x['settings'].get('ATTRIBUTES', False) and 'Public' in x['settings']['ATTRIBUTES'])\n        self.static_libraries = self.get_build_phase_files('PBXFrameworksBuildPhase', lambda x: x['fileRef']['fileType'] == 'archive.ar' and x['fileRef']['sourceTree'] not in ['DEVELOPER_DIR', 'SDKROOT'])\n        self.static_frameworks = self.get_build_phase_files('PBXFrameworksBuildPhase', lambda x: x['fileRef']['fileType'] == 'wrapper.framework' and x['fileRef']['sourceTree'] not in ['DEVELOPER_DIR', 'SDKROOT'])\n        self.compilable_sources = self.get_build_phase_files('PBXSourcesBuildPhase', lambda x: x['fileRef']['fileType'] in sourcecode_types)\n        self.header_paths = [os.path.join(*x['pathComponents']) for x in self.public_headers]\n\n        self.headers_dir = os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['CONTENTS_FOLDER_PATH'], 'Headers')\n        self.libtool_path = os.path.join(os.environ['DT_TOOLCHAIN_DIR'], 'usr', 'bin', 'libtool')\n        self.project_filename = os.path.join(os.environ['PROJECT_FILE_PATH'], \"project.pbxproj\")\n        self.local_exe_path = os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['EXECUTABLE_PATH'])\n        self.local_architectures = os.environ['ARCHS'].split(' ')\n        self.local_built_fw_path = os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['WRAPPER_NAME'])\n        self.local_built_embedded_fw_path = os.path.splitext(self.local_built_fw_path)[0] + \".embeddedframework\"\n        self.local_linked_archive_paths = [self.get_linked_ufw_archive_path(arch) for arch in self.local_architectures]\n        self.local_platform = os.environ['PLATFORM_NAME']\n        other_platforms = os.environ['SUPPORTED_PLATFORMS'].split(' ')\n        other_platforms.remove(self.local_platform)\n        self.other_platform = other_platforms[0]\n\n        sdk_name = os.environ['SDK_NAME']\n        if not sdk_name.startswith(self.local_platform):\n            raise Exception(\"%s didn't start with %s\" % (sdk_name, self.local_platform))\n        self.sdk_version = sdk_name[len(self.local_platform):]\n\n    # Load an Xcode project file.\n    #\n    def load_from_file(self, filename):\n        project_file = json.loads(subprocess.check_output([\"plutil\", \"-convert\", \"json\", \"-o\", \"-\", filename]))\n        all_objects = project_file['objects']\n        del project_file['objects']\n        for obj in all_objects.values():\n            self.fix_keys(obj)\n        self.unpack_objects(self.build_dereference_list(all_objects, None, None, project_file))\n        self.unpack_objects(self.build_dereference_list(all_objects, None, None, all_objects.values()))\n        project_data = project_file['rootObject']\n        self.build_full_paths(project_data, splitpath(os.environ['SOURCE_ROOT']))\n        return project_data\n\n    def is_key(self, obj):        \n        return isinstance(obj, basestring) and len(obj) == 24 and re.search('^[0-9a-fA-F]+$', obj) is not None\n    \n    def build_dereference_list(self, all_objects, parent, key, obj):\n        deref_list = []\n        if self.is_key(obj):\n            dereferenced = all_objects.get(obj, obj)\n            if dereferenced is not obj:\n                deref_list.append((parent, key, obj, dereferenced))\n        elif isinstance(obj, collections.Mapping):\n            for k, v in obj.iteritems():\n                deref_list += self.build_dereference_list(all_objects, obj, k, v)\n        elif isinstance(obj, collections.Iterable) and not isinstance(obj, basestring):\n            for item in obj:\n                deref_list += self.build_dereference_list(all_objects, obj, None, item)\n        return deref_list\n    \n    def unpack_objects(self, deref_list):\n        for parent, key, orig, obj in deref_list:\n            if key is None:\n                parent.remove(orig)\n                parent.append(obj)\n            else:\n                parent[key] = obj\n\n    # Store the full path, separated into components, to a node inside the node\n    # as \"pathComponents\". Also recurse into that node if it's a group.\n    #\n    def build_full_paths(self, node, base_path):\n        # Some nodes are relative to a different source tree, specified as an\n        # env variable.\n        if node.get('sourceTree', '<group>') != '<group>':\n            new_base_path = os.environ.get(node['sourceTree'], None)\n            if new_base_path:\n                base_path = splitpath(new_base_path)\n        # Add the current node's path, if any.\n        if node.get('path', False):\n            base_path = base_path + splitpath(node['path'])\n        node['pathComponents'] = base_path\n        # Recurse if this is a group.\n        if node['isa'] == 'PBXGroup':\n            for child in node['children']:\n                self.build_full_paths(child, base_path)\n        elif node['isa'] == 'PBXProject':\n            self.build_full_paths(node['mainGroup'], base_path)\n            self.build_full_paths(node['productRefGroup'], base_path)\n            for child in node['targets']:\n                self.build_full_paths(child, base_path)\n            projectRefs = node.get('projectReferences', None)\n            if projectRefs is not None:\n                for child in projectRefs[0].values():\n                    self.build_full_paths(child, base_path)\n\n    # Fix up any inconvenient keys.\n    #\n    def fix_keys(self, obj):\n        key_remappings = {'lastKnownFileType': 'fileType', 'explicitFileType': 'fileType'}\n        for key in list(set(key_remappings.keys()) & set(obj.keys())):\n            obj[key_remappings[key]] = obj[key]\n            del obj[key]\n\n    # Get the files from a build phase.\n    #\n    def get_build_phase_files(self, build_phase_name, filter_func):\n        build_phase = filter(lambda x: x['isa'] == build_phase_name, self.target['buildPhases'])[0]\n        build_files = filter(filter_func, build_phase['files'])\n        return [x['fileRef'] for x in build_files]\n\n    # Get the truncated paths of all headers that start with the specified\n    # relative path. Paths are read and returned as fully separated lists.\n    # e.g. ['Some', 'Path', 'To', 'A', 'Header'] with relative_path of\n    # ['Some', 'Path'] gets truncated to ['To', 'A', 'Header']\n    #\n    def movable_headers_relative_to(self, relative_path):\n        rel_path_length = len(relative_path)\n        result = filter(lambda path: len(path) >= rel_path_length and\n                                     path[:rel_path_length] == relative_path, self.header_paths)\n        return [path[rel_path_length:] for path in result]\n\n    # Get the full path to where a linkable archive (library or framework)\n    # is supposed to be.\n    #\n    def get_linked_archive_path(self, architecture):\n        return os.path.join(os.environ['OBJECT_FILE_DIR_%s' % os.environ['CURRENT_VARIANT']],\n                            architecture,\n                            os.environ['EXECUTABLE_NAME'])\n\n    # Get the full path to our custom linked archive of the project.\n    #\n    def get_linked_ufw_archive_path(self, architecture):\n        return self.get_linked_archive_path(architecture) + \".ufwbuild\"\n\n    # Get the full path to the executable of an archive.\n    #\n    def get_exe_path(self, node):\n        path = os.path.join(*node['pathComponents'])\n        if node['fileType'] == 'wrapper.framework':\n            # Frameworks are directories, so go one deeper\n            path = os.path.join(path, os.path.splitext(node['pathComponents'][-1])[0])\n        return path\n\n    # Get the path to the directory containing the archive.\n    #\n    def get_containing_path(self, node):\n        return os.path.join(*node['pathComponents'])\n    \n    def get_archive_search_paths(self):\n        log.info(\"Search paths = %s\" % set([self.get_containing_path(fw) for fw in self.static_frameworks] + [self.get_containing_path(fw) for fw in self.static_libraries]))\n        return set([self.get_containing_path(fw) for fw in self.static_frameworks] + [self.get_containing_path(fw) for fw in self.static_libraries])\n\n    # Command to link all objects of a single architecture.\n    #\n    def get_single_arch_link_command(self, architecture):\n        cmd = [self.libtool_path,\n               \"-static\",\n               \"-arch_only\", architecture,\n               \"-syslibroot\", os.environ['SDKROOT'],\n               \"-L%s\" % os.environ['TARGET_BUILD_DIR'],\n               \"-filelist\", os.environ['LINK_FILE_LIST_%s_%s' % (os.environ['CURRENT_VARIANT'], architecture)]]\n        if os.environ.get('OTHER_LDFLAGS', False):\n            cmd += [os.environ['OTHER_LDFLAGS']]\n        if os.environ.get('WARNING_LDFLAGS', False):\n            cmd += [os.environ['WARNING_LDFLAGS']]\n#        cmd += [\"-L%s\" % libpath for libpath in self.get_archive_search_paths()]\n        cmd += [self.get_exe_path(fw) for fw in self.static_frameworks]\n        cmd += [self.get_exe_path(lib) for lib in self.static_libraries]\n        cmd += [\"-o\", self.get_linked_ufw_archive_path(architecture)]\n        return cmd\n\n    # Command to link all local architectures for the current configuration\n    # into an archive. This reads all libraries + the UFW-built archives and\n    # overwrites the final product.\n    #\n    def get_local_archs_link_command(self):\n        cmd = [self.libtool_path,\n               \"-static\"]\n        cmd += self.local_linked_archive_paths\n        cmd += [self.get_exe_path(fw) for fw in self.static_frameworks]\n        cmd += [self.get_exe_path(lib) for lib in self.static_libraries]\n        cmd += [\"-o\", os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['EXECUTABLE_PATH'])]\n        return cmd\n\n    # Command to link all architectures into a universal archive.\n    # This reads all UFW-built archives and overwrites the final product.\n    #\n    def get_all_archs_link_command(self):\n        cmd = [self.libtool_path,\n               \"-static\"]\n        cmd += self.local_linked_archive_paths + self.build_state.slave_linked_archive_paths\n        cmd += [\"-o\", os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['EXECUTABLE_PATH'])]\n        return cmd\n\n    # Build up an environment for the slave process. This uses BUILD_ROOT\n    # and TEMP_ROOT to convert all environment variables to values suitable\n    # for the slave build environment so that xcodebuild doesn't try to build\n    # in the project directory under \"build\".\n    #\n    def get_slave_environment(self):\n        ignored = ['LD_MAP_FILE_PATH',\n        'HEADER_SEARCH_PATHS',\n        'LIBRARY_SEARCH_PATHS',\n        'FRAMEWORK_SEARCH_PATHS']\n        build_root = os.environ['BUILD_ROOT']\n        temp_root = os.environ['TEMP_ROOT']\n        newenv = {}\n        for key, value in os.environ.items():\n            if key not in ignored and not key.startswith('LINK_FILE_LIST_'):\n                if build_root in value or temp_root in value:\n                    newenv[key] = value.replace(self.local_platform, self.other_platform)\n        return newenv\n\n    # Command to invoke xcodebuild on the slave platform.\n    #\n    def get_slave_project_build_command(self):\n        cmd = [\"xcodebuild\",\n               \"-project\",\n               os.environ['PROJECT_FILE_PATH'],\n               \"-target\",\n               os.environ['TARGET_NAME'],\n               \"-configuration\",\n               os.environ['CONFIGURATION'],\n               \"-sdk\",\n               self.other_platform + self.sdk_version]\n        cmd += [\"%s=%s\" % (key, value) for key, value in self.get_slave_environment().items()]\n        cmd += [\"UFW_MASTER_PLATFORM=\" + os.environ['PLATFORM_NAME']]\n        cmd += [os.environ['ACTION']]\n        return cmd\n\n\n\n##############################################################################\n#\n# Utility Functions\n#\n##############################################################################\n\n# Split a path into a list of path components.\n#\ndef splitpath(path, maxdepth=20):\n     (head, tail) = os.path.split(path)\n     return splitpath(head, maxdepth - 1) + [tail] if maxdepth and head and head != path else [ head or tail ]\n\n# Remove all subdirectories under a path.\n#\ndef remove_subdirs(path, ignore_files):\n    if os.path.exists(path):\n        for filename in filter(lambda x: x not in ignore_files, os.listdir(path)):\n            fullpath = os.path.join(path, filename)\n            if os.path.isdir(fullpath):\n                log.info(\"Remove %s\" % fullpath)\n                shutil.rmtree(fullpath)\n\n# Make whatever parent paths are necessary for a path to exist.\n#\ndef ensure_path_exists(path):\n    if not os.path.isdir(path):\n        os.makedirs(path)\n\n# Make whatever parent paths are necessary for a path's parent to exist.\n#\ndef ensure_parent_exists(path):\n    parent = os.path.dirname(path)\n    if not os.path.isdir(parent):\n        os.makedirs(parent)\n\n# Remove a file or dir if it exists.\n#\ndef remove_path(path):\n    if os.path.exists(path):\n        if os.path.isdir(path):\n            shutil.rmtree(path)\n        else:\n            os.remove(path)\n\n# Move a file or dir, replacing the destination if it exists.\n#\ndef move_file(src, dst):\n    if src == dst or not os.path.isfile(src):\n        return\n    log.info(\"Move %s to %s\" % (src, dst))\n    ensure_parent_exists(dst)\n    remove_path(dst)\n    shutil.move(src, dst)\n\n# Copy a file or dir, replacing the destination if it exists already.\n#\ndef copy_overwrite(src, dst):\n    if src != dst:\n        remove_path(dst)\n        ensure_parent_exists(dst)\n        shutil.copytree(src, dst, symlinks=True)\n\n# Attempt to symlink link_path -> link_to.\n# link_to must be a path relative to link_path's parent and must exist.\n# If link_path already exists, do nothing.\n#\ndef attempt_symlink(link_path, link_to):\n    # Only allow linking to an existing file\n    os.stat(os.path.abspath(os.path.join(link_path, \"..\", link_to)))\n\n    # Only make the link if it hasn't already been made\n    if not os.path.exists(link_path):\n        log.info(\"Symlink %s -> %s\" % (link_path, link_to))\n        os.symlink(link_to, link_path)\n\n# Takes the last entry in an array-based path and returns a normal path\n# relative to base_path.\n#\ndef top_level_file_path(base_path, path_list):\n    return os.path.join(base_path, os.path.split(path_list[-1])[-1])\n\n# Takes all entries in an array-based path and returns a normal path\n# relative to base_path.\n#\ndef full_file_path(base_path, path_list):\n    return os.path.join(*([base_path] + path_list))\n\n# Print a command before executing it.\n# Also print out all output from the command to STDOUT.\n#\ndef print_and_call(cmd):\n    log.info(\"Cmd \" + \" \".join(cmd))\n    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)\n    result = p.communicate()[0]\n    if len(result) > 0:\n        log.info(result)\n    if p.returncode != 0:\n        raise subprocess.CalledProcessError(p.returncode, cmd)\n\n# Special print-and-call command for the slave build that strips out\n# xcodebuild's spammy list of environment variables.\n#\ndef print_and_call_slave_build(cmd, other_platform):\n    separator = '=== BUILD NATIVE TARGET '\n    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)\n    result = p.communicate()[0].split(separator)\n    if len(result) == 1:\n        result = result[0]\n    else:\n        result = separator + result[1]\n    log.info(\"Cmd \" + \" \".join(cmd) + \"\\n\" + result)\n    if p.returncode != 0:\n        raise subprocess.CalledProcessError(p.returncode, cmd)\n\n# Issue a warning and record that a warning has been issued.\n#\ndef issue_warning(msg, *args, **kwargs):\n    global issued_warnings\n    issued_warnings = True\n    log.warn(msg, *args, **kwargs)\n\n\n\n##############################################################################\n#\n# Main Application\n#\n##############################################################################\n\n# Check if we are running as master.\n#\ndef is_master():\n    return os.environ.get('UFW_MASTER_PLATFORM', os.environ['PLATFORM_NAME']) == os.environ['PLATFORM_NAME']\n\n# DerivedData should almost never appear in any framework, library, or header\n# search paths. However, Xcode will sometimes add them in, so we check to make\n# sure.\n#\ndef check_for_derived_data_in_search_paths(project):\n    search_path_keys = [\"FRAMEWORK_SEARCH_PATHS\", \"LIBRARY_SEARCH_PATHS\", \"HEADER_SEARCH_PATHS\"]\n    build_configs = project.target['buildConfigurationList']['buildConfigurations']\n    build_settings = filter(lambda x: x['name'] == os.environ['CONFIGURATION'], build_configs)[0]['buildSettings']\n    \n    found_something = False\n    for path_key in filter(lambda x: x in build_settings, search_path_keys):\n        path = build_settings[path_key]\n        if \"DerivedData\" in path:\n            found_something = True\n            log.warn(\"Derived data in %s\" % path)\n            issue_warning(\"'%s' contains reference to 'DerivedData'.\" % path_key)\n    if found_something:\n        log.warn(\"Check your build settings and remove any entries that contain paths inside the DerivedData folder.\")\n        log.warn(\"Otherwise you can disable this warning by changing 'config_warn_derived_data' in this script.\")\n\n# Link local architectures into their respective archives.\n#\ndef link_local_archs(project):\n    for arch in project.local_architectures:\n        print_and_call(project.get_single_arch_link_command(arch))\n\n# Link only the local architectures into the final product, not the slave\n# architectures. For iphoneos, this will be armv6, armv7. For simulator, this\n# will be i386.\n#\ndef link_combine_local_archs(project):\n    print_and_call(project.get_local_archs_link_command())\n\n# Link all architectures into the final product.\n#\ndef link_combine_all_archs(project):\n    print_and_call(project.get_all_archs_link_command())\n\n# Check if we should open the build directory after a successful build.\n#\ndef should_open_build_dir():\n    env_setting = os.environ.get('UFW_OPEN_BUILD_DIR', None)\n    if env_setting is not None:\n        return env_setting\n\n    return config_open_build_dir\n\n# Open the build dir in Finder.\n#\ndef open_build_dir():\n    print_and_call(['open', os.environ['TARGET_BUILD_DIR']])\n\n# Check if the build was started by selecting \"Archive\" under \"Product\" in\n# Xcode.\n#\ndef is_archive_build():\n    # ACTION is always 'build', but perhaps Apple will fix this someday?\n    archive_build = os.environ['ACTION'] == 'archive'\n\n    if not archive_build:\n        # This can be passed in as an env variable when building from command line.\n        archive_build = os.environ.get('UFW_ACTION', None) == 'archive'\n\n    build_dir = splitpath(os.environ['BUILD_DIR'])\n    if not archive_build:\n        # This partial path is used when you select \"archive\" from within Xcode.\n        archive_build = 'ArchiveIntermediates' in build_dir\n\n    # It only counts as a full archive build if this target is being built into\n    # its own build dir (not being built as a dependency of another target)\n    if archive_build:\n        archive_build = os.environ['TARGET_NAME'] in build_dir\n    \n    return archive_build\n\n# Xcode by default throws all public headers into the top level directory.\n# This function moves them to their expected deep hierarchy.\n#\ndef build_deep_header_hierarchy(project):\n    header_path_top = config_deep_header_top\n    if not header_path_top:\n        header_path_top = os.path.commonprefix(project.header_paths)\n    else:\n        header_path_top = splitpath(header_path_top)\n\n    built_headers_path = os.path.join(os.environ['TARGET_BUILD_DIR'], os.environ['PUBLIC_HEADERS_FOLDER_PATH'])\n    movable_headers = project.movable_headers_relative_to(header_path_top)\n\n    # Remove subdirs if they only contain files that have been rebuilt\n    ignore_headers = filter(lambda x: not os.path.isfile(top_level_file_path(built_headers_path, x)), movable_headers)\n    remove_subdirs(built_headers_path, [file[0] for file in ignore_headers])\n\n    # Move rebuilt headers into their proper subdirs\n    for header in movable_headers:\n        move_file(top_level_file_path(built_headers_path, header), full_file_path(built_headers_path, header))\n\n# Add all symlinks needed to make a full framework structure:\n#\n# MyFramework.framework\n# |-- MyFramework -> Versions/Current/MyFramework\n# |-- Headers -> Versions/Current/Headers\n# |-- Resources -> Versions/Current/Resources\n# `-- Versions\n#     |-- A\n#     |   |-- MyFramework\n#     |   |-- Headers\n#     |   |   `-- MyFramework.h\n#     |   `-- Resources\n#     |       |-- Info.plist\n#     |       |-- MyViewController.nib\n#     |       `-- en.lproj\n#     |           `-- InfoPlist.strings\n#     `-- Current -> A\n#\ndef add_symlinks_to_framework(project):\n    base_dir = project.local_built_fw_path\n    attempt_symlink(os.path.join(base_dir, \"Versions\", \"Current\"), os.environ['FRAMEWORK_VERSION'])\n    if os.path.isdir(os.path.join(base_dir, \"Versions\", \"Current\", \"Headers\")):\n        attempt_symlink(os.path.join(base_dir, \"Headers\"), os.path.join(\"Versions\", \"Current\", \"Headers\"))\n    if os.path.isdir(os.path.join(base_dir, \"Versions\", \"Current\", \"Resources\")):\n        attempt_symlink(os.path.join(base_dir, \"Resources\"), os.path.join(\"Versions\", \"Current\", \"Resources\"))\n    attempt_symlink(os.path.join(base_dir, os.environ['EXECUTABLE_NAME']), os.path.join(\"Versions\", \"Current\", os.environ['EXECUTABLE_NAME']))\n\n# Build an embedded framework structure.\n# An embedded framework contains the actual framework, plus a \"Resources\"\n# directory containing symlinks to all resources found in the actual framework,\n# with the exception of \"Info.plist\" and anything ending in \".lproj\":\n#\n# MyFramework.embeddedframework\n# |-- MyFramework.framework\n# |   |-- MyFramework -> Versions/Current/MyFramework\n# |   |-- Headers -> Versions/Current/Headers\n# |   |-- Resources -> Versions/Current/Resources\n# |   `-- Versions\n# |       |-- A\n# |       |   |-- MyFramework\n# |       |   |-- Headers\n# |       |   |   `-- MyFramework.h\n# |       |   `-- Resources\n# |       |       |-- Info.plist\n# |       |       |-- MyViewController.nib\n# |       |       `-- en.lproj\n# |       |           `-- InfoPlist.strings\n# |       `-- Current -> A\n# `-- Resources\n#     `-- MyViewController.nib -> ../MyFramework.framework/Resources/MyViewController.nib\n#\ndef build_embedded_framework(project):\n    fw_path = project.local_built_fw_path\n    embedded_path = project.local_built_embedded_fw_path\n    fw_name = os.environ['WRAPPER_NAME']\n    remove_path(embedded_path)\n    ensure_path_exists(embedded_path)\n    copy_overwrite(fw_path, os.path.join(embedded_path, fw_name))\n    ensure_path_exists(os.path.join(embedded_path, \"Resources\"))\n    symlink_source = os.path.join(\"..\", fw_name, \"Resources\")\n    symlink_path = os.path.join(embedded_path, \"Resources\")\n    if os.path.isdir(os.path.join(fw_path, \"Resources\")):\n        for file in filter(lambda x: x != \"Info.plist\" and not x.endswith(\".lproj\"), os.listdir(os.path.join(fw_path, \"Resources\"))):\n            attempt_symlink(os.path.join(symlink_path, file), os.path.join(symlink_source, file))\n\n    # Remove the normal framework and replace it with a symlink to the copy\n    # in the embedded framework. This is needed because Xcode runs its strip\n    # phase AFTER the script runs.\n    embed_fw_wrapper = os.path.splitext(os.environ['WRAPPER_NAME'])[0] + \".embeddedframework\"\n    remove_path(fw_path)\n    attempt_symlink(fw_path, os.path.join(embed_fw_wrapper, os.environ['WRAPPER_NAME']))\n\n\n# Run the build process in slave mode to build the other configuration\n# (device/simulator).\n#\ndef run_slave_build(project):\n    print_and_call_slave_build(project.get_slave_project_build_command(), project.other_platform)\n\n# Run the build process.\n#\ndef run_build():\n    project = Project(os.path.join(os.environ['PROJECT_FILE_PATH'], \"project.pbxproj\"))\n\n    # Issue warnings only if we're master.\n    if is_master():\n        if len(project.compilable_sources) == 0:\n            raise Exception(\"No compilable sources found. Please add at least one source file to build target %s.\" % os.environ['TARGET_NAME'])\n\n        if config_warn_derived_data:\n            check_for_derived_data_in_search_paths(project)\n        if config_warn_no_public_headers and len(project.public_headers) == 0:\n            issue_warning('No headers in build target %s were marked public. Please move at least one header to \"Public\" in the \"Copy Headers\" build phase.' % os.environ['TARGET_NAME'])\n\n    # Only build slave if this is an archive build.\n    if is_archive_build():\n        if is_master():\n            log.debug(\"Building as MASTER\")\n            # The slave-side linker tries to include this (nonexistent) path as\n            # a library path.\n            ensure_path_exists(project.get_slave_environment()['BUILT_PRODUCTS_DIR'])\n            project.build_state.persist()\n            run_slave_build(project)\n            project.build_state.reload()\n        else:\n            log.debug(\"Building as SLAVE\")\n            project.build_state.reload()\n            project.build_state.set_slave_properties(project.local_architectures,\n                                                     project.local_linked_archive_paths,\n                                                     project.local_built_fw_path,\n                                                     project.local_built_embedded_fw_path)\n            project.build_state.persist()\n\n    link_local_archs(project)\n    \n    # Only do a universal binary when building an archive.\n    if is_archive_build() and is_master():\n        link_combine_all_archs(project)\n    else:\n        link_combine_local_archs(project)\n\n    if config_deep_header_hierarchy:\n        build_deep_header_hierarchy(project)\n\n    add_symlinks_to_framework(project)\n    \n    if is_master():\n        if config_framework_type == 'embeddedframework':\n            build_embedded_framework(project)\n        elif config_framework_type != 'framework':\n            raise Exception(\"%s: Unknown framework type for config_framework_type\" % config_framework_type)\n\n\nif __name__ == \"__main__\":\n    log_handler = logging.StreamHandler()\n    log_handler.setFormatter(logging.Formatter(\"%(name)s (\" + os.environ['PLATFORM_NAME'] + \"): %(levelname)s: %(message)s\"))\n    log.addHandler(log_handler)\n    log.setLevel(config_log_level)\n\n    error_code = 0\n    prefix = \"M\" if is_master() else \"S\"\n    log_handler.setFormatter(logging.Formatter(\"%(name)s (\" + prefix + \" \" + os.environ['PLATFORM_NAME'] + \"): %(levelname)s: %(message)s\"))\n\n    log.debug(\"Begin build process\")\n\n    if config_deep_header_top:\n        config_deep_header_top = string.Template(config_deep_header_top).substitute(os.environ)\n\n    try:\n        run_build()\n        if issued_warnings:\n            if config_fail_on_warnings:\n                error_code = 1\n            log.warn(\"Build completed with warnings\")\n        else:\n            log.info(\"Build completed\")\n        if not is_archive_build():\n            log.info(\"Note: This is *NOT* a universal framework build. To build as a universal framework, do an archive build.\")\n            log.info(\"To do an archive build from command line, use \\\"xcodebuild -configuration Release UFW_ACTION=archive clean build\\\"\")\n    except Exception:\n        traceback.print_exc(file=sys.stdout)\n        error_code = 1\n        log.error(\"Build failed\")\n    finally:\n        if error_code == 0 and is_archive_build() and is_master():\n            log.info(\"Built framework is in \" + os.environ['TARGET_BUILD_DIR'])\n            if should_open_build_dir():\n                open_build_dir()\n        sys.exit(error_code)\n";
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_PROJ=NMSSH-iOS.xcodeproj #replace with your project name\n\n# Building iphoneos.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos -project \"${FMK_PROJ}\"\n\n# Building iphonesimulator.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator -project \"${FMK_PROJ}\"";
+		};
+		18A0966217D6A994008B76FB /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_VERSION=A   # replace with your version\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		E44F37291640FA960069424F /* Sources */ = {
+		18A0964B17D6A8C4008B76FB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E44F375A1640FADE0069424F /* NMSFTP.m in Sources */,
-				E44F375F1640FADE0069424F /* NMSSHChannel.m in Sources */,
-				E44F37611640FADE0069424F /* NMSSHSession.m in Sources */,
-				E4F1CBBD1720865E0025EBFC /* socket_helper.m in Sources */,
+				18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */,
+				18A0967217D6AA51008B76FB /* NMSFTP.m in Sources */,
+				18A0967517D6AA51008B76FB /* NMSSHChannel.m in Sources */,
+				18A0967717D6AA51008B76FB /* NMSSHSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		E44F373E1640FA960069424F /* Debug */ = {
+		18A0964617D6A85F008B76FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -622,100 +651,139 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		E44F373F1640FA960069424F /* Release */ = {
+		18A0964717D6A85F008B76FB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
-		E44F37411640FA960069424F /* Debug */ = {
+		18A0965917D6A8C4008B76FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/NMSSH-iOS/Libraries/include\"";
-				INFOPLIST_FILE = "NMSSH-iOS/NMSSH-iOS-Info.plist";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
 					"\"$(SRCROOT)/NMSSH-iOS/Libraries/lib\"",
 				);
-				PRODUCT_NAME = NMSSH;
-				SKIP_INSTALL = YES;
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = mh_object;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
 		};
-		E44F37421640FA960069424F /* Release */ = {
+		18A0965A17D6A8C4008B76FB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NMSSH/NMSSH-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/NMSSH-iOS/Libraries/include\"";
-				INFOPLIST_FILE = "NMSSH-iOS/NMSSH-iOS-Info.plist";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				INFOPLIST_FILE = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
 					"\"$(SRCROOT)/NMSSH-iOS/Libraries/lib\"",
 				);
-				PRODUCT_NAME = NMSSH;
-				SKIP_INSTALL = YES;
+				LINK_WITH_STANDARD_LIBRARIES = NO;
+				MACH_O_TYPE = mh_object;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+		18A0965F17D6A97C008B76FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		18A0966017D6A97C008B76FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E44F37271640FA960069424F /* Build configuration list for PBXProject "NMSSH-iOS" */ = {
+		18A0962617D6A85F008B76FB /* Build configuration list for PBXProject "NMSSH-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E44F373E1640FA960069424F /* Debug */,
-				E44F373F1640FA960069424F /* Release */,
+				18A0964617D6A85F008B76FB /* Debug */,
+				18A0964717D6A85F008B76FB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E44F37401640FA960069424F /* Build configuration list for PBXNativeTarget "NMSSH-iOS" */ = {
+		18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E44F37411640FA960069424F /* Debug */,
-				E44F37421640FA960069424F /* Release */,
+				18A0965917D6A8C4008B76FB /* Debug */,
+				18A0965A17D6A8C4008B76FB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18A0965E17D6A97C008B76FB /* Build configuration list for PBXAggregateTarget "NMSSH Framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18A0965F17D6A97C008B76FB /* Debug */,
+				18A0966017D6A97C008B76FB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = E44F37241640FA960069424F /* Project object */;
+	rootObject = 18A0962317D6A85F008B76FB /* Project object */;
 }
