@@ -35,6 +35,9 @@ typedef enum {
 /** A valid NMSSHSession instance */
 @property (nonatomic, readonly) NMSSHSession *session;
 
+/** Size of the buffers used by the channel, defaults to 0x4000 */
+@property (nonatomic, assign) NSUInteger bufferSize;
+
 /// ----------------------------------------------------------------------------
 /// @name Setting the Delegate
 /// ----------------------------------------------------------------------------

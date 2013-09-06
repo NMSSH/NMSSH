@@ -9,11 +9,6 @@
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
 
-#if OS_OBJECT_USE_OBJC
-@property (nonatomic, strong) dispatch_queue_t channelQueue;
-#else
-@property (nonatomic, assign) dispatch_queue_t channelQueue;
-#endif
 @end
 
 @implementation NMSSHChannel
@@ -25,9 +20,9 @@
 - (id)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
         [self setSession:session];
+        [self setBufferSize:kNMSSHBufferSize];
         [self setRequestPty:NO];
         [self setPtyTerminalType:NMSSHChannelPtyTerminalVanilla];
-        [self setChannelQueue:dispatch_queue_create("com.NMSSH.channelQueue", DISPATCH_QUEUE_CONCURRENT)];
         [self setType:NMSSHChannelTypeClosed];
 
         // Make sure we were provided a valid session
@@ -248,8 +243,8 @@
     NSMutableString *response = [[NSMutableString alloc] init];
     for (;;) {
         ssize_t rc;
-        char buffer[kNMSSHBufferSize];
-        char errorBuffer[0x4000];
+        char buffer[self.bufferSize];
+        char errorBuffer[self.bufferSize];
 
         do {
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer) - 1);
@@ -375,12 +370,13 @@
     [self setLastResponse:nil];
 
     // Fetch response from output buffer
-    dispatch_async(self.channelQueue, ^{
+    dispatch_queue_t channelQueue = dispatch_queue_create("com.NMSSH.channelQueue", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_async(channelQueue, ^{
         for (;;) {
             ssize_t rc;
             ssize_t erc;
-            char buffer[kNMSSHBufferSize];
-            char errorBuffer[0x4000];
+            char buffer[self.bufferSize];
+            char errorBuffer[self.bufferSize];
 
             do {
                 rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
@@ -433,6 +429,10 @@
             waitsocket(self.session.sock, self.session.rawSession);
         }
     });
+
+    #if !(OS_OBJECT_USE_OBJC)
+    dispatch_release(channelQueue);
+    #endif
 
     return YES;
 }
@@ -523,7 +523,7 @@
     [self setType:NMSSHChannelTypeSCP];
 
     // Wait for file transfer to finish
-    char mem[kNMSSHBufferSize];
+    char mem[self.bufferSize];
     size_t nread;
     char *ptr;
     while ((nread = fread(mem, 1, sizeof(mem), local)) > 0) {
@@ -583,7 +583,7 @@
     // Save data to local file
     off_t got = 0;
     while (got < fileinfo.st_size) {
-        char mem[kNMSSHBufferSize];
+        char mem[self.bufferSize];
         long long amount = sizeof(mem);
 
         if ((fileinfo.st_size - got) < amount) {
