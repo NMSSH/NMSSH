@@ -166,15 +166,29 @@
 - (NSData *)contentsAtPath:(NSString *)path {
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
 
+    if (!handle) {
+        return nil;
+    }
+
     char buffer[kNMSSHBufferSize];
-    long rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer));
+    NSMutableData *data = [[NSMutableData alloc] init];
+    ssize_t rc;
+    do {
+        rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer));
+
+        if (rc > 0) {
+            [data appendBytes:buffer length:rc];
+        }
+
+    } while (rc > 0 || rc == EAGAIN);
+    
     libssh2_sftp_close(handle);
 
     if (rc < 0) {
         return nil;
     }
 
-    return [NSData dataWithBytes:buffer length:rc];
+    return [data copy];
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
