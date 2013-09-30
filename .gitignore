@@ -8,3 +8,4 @@ xcuserdata
 *.plist
 NMSSH.framework
 *.xcworkspacedata
+*.xccheckout

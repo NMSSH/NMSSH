@@ -584,7 +584,7 @@
     off_t got = 0;
     while (got < fileinfo.st_size) {
         char mem[self.bufferSize];
-        long long amount = sizeof(mem);
+        size_t amount = sizeof(mem);
 
         if ((fileinfo.st_size - got) < amount) {
             amount = fileinfo.st_size - got;

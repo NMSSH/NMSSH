@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1849AE1117D6C2A200680D89 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A0963017D6A85F008B76FB /* Foundation.framework */; };
 		18A0966717D6AA3D008B76FB /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966417D6AA3D008B76FB /* NMSSHLogger.h */; };
 		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
 		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
@@ -80,7 +79,6 @@
 		18A096FD17D6AA7B008B76FB /* obj_mac.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AB17D6AA7B008B76FB /* obj_mac.h */; };
 		18A096FE17D6AA7B008B76FB /* objects.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AC17D6AA7B008B76FB /* objects.h */; };
 		18A096FF17D6AA7B008B76FB /* ocsp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AD17D6AA7B008B76FB /* ocsp.h */; };
-		18A0970017D6AA7B008B76FB /* opensslconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AE17D6AA7B008B76FB /* opensslconf.h */; };
 		18A0970117D6AA7B008B76FB /* opensslv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096AF17D6AA7B008B76FB /* opensslv.h */; };
 		18A0970217D6AA7B008B76FB /* ossl_typ.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B017D6AA7B008B76FB /* ossl_typ.h */; };
 		18A0970317D6AA7B008B76FB /* pem.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A096B117D6AA7B008B76FB /* pem.h */; };
@@ -116,7 +114,6 @@
 		18A0972117D6AA7B008B76FB /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D017D6AA7B008B76FB /* libcrypto.a */; };
 		18A0972217D6AA7C008B76FB /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D117D6AA7B008B76FB /* libssh2.a */; };
 		18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D217D6AA7B008B76FB /* libssl.a */; };
-		18A0972517D6AAA8008B76FB /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A0972417D6AAA8008B76FB /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -180,7 +177,6 @@
 		18A096AB17D6AA7B008B76FB /* obj_mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = obj_mac.h; sourceTree = "<group>"; };
 		18A096AC17D6AA7B008B76FB /* objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objects.h; sourceTree = "<group>"; };
 		18A096AD17D6AA7B008B76FB /* ocsp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocsp.h; sourceTree = "<group>"; };
-		18A096AE17D6AA7B008B76FB /* opensslconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslconf.h; sourceTree = "<group>"; };
 		18A096AF17D6AA7B008B76FB /* opensslv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslv.h; sourceTree = "<group>"; };
 		18A096B017D6AA7B008B76FB /* ossl_typ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ossl_typ.h; sourceTree = "<group>"; };
 		18A096B117D6AA7B008B76FB /* pem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pem.h; sourceTree = "<group>"; };
@@ -224,8 +220,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1849AE1117D6C2A200680D89 /* Foundation.framework in Frameworks */,
-				18A0972517D6AAA8008B76FB /* libz.dylib in Frameworks */,
 				18A0972117D6AA7B008B76FB /* libcrypto.a in Frameworks */,
 				18A0972217D6AA7C008B76FB /* libssh2.a in Frameworks */,
 				18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */,
@@ -380,7 +374,6 @@
 				18A096AB17D6AA7B008B76FB /* obj_mac.h */,
 				18A096AC17D6AA7B008B76FB /* objects.h */,
 				18A096AD17D6AA7B008B76FB /* ocsp.h */,
-				18A096AE17D6AA7B008B76FB /* opensslconf.h */,
 				18A096AF17D6AA7B008B76FB /* opensslv.h */,
 				18A096B017D6AA7B008B76FB /* ossl_typ.h */,
 				18A096B117D6AA7B008B76FB /* pem.h */,
@@ -487,7 +480,6 @@
 				18A096FD17D6AA7B008B76FB /* obj_mac.h in Headers */,
 				18A096FE17D6AA7B008B76FB /* objects.h in Headers */,
 				18A096FF17D6AA7B008B76FB /* ocsp.h in Headers */,
-				18A0970017D6AA7B008B76FB /* opensslconf.h in Headers */,
 				18A0970117D6AA7B008B76FB /* opensslv.h in Headers */,
 				18A0970217D6AA7B008B76FB /* ossl_typ.h in Headers */,
 				18A0970317D6AA7B008B76FB /* pem.h in Headers */,
@@ -607,7 +599,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_VERSION=A   # replace with your version\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"";
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_VERSION=A   # replace with your version\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=${SRCROOT}/Products/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -687,6 +679,7 @@
 		18A0965917D6A8C4008B76FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -713,6 +706,7 @@
 		18A0965A17D6A8C4008B76FB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -740,6 +734,7 @@
 		18A0965F17D6A97C008B76FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -747,6 +742,7 @@
 		18A0966017D6A97C008B76FB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
