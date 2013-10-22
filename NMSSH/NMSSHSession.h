@@ -192,6 +192,14 @@ In it's simplest form it works like this:
  */
 - (BOOL)connectToAgent;
 
+
+/**
+ * Setup and connect to an SSH agent
+ *
+ * @returns Array of string descripting supported authentication methods
+ */
+- (NSArray *)supportedAuthenticationMethods;
+
 /// ----------------------------------------------------------------------------
 /// @name Quick channel/sftp access
 /// ----------------------------------------------------------------------------
