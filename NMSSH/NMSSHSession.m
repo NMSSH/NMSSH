@@ -241,16 +241,16 @@
 }
 
 - (void)disconnect {
-    if (self.channel) {
-        if ([self.channel type] == NMSSHChannelTypeShell) {
-            [self.channel closeShell];
+    if (_channel) {
+        if ([_channel type] == NMSSHChannelTypeShell) {
+            [_channel closeShell];
         }
         [self setChannel:nil];
     }
 
-    if (self.sftp) {
-        if ([self.sftp isConnected]) {
-            [self.sftp disconnect];
+    if (_sftp) {
+        if ([_sftp isConnected]) {
+            [_sftp disconnect];
         }
         [self setSftp:nil];
     }
