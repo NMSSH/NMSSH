@@ -1,6 +1,6 @@
 #import "NMSSHChannelDelegate.h"
 
-enum {
+typedef NS_ENUM(NSInteger, NMSSHChannelError) {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,
     NMSSHChannelRequestPtyError,
@@ -11,21 +11,21 @@ enum {
     NMSSHChannelReadError
 };
 
-typedef enum {
+typedef NS_ENUM(NSInteger, NMSSHChannelPtyTerminal) {
     NMSSHChannelPtyTerminalVanilla,
     NMSSHChannelPtyTerminalVT100,
     NMSSHChannelPtyTerminalVT102,
     NMSSHChannelPtyTerminalVT220,
     NMSSHChannelPtyTerminalAnsi
-} NMSSHChannelPtyTerminal;
+};
 
-typedef enum {
+typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
     NMSSHChannelTypeClosed, // Channel = NULL
     NMSSHChannelTypeExec,
     NMSSHChannelTypeShell,
     NMSSHChannelTypeSCP,
     NMSSHChannelTypeSubsystem // Not supported by NMSSH framework
-} NMSSHChannelType;
+};
 
 /**
  * NMSSHChannel provides functionality to work with SSH shells and SCP.
