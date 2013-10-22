@@ -12,3 +12,5 @@
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
 #import "NMSFTP.h"
+
+#import "NMSSHLogger.h"

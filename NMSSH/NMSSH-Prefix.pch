@@ -2,8 +2,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class NMSSHChannel, NMSSHSession, NMSFTP;
-#import "NMSSHLogger.h"
 #import "NMSSH.h"
 
 #endif
