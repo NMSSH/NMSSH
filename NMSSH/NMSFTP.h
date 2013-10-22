@@ -180,4 +180,15 @@
  */
 - (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path;
 
+/**
+ * Append contents to the end of a file
+ *
+ * If no file exists, one is created.
+ *
+ * @param inputStream Stream to write bytes from
+ * @param path File path to write bytes at
+ * @returns Append success
+ */
+- (BOOL)appendStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path;
+
 @end

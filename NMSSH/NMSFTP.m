@@ -211,14 +211,63 @@
 
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
                                                     LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
-                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
-                                                    LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
     if (!handle) {
         [inputStream close];
         NMSSHLogError(@"NMSSH: Unable to open file %@", path);
         return NO;
     }
 
+    BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
+
+    libssh2_sftp_close(handle);
+    [inputStream close];
+
+    return success;
+}
+
+- (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
+    return [self appendStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path];
+}
+
+- (BOOL)appendStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
+    if ([inputStream streamStatus] == NSStreamStatusNotOpen) {
+        [inputStream open];
+    }
+
+    if (![inputStream hasBytesAvailable]) {
+        NMSSHLogWarn(@"NMSSH: No bytes available in the stream");
+        return NO;
+    }
+
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
+                                                    LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_READ,
+                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+    if (!handle) {
+        [inputStream close];
+        NMSSHLogError(@"NMSSH: Unable to open file %@", path);
+        return NO;
+    }
+
+    LIBSSH2_SFTP_ATTRIBUTES attributes;
+    if (libssh2_sftp_fstat(handle, &attributes) < 0) {
+        [inputStream close];
+        NMSSHLogError(@"NMSSH: Unable to get attributes of file %@", path);
+        return NO;
+    }
+
+    libssh2_sftp_seek64(handle, attributes.filesize);
+    NMSSHLogVerbose(@"NMSSH: Seek to position %ld", (long)attributes.filesize);
+
+    BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
+
+    libssh2_sftp_close(handle);
+    [inputStream close];
+
+    return success;
+}
+
+- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle {
     uint8_t buffer[kNMSSHBufferSize];
     NSInteger bytesRead = -1;
     long rc = 0;
@@ -231,29 +280,11 @@
         }
     }
 
-    libssh2_sftp_close(handle);
-    [inputStream close];
-
     if (bytesRead < 0 || rc < 0) {
         return NO;
     }
 
     return YES;
-}
-
-- (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
-    // The reason for reading, appending and writing instead of using the
-    // LIBSSH2_FXF_APPEND flag on libssh2_sftp_open is because the flag doesn't
-    // seem to be reliable accross a variety of hosts.
-    NSData *originalContents = [self contentsAtPath:path];
-    if (!originalContents) {
-        return NO;
-    }
-
-    NSMutableData *newContents = [originalContents mutableCopy];
-    [newContents appendData:contents];
-
-    return [self writeContents:newContents toFileAtPath:path];
 }
 
 @end
