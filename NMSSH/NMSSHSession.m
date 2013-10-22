@@ -405,15 +405,14 @@
 
 
 - (NSArray *)supportedAuthenticationMethods {
-	char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
+    char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
-	if (userauthlist == NULL){
+    if (userauthlist == NULL){
         NMSSHLogInfo(@"NMSSH: Failed to get authentication method for %@", _host);
-		return nil;
-	}
-	
+        return nil;
+    }
+    
     return [[NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding] componentsSeparatedByString:@","];
-	
 }
 
 - (BOOL)supportsAuthenticationMethod:(NSString *)method {
