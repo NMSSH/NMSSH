@@ -194,7 +194,7 @@ In it's simplest form it works like this:
 
 
 /**
- * Setup and connect to an SSH agent
+ * Get supported authentication methods
  *
  * @returns Array of string descripting supported authentication methods
  */
