@@ -148,6 +148,28 @@
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path;
 
 /**
+ * Overwrite the contents of a file
+ *
+ * If no file exists, one is created.
+ *
+ * @param localPath File path to read bytes at
+ * @param path File path to write bytes at
+ * @returns Write success
+ */
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path;
+
+/**
+ * Overwrite the contents of a file
+ *
+ * If no file exists, one is created.
+ *
+ * @param inputStream Stream to read bytes from
+ * @param path File path to write bytes at
+ * @returns Write success
+ */
+- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path;
+
+/**
  * Append contents to the end of a file
  *
  * If no file exists, one is created.

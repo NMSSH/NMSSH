@@ -192,15 +192,48 @@
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
+    return [self writeStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path];
+}
+
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path {
+    return [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath] toFileAtPath:path];
+}
+
+- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
+    if ([inputStream streamStatus] == NSStreamStatusNotOpen) {
+        [inputStream open];
+    }
+
+    if (![inputStream hasBytesAvailable]) {
+        NMSSHLogWarn(@"NMSSH: No bytes available in the stream");
+        return NO;
+    }
+
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
-                      LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
-                      LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
-                      LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+                                                    LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
+                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
+                                                    LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
 
-    long rc = libssh2_sftp_write(handle, [contents bytes], [contents length]);
+    uint8_t buffer[kNMSSHBufferSize];
+    NSInteger bytesRead = -1;
+    long rc = 0;
+
+    while (rc >= 0 && [inputStream hasBytesAvailable]) {
+        bytesRead = [inputStream read:buffer maxLength:kNMSSHBufferSize];
+
+        if (bytesRead > 0) {
+            rc = libssh2_sftp_write(handle, (const char *)buffer, bytesRead);
+        }
+    }
+
     libssh2_sftp_close(handle);
+    [inputStream close];
 
-    return rc > 0;
+    if (bytesRead < 0 || rc < 0) {
+        return NO;
+    }
+
+    return YES;
 }
 
 - (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
