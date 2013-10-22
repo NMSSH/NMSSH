@@ -213,6 +213,11 @@
                                                     LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
                                                     LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|
                                                     LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+    if (!handle) {
+        [inputStream close];
+        NMSSHLogError(@"NMSSH: Unable to open file %@", path);
+        return NO;
+    }
 
     uint8_t buffer[kNMSSHBufferSize];
     NSInteger bytesRead = -1;
