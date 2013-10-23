@@ -192,6 +192,14 @@ In it's simplest form it works like this:
  */
 - (BOOL)connectToAgent;
 
+
+/**
+ * Get supported authentication methods
+ *
+ * @returns Array of string descripting supported authentication methods
+ */
+- (NSArray *)supportedAuthenticationMethods;
+
 /// ----------------------------------------------------------------------------
 /// @name Quick channel/sftp access
 /// ----------------------------------------------------------------------------
