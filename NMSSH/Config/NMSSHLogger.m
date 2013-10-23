@@ -8,9 +8,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 };
 
 @interface NMSSHLogger ()
-
 @property (nonatomic, copy) void (^logBlockBackup)(NMSSHLogLevel level, NSString *format);
-
 @end
 
 @implementation NMSSHLogger

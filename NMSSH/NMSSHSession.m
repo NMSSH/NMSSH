@@ -412,21 +412,14 @@
         return nil;
     }
     
-    return [[NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding] componentsSeparatedByString:@","];
+    NSString *authList = [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding];
+    NMSSHLogVerbose(@"NMSSH: User auth list: %@", authList);
+    
+    return [authList componentsSeparatedByString:@","];
 }
 
 - (BOOL)supportsAuthenticationMethod:(NSString *)method {
-    char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
-                                               (unsigned int)strlen([self.username UTF8String]));
-
-    if (userauthlist == NULL || strstr(userauthlist, [method UTF8String]) == NULL) {
-        NMSSHLogInfo(@"NMSSH: Authentication by %@ not available for %@", method, _host);
-        return NO;
-    }
-
-    NMSSHLogVerbose(@"NMSSH: User auth list: %@", [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding]);
-
-    return YES;
+    return [[self supportedAuthenticationMethods] containsObject:method];
 }
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {

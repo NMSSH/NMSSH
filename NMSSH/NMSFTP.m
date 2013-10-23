@@ -37,7 +37,9 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)connect {
+    // Set blocking mode
     libssh2_session_set_blocking(self.session.rawSession, 1);
+
     [self setSftpSession:libssh2_sftp_init(self.session.rawSession)];
 
     if (!self.sftpSession) {
@@ -60,9 +62,7 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath {
-    long rc = libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]);
-
-    return rc == 0;
+    return libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]) == 0;
 }
 
 // -----------------------------------------------------------------------------
@@ -70,15 +70,14 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)directoryExistsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
-                                                    LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
     LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
 
     if (!handle) {
         return NO;
     }
 
-    long rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    int rc = libssh2_sftp_fstat(handle, &fileAttributes);
     libssh2_sftp_close(handle);
 
     return rc == 0 && LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
@@ -86,9 +85,9 @@
 
 - (BOOL)createDirectoryAtPath:(NSString *)path {
     int rc = libssh2_sftp_mkdir(self.sftpSession, [path UTF8String],
-                            LIBSSH2_SFTP_S_IRWXU|
-                            LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IXGRP|
-                            LIBSSH2_SFTP_S_IROTH|LIBSSH2_SFTP_S_IXOTH);
+                                LIBSSH2_SFTP_S_IRWXU|
+                                LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IXGRP|
+                                LIBSSH2_SFTP_S_IROTH|LIBSSH2_SFTP_S_IXOTH);
 
     return rc == 0;
 }
@@ -114,20 +113,23 @@
         LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
 
         rc = libssh2_sftp_readdir(handle, buffer, sizeof(buffer), &fileAttributes);
-        if (rc <= 0) {
-            break;
-        }
 
-        NSString *fileName = [NSString stringWithUTF8String:buffer];
-        if (![ignoredFiles containsObject:fileName]) {
-            // Append a "/" at the end of all directories
-            if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
-                fileName = [fileName stringByAppendingString:@"/"];
+        if (rc > 0) {
+            NSString *fileName = [NSString stringWithUTF8String:buffer];
+            if (![ignoredFiles containsObject:fileName]) {
+                // Append a "/" at the end of all directories
+                if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
+                    fileName = [fileName stringByAppendingString:@"/"];
+                }
+                
+                [contents addObject:fileName];
             }
-
-            [contents addObject:fileName];
         }
-    } while (1);
+    } while (rc > 0);
+
+    if (rc < 0) {
+        NMSSHLogError(@"NMSSH: Unable to read directory");
+    }
 
     libssh2_sftp_closedir(handle);
 
@@ -146,7 +148,7 @@
         return NO;
     }
 
-    long rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    int rc = libssh2_sftp_fstat(handle, &fileAttributes);
     libssh2_sftp_close(handle);
 
     return rc == 0 && !LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
@@ -181,7 +183,7 @@
         }
 
     } while (rc > 0 || rc == EAGAIN);
-    
+
     libssh2_sftp_close(handle);
 
     if (rc < 0) {
