@@ -493,6 +493,9 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
+    // Set non-blocking mode
+    libssh2_session_set_blocking(self.session.rawSession, 0);
+
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory
@@ -511,27 +514,33 @@
     // Try to send a file via SCP.
     struct stat fileinfo;
     stat([localPath UTF8String], &fileinfo);
-    [self setChannel:libssh2_scp_send(self.session.rawSession, [remotePath UTF8String],
-                                      fileinfo.st_mode & 0644,
-                                      (unsigned long)fileinfo.st_size)];
+    LIBSSH2_CHANNEL *channel = NULL;
+    do {
+        channel = libssh2_scp_send64(self.session.rawSession, [remotePath UTF8String], fileinfo.st_mode & 0644,
+                                     (unsigned long)fileinfo.st_size, 0, 0);
+    } while (!channel && libssh2_session_last_errno(self.session.rawSession) == LIBSSH2_ERROR_EAGAIN);
 
-    if (self.channel == NULL) {
+    if (channel == NULL) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
+    [self setChannel:channel];
     [self setType:NMSSHChannelTypeSCP];
 
     // Wait for file transfer to finish
     char mem[self.bufferSize];
     size_t nread;
     char *ptr;
+    long rc;
     while ((nread = fread(mem, 1, sizeof(mem), local)) > 0) {
         ptr = mem;
 
         do {
             // Write the same data over and over, until error or completion
-            long rc = libssh2_channel_write(self.channel, ptr, nread);
+            while ((rc = libssh2_channel_write(self.channel, ptr, nread)) == LIBSSH2_ERROR_EAGAIN) {
+                waitsocket(self.session.sock, self.session.rawSession);
+            }
 
             if (rc < 0) {
                 NMSSHLogError(@"NMSSH: Failed writing file");
@@ -545,6 +554,16 @@
             }
         } while (nread);
     };
+    
+    while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
+        waitsocket(self.session.sock, self.session.rawSession);
+    }
+    
+    if (rc == 0) {
+        while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
+            waitsocket(self.session.sock, self.session.rawSession);
+        }
+    }
 
     [self closeChannel];
 
@@ -552,6 +571,9 @@
 }
 
 - (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
+    // Set non-blocking mode
+    libssh2_session_set_blocking(self.session.rawSession, 0);
+
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory
@@ -562,14 +584,17 @@
 
     // Request a file via SCP
     struct stat fileinfo;
-    [self setChannel:libssh2_scp_recv(self.session.rawSession, [remotePath UTF8String],
-                                      &fileinfo)];
+    LIBSSH2_CHANNEL *channel = NULL;
+    do {
+        channel = libssh2_scp_recv(self.session.rawSession, [remotePath UTF8String], &fileinfo);
+    } while (!channel && libssh2_session_last_errno(self.session.rawSession) == LIBSSH2_ERROR_EAGAIN);
 
-    if (self.channel == NULL) {
+    if (channel == NULL) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         return NO;
     }
 
+    [self setChannel:channel];
     [self setType:NMSSHChannelTypeSCP];
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
@@ -594,6 +619,10 @@
 
         if (rc > 0) {
             write(localFile, mem, rc);
+            got += rc;
+        }
+        else if (rc == LIBSSH2_ERROR_EAGAIN) {
+            waitsocket(self.session.sock, self.session.rawSession);
         }
         else if (rc < 0) {
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
@@ -604,7 +633,6 @@
         }
 
         memset(mem, 0x0, sizeof(mem));
-        got += rc;
     }
 
     close(localFile);
