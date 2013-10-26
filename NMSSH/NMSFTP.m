@@ -115,7 +115,7 @@
         rc = libssh2_sftp_readdir(handle, buffer, sizeof(buffer), &fileAttributes);
 
         if (rc > 0) {
-			NSString *fileName = [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding];
+            NSString *fileName = [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding];
             if (![ignoredFiles containsObject:fileName]) {
                 // Append a "/" at the end of all directories
                 if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {

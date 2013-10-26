@@ -514,6 +514,7 @@
 
     if (channel == NULL) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
+        fclose(local);
         return NO;
     }
 
@@ -557,6 +558,7 @@
         }
     }
 
+    fclose(local);
     [self closeChannel];
 
     return YES;
