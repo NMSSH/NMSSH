@@ -547,16 +547,6 @@
             }
         } while (nread);
     };
-    
-    while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-        waitsocket(self.session.sock, self.session.rawSession);
-    }
-    
-    if (rc == 0) {
-        while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
-        }
-    }
 
     fclose(local);
     [self closeChannel];
