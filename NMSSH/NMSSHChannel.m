@@ -104,17 +104,6 @@
 - (void)closeChannel {
     if (self.channel) {
         int rc;
-        if (self.type == NMSSHChannelTypeShell) {
-            while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-                waitsocket(self.session.sock, self.session.rawSession);
-            }
-
-            if (rc == 0) {
-                while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
-                    waitsocket(self.session.sock, self.session.rawSession);
-                }
-            }
-        }
 
         while ((rc = libssh2_channel_close(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
             waitsocket(self.session.sock, self.session.rawSession);
@@ -430,6 +419,20 @@
 }
 
 - (void)closeShell {
+    if (self.type == NMSSHChannelTypeShell) {
+        int rc;
+        
+        while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
+            waitsocket(self.session.sock, self.session.rawSession);
+        }
+        
+        if (rc == 0) {
+            while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
+                waitsocket(self.session.sock, self.session.rawSession);
+            }
+        }
+    }
+    
     [self closeChannel];
 }
 
