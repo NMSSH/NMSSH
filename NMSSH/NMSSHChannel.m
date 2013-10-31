@@ -250,20 +250,15 @@
             rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer) - 1);
 
             if (rc > 0) {
-                buffer[rc] = '\0';
-                [response appendFormat:@"%s", buffer];
+                [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
             }
 
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
                     ssize_t erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
-
-                    if (erc > 0) {
-                        errorBuffer[erc] = '\0';
-                    }
-
-                    NSString *desc = [NSString stringWithUTF8String:errorBuffer];
+                    
+                    NSString *desc = [[NSString alloc] initWithBytes:errorBuffer length:erc encoding:NSUTF8StringEncoding];
                     if (!desc) {
                         desc = @"An unspecified error occurred";
                     }
@@ -279,8 +274,7 @@
 
             if (libssh2_channel_eof(self.channel) == 1 || rc == 0) {
                 while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
-                    buffer[rc] = '\0';
-                    [response appendFormat:@"%s", buffer];
+                    [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
                 }
 
                 [self setLastResponse:[response copy]];
@@ -302,8 +296,7 @@
                 }
 
                 while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
-                    buffer[rc] = '\0';
-                    [response appendFormat:@"%s", buffer];
+                    [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
                 }
 
                 [self setLastResponse:[response copy]];
@@ -400,8 +393,7 @@
                     buffer[rc] = '\0';
                     NSMutableString *response = [[NSMutableString alloc] initWithFormat:@"%s", buffer];
                     while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
-                        buffer[rc] = '\0';
-                        [response appendFormat:@"%s", buffer];
+                        [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
                     }
 
                     [self setLastResponse:[response copy]];
@@ -522,6 +514,7 @@
 
     if (channel == NULL) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
+        fclose(local);
         return NO;
     }
 
@@ -565,6 +558,7 @@
         }
     }
 
+    fclose(local);
     [self closeChannel];
 
     return YES;
