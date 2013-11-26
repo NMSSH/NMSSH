@@ -101,7 +101,7 @@ In it's simplest form it works like this:
 @property (nonatomic, readonly, getter = rawSession) LIBSSH2_SESSION *session;
 
 /** Raw session socket. */
-@property (nonatomic, readonly) int sock;
+@property (nonatomic, readonly) CFSocketRef socket;
 
 /// ----------------------------------------------------------------------------
 /// @name Open/Close a connection to the server

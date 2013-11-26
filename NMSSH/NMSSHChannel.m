@@ -9,6 +9,7 @@
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
 
+@property (nonatomic, strong) dispatch_source_t source;
 @end
 
 @implementation NMSSHChannel
@@ -47,7 +48,7 @@
     while ((channel = libssh2_channel_open_session(self.session.rawSession)) == NULL &&
            libssh2_session_last_error(self.session.rawSession, NULL, NULL, 0) ==
            LIBSSH2_ERROR_EAGAIN) {
-        waitsocket(self.session.sock, self.session.rawSession);
+        waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
     }
 
     if (channel == NULL){
@@ -70,7 +71,7 @@
         for (NSString *key in self.environmentVariables) {
             if ([key isKindOfClass:[NSString class]] && [[self.environmentVariables objectForKey:key] isKindOfClass:[NSString class]]) {
                 while ((rc = libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
-                    waitsocket(self.session.sock, self.session.rawSession);
+                    waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
                 }
             }
         }
@@ -79,7 +80,7 @@
     // If requested, try to allocate a pty
     if (self.requestPty) {
         while ((rc = libssh2_channel_request_pty(self.channel, self.ptyTerminalName)) == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
+            waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
         }
 
         if (rc != 0) {
@@ -106,12 +107,12 @@
         int rc;
 
         while ((rc = libssh2_channel_close(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
+            waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
         }
-        
+
         if (rc == 0) {
             while (libssh2_channel_wait_closed(self.channel) == LIBSSH2_ERROR_EAGAIN) {
-                waitsocket(self.session.sock, self.session.rawSession);
+                waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
             }
         }
 
@@ -182,6 +183,9 @@
 
         case NMSSHChannelPtyTerminalAnsi:
             return "ansi";
+
+        case NMSSHChannelPtyTerminalXterm:
+            return "xterm";
     }
 
     // catch invalid values
@@ -209,7 +213,7 @@
 
     // Try executing command
     while ((rc = libssh2_channel_exec(self.channel, [command UTF8String])) == LIBSSH2_ERROR_EAGAIN) {
-        waitsocket(self.session.sock, self.session.rawSession);
+        waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
     }
 
     if (rc != 0) {
@@ -236,17 +240,17 @@
         char errorBuffer[self.bufferSize];
 
         do {
-            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer) - 1);
+            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer));
 
             if (rc > 0) {
-                [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
+                [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding]];
             }
 
             // Store all errors that might occur
             if (libssh2_channel_get_exit_status(self.channel)) {
                 if (error) {
-                    ssize_t erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
-                    
+                    ssize_t erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer));
+
                     NSString *desc = [[NSString alloc] initWithBytes:errorBuffer length:erc encoding:NSUTF8StringEncoding];
                     if (!desc) {
                         desc = @"An unspecified error occurred";
@@ -262,7 +266,7 @@
             }
 
             if (libssh2_channel_eof(self.channel) == 1 || rc == 0) {
-                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) > 0) {
                     [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
                 }
 
@@ -284,7 +288,7 @@
                                              userInfo:userInfo];
                 }
 
-                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
+                while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) > 0) {
                     [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
                 }
 
@@ -299,7 +303,7 @@
             break;
         }
 
-        waitsocket(self.session.sock, self.session.rawSession);
+        waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
     }
 
     // If we've got this far, it means fetching execution response failed
@@ -332,7 +336,7 @@
 
     // Try opening the shell
     while ((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-        waitsocket([self.session sock], [self.session rawSession]);
+        waitsocket(CFSocketGetNative([self.session socket]), [self.session rawSession]);
     }
 
     if (rc != 0) {
@@ -352,68 +356,41 @@
     [self setLastResponse:nil];
 
     // Fetch response from output buffer
-    dispatch_queue_t channelQueue = dispatch_queue_create("com.NMSSH.channelQueue", DISPATCH_QUEUE_CONCURRENT);
-    dispatch_async(channelQueue, ^{
-        for (;;) {
-            ssize_t rc;
-            ssize_t erc;
-            char buffer[self.bufferSize];
-            char errorBuffer[self.bufferSize];
+#if !(OS_OBJECT_USE_OBJC)
+    if (self.source) {
+        dispatch_release(self.source);
+    }
+#endif
 
-            do {
-                rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1);
-                erc = libssh2_channel_read_stderr(self.channel, errorBuffer, (ssize_t)sizeof(errorBuffer)-1);
+    self.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, CFSocketGetNative([self.session socket]),
+                                         0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
+    dispatch_source_set_event_handler(self.source, ^{
+        NMSSHLogVerbose(@"NMSSH: Data available on the socket!");
+        int rc;
+        NSMutableString *response = [[NSMutableString alloc] init];
+        char buffer[self.bufferSize];
 
-                // A new error has been read
-                if (erc > 0) {
-                    errorBuffer[erc] = '\0';
-                    NSString *error = [NSString stringWithFormat:@"%s", errorBuffer];
-
-                    if (self.delegate) {
-                        [self.delegate channel:self didReadError:error];
-                    }
-                    else {
-                        NMSSHLogError(@"NMSSH: Received error from shell '%@'", error);
-                    }
+        while (self.channel != NULL && (rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0) {
+            NMSSHLogVerbose(@"NMSSH: %zi bytes read.", rc);
+            if (rc > 0) {
+                [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding]];
+                [self setLastResponse:[response copy]];
+                if (self.delegate) {
+                    [self.delegate channel:self didReadData:self.lastResponse];
                 }
-
-                // A new message has been read
-                if (rc > 0) {
-                    buffer[rc] = '\0';
-                    NSMutableString *response = [[NSMutableString alloc] initWithFormat:@"%s", buffer];
-                    while ((rc  = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer)-1)) > 0) {
-                        [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding] ];
-                    }
-
-                    [self setLastResponse:[response copy]];
-
-                    if (self.delegate) {
-                        [self.delegate channel:self didReadData:self.lastResponse];
-                    }
-                }
-
-                // Check if the channel is closed
-                if (rc == LIBSSH2_ERROR_CHANNEL_CLOSED || self.channel == NULL || libssh2_channel_eof(self.channel) == 1) {
-                    if (libssh2_channel_eof(self.channel) == 1) {
-                        [self closeChannel];
-                    }
-
-                    NMSSHLogVerbose(@"NMSSH: Channel closed, stop reading");
-                    return ;
-                }
-            } while (rc > 0);
-
-            if (rc != LIBSSH2_ERROR_EAGAIN) {
-                break;
+                [response setString:@""];
             }
-
-            waitsocket(self.session.sock, self.session.rawSession);
+            else if (libssh2_channel_eof(self.channel) == 1) {
+                NMSSHLogVerbose(@"NMSSH: Host EOF received, closing channel...");
+                [self closeShell];
+                return;
+            }
         }
     });
-
-    #if !(OS_OBJECT_USE_OBJC)
-    dispatch_release(channelQueue);
-    #endif
+    dispatch_source_set_cancel_handler(self.source, ^{
+        NMSSHLogVerbose(@"NMSSH: Shell source cancelled");
+    });
+    dispatch_resume(self.source);
 
     return YES;
 }
@@ -421,18 +398,30 @@
 - (void)closeShell {
     if (self.type == NMSSHChannelTypeShell) {
         int rc;
+
+        dispatch_source_cancel(self.source);
         
+#if !(OS_OBJECT_USE_OBJC)
+        if (self.source) {
+            dispatch_release(self.source);
+        }
+#endif
+
         while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
+            waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
         }
         
+        NMSSHLogVerbose(@"NMSSH: Sent EOF to host (return code = %i)", rc);
+
         if (rc == 0) {
             while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
-                waitsocket(self.session.sock, self.session.rawSession);
+                waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
             }
+            
+            NMSSHLogVerbose(@"NMSSH: Received host acknowledge for EOF (return code = %i)", rc);
         }
     }
-    
+
     [self closeChannel];
 }
 
@@ -467,7 +456,7 @@
             return NO;
         }
 
-        waitsocket(self.session.sock, self.session.rawSession);
+        waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
     }
 
     if (rc < 0) {
@@ -488,15 +477,12 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
-    // Set non-blocking mode
-    libssh2_session_set_blocking(self.session.rawSession, 0);
-
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory
     if ([remotePath hasSuffix:@"/"]) {
         remotePath = [remotePath stringByAppendingString:
-                     [[localPath componentsSeparatedByString:@"/"] lastObject]];
+                      [[localPath componentsSeparatedByString:@"/"] lastObject]];
     }
 
     // Read local file
@@ -535,7 +521,7 @@
         do {
             // Write the same data over and over, until error or completion
             while ((rc = libssh2_channel_write(self.channel, ptr, nread)) == LIBSSH2_ERROR_EAGAIN) {
-                waitsocket(self.session.sock, self.session.rawSession);
+                waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
             }
 
             if (rc < 0) {
@@ -550,14 +536,14 @@
             }
         } while (nread);
     };
-    
+
     while ((rc = libssh2_channel_send_eof(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
-        waitsocket(self.session.sock, self.session.rawSession);
+        waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
     }
-    
+
     if (rc == 0) {
         while (libssh2_channel_wait_eof(self.channel) == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
+            waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
         }
     }
 
@@ -568,15 +554,12 @@
 }
 
 - (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
-    // Set non-blocking mode
-    libssh2_session_set_blocking(self.session.rawSession, 0);
-
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory
     if ([localPath hasSuffix:@"/"]) {
         localPath = [localPath stringByAppendingString:
-                    [[remotePath componentsSeparatedByString:@"/"] lastObject]];
+                     [[remotePath componentsSeparatedByString:@"/"] lastObject]];
     }
 
     // Request a file via SCP
@@ -595,7 +578,7 @@
     [self setType:NMSSHChannelTypeSCP];
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
-        NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten.", localPath);
+        NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten", localPath);
         [[NSFileManager defaultManager] removeItemAtPath:localPath error:nil];
     }
 
@@ -619,7 +602,7 @@
             got += rc;
         }
         else if (rc == LIBSSH2_ERROR_EAGAIN) {
-            waitsocket(self.session.sock, self.session.rawSession);
+            waitsocket(CFSocketGetNative([self.session socket]), self.session.rawSession);
         }
         else if (rc < 0) {
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
