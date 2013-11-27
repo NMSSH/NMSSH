@@ -366,19 +366,26 @@
                                          0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0));
     dispatch_source_set_event_handler(self.source, ^{
         NMSSHLogVerbose(@"NMSSH: Data available on the socket!");
-        int rc;
+        ssize_t rc, erc;
         NSMutableString *response = [[NSMutableString alloc] init];
         char buffer[self.bufferSize];
 
-        while (self.channel != NULL && (rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0) {
-            NMSSHLogVerbose(@"NMSSH: %zi bytes read.", rc);
+        while (self.channel != NULL &&
+               ((rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0 ||
+               (erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0)) {
+
             if (rc > 0) {
-                [response appendFormat:@"%@", [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding]];
+                [response setString:[[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding]];
                 [self setLastResponse:[response copy]];
                 if (self.delegate) {
                     [self.delegate channel:self didReadData:self.lastResponse];
                 }
-                [response setString:@""];
+            }
+            else if (erc > 0) {
+                [response setString:[[NSString alloc] initWithBytes:buffer length:erc encoding:NSUTF8StringEncoding]];
+                if (self.delegate) {
+                    [self.delegate channel:self didReadError:[response copy]];
+                }
             }
             else if (libssh2_channel_eof(self.channel) == 1) {
                 NMSSHLogVerbose(@"NMSSH: Host EOF received, closing channel...");
