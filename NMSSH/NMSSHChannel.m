@@ -37,7 +37,13 @@
 
 - (BOOL)openChannel:(NSError *__autoreleasing *)error {
     if (self.channel != NULL) {
-        [self closeChannel];
+        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        if (self.type == NMSSHChannelTypeShell) {
+            [self closeShell];
+        }
+        else {
+            [self closeChannel];
+        }
     }
 
     // Set blocking mode
@@ -380,6 +386,10 @@
     });
     dispatch_source_set_cancel_handler(self.source, ^{
         NMSSHLogVerbose(@"NMSSH: Shell source cancelled");
+
+        if (self.delegate && [self.delegate respondsToSelector:@selector(channelShellDidClose:)]) {
+            [self.delegate channelShellDidClose:self];
+        }
     });
     dispatch_resume(self.source);
 
@@ -478,6 +488,16 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
+    if (self.channel != NULL) {
+        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        if (self.type == NMSSHChannelTypeShell) {
+            [self closeShell];
+        }
+        else {
+            [self closeChannel];
+        }
+    }
+
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory
@@ -545,6 +565,16 @@
 }
 
 - (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
+    if (self.channel != NULL) {
+        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        if (self.type == NMSSHChannelTypeShell) {
+            [self closeShell];
+        }
+        else {
+            [self closeChannel];
+        }
+    }
+
     localPath = [localPath stringByExpandingTildeInPath];
 
     // Inherit file name if to: contains a directory

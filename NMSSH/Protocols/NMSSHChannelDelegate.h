@@ -19,5 +19,11 @@
  */
 - (void)channel:(NMSSHChannel *)channel didReadError:(NSString *)error;
 
+@optional
+
+/**
+ * Called when a channel in shell mode has been closed.
+ */
+- (void)channelShellDidClose:(NMSSHChannel *)channel;
 
 @end
