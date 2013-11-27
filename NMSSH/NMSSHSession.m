@@ -137,13 +137,13 @@
     }
 
     // Try to establish a connection to the server
-    NSUInteger index = 0;
+    NSUInteger index = -1;
     NSArray *addresses = [self hostIPAddresses];
     CFSocketError error = 1;
     struct sockaddr_storage *address = NULL;
     
-    while (addresses && index+1 < [addresses count] && error) {
-        NSData *addressData = addresses[index++];
+    while (addresses && ++index < [addresses count] && error) {
+        NSData *addressData = addresses[index];
         NSString *ipAddress;
         
         // IPv4
