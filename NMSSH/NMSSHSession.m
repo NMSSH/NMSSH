@@ -215,9 +215,7 @@
 
 - (void)disconnect {
     if (_channel) {
-        if ([_channel type] == NMSSHChannelTypeShell) {
-            [_channel closeShell];
-        }
+        [_channel closeShell];
         [self setChannel:nil];
     }
 
