@@ -22,8 +22,14 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
-                  withUsername:username];
+    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
+
+    // Check if host is IPv6
+    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
+        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
+    }
+
+    return [self connectToHost:hostname withUsername:username];
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
@@ -35,8 +41,14 @@
 }
 
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
-    return [self initWithHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
-                  andUsername:username];
+    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
+
+    // Check if host is IPv6
+    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
+        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
+    }
+
+    return [self initWithHost:hostname andUsername:username];
 }
 
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
@@ -54,12 +66,24 @@
 // -----------------------------------------------------------------------------
 
 - (NSArray *)hostIPAddresses {
-    NSString *address = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
+    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
+    NSInteger components = [hostComponents count];
+    NSString *address = hostComponents[0];
+
+    // Check if the host is [{IPv6}]:{port}
+    if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
+        address = [_host substringWithRange:NSMakeRange(1, [_host rangeOfString:@"]" options:NSBackwardsSearch].location-1)];
+    } // Check if the host is {IPv6}
+    else if (components >= 3) {
+        address = _host;
+    }
+
     CFHostRef host = CFHostCreateWithName(kCFAllocatorDefault, (__bridge CFStringRef)address);
     CFStreamError error;
     NSArray *addresses = nil;
     
     if (host) {
+        NMSSHLogVerbose(@"NMSSH: Start %@ resolution", address);
         if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
             addresses = (__bridge NSArray *)(CFHostGetAddressing(host, NULL));
         } else {
@@ -67,6 +91,8 @@
         }
         
         CFRelease(host);
+    } else {
+        NMSSHLogError(@"NMSSH: Error allocating CFHost for %@", address);
     }
     
     return addresses;
@@ -74,16 +100,24 @@
 
 - (NSNumber *)port {
     NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
+    NSInteger components = [hostComponents count];
 
-    // If no port was defined, use 22 by default
-    if ([hostComponents count] == 1) {
-        return [NSNumber numberWithInt:22];
+    // Check if the host is {hostname}:{port} or {IPv4}:{port}
+    if (components == 2) {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+
+        return [formatter numberFromString:[hostComponents lastObject]];
+    } // Check if the host is [{IPv6}]:{port}
+    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+
+        return [formatter numberFromString:[hostComponents lastObject]];
     }
 
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-    return [formatter numberFromString:[hostComponents objectAtIndex:1]];
+    // If no port was defined, use 22 by default
+    return @22;
 }
 
 - (NSNumber *)timeout {
@@ -138,6 +172,7 @@
 
     // Try to establish a connection to the server
     NSUInteger index = -1;
+    NSInteger port = [self.port integerValue];
     NSArray *addresses = [self hostIPAddresses];
     CFSocketError error = 1;
     struct sockaddr_storage *address = NULL;
@@ -150,7 +185,7 @@
         if ([addressData length] == sizeof(struct sockaddr_in)) {
             struct sockaddr_in address4;
             [addressData getBytes:&address4 length:sizeof(address4)];
-            address4.sin_port = htons([self.port intValue]);
+            address4.sin_port = htons(port);
             
             address = (struct sockaddr_storage *)(&address4);
             address->ss_len = sizeof(address4);
@@ -162,7 +197,7 @@
         else if([addressData length] == sizeof(struct sockaddr_in6)) {
             struct sockaddr_in6 address6;
             [addressData getBytes:&address6 length:sizeof(address6)];
-            address6.sin6_port = htons([self.port intValue]);
+            address6.sin6_port = htons(port);
             
             address = (struct sockaddr_storage *)(&address6);
             address->ss_len = sizeof(address6);
@@ -179,9 +214,9 @@
         error = CFSocketConnectToAddress(self.socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
         
         if (error) {
-            NMSSHLogVerbose(@"NMSSH: Socket connection to %@ failed with reason %li, trying next address...", ipAddress, error);
+            NMSSHLogVerbose(@"NMSSH: Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
         } else {
-            NMSSHLogInfo(@"NMSSH: Socket connection to %@ succesful", ipAddress);
+            NMSSHLogInfo(@"NMSSH: Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
     
