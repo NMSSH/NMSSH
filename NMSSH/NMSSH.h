@@ -1,7 +1,8 @@
 #import "libssh2.h"
 #import "libssh2_sftp.h"
 
-#import <netdb.h>
+#import <CoreFoundation/CoreFoundation.h>
+#import <netinet/in.h>
 #import <sys/socket.h>
 #import <arpa/inet.h>
 

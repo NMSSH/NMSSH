@@ -4,7 +4,7 @@
 @property (nonatomic, assign) LIBSSH2_AGENT *agent;
 
 @property (nonatomic, assign, getter = rawSession) LIBSSH2_SESSION *session;
-@property (nonatomic, readwrite) int sock;
+@property (nonatomic, readwrite) CFSocketRef socket;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
 @property (nonatomic, strong) NSString *host;
 @property (nonatomic, strong) NSString *username;
@@ -22,8 +22,14 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    return [self connectToHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
-                  withUsername:username];
+    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
+
+    // Check if host is IPv6
+    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
+        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
+    }
+
+    return [self connectToHost:hostname withUsername:username];
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
@@ -35,8 +41,14 @@
 }
 
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
-    return [self initWithHost:[NSString stringWithFormat:@"%@:%ld", host, (long)port]
-                  andUsername:username];
+    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
+
+    // Check if host is IPv6
+    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
+        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
+    }
+
+    return [self initWithHost:hostname andUsername:username];
 }
 
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
@@ -53,46 +65,59 @@
 #pragma mark - CONNECTION SETTINGS
 // -----------------------------------------------------------------------------
 
-- (NSString *)hostIPAddress {
-    NSString *addr = [[_host componentsSeparatedByString:@":"] objectAtIndex:0];
+- (NSArray *)hostIPAddresses {
+    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
+    NSInteger components = [hostComponents count];
+    NSString *address = hostComponents[0];
 
-    if (![self isIp:addr]) {
-        return [self ipFromDomainName:addr];
+    // Check if the host is [{IPv6}]:{port}
+    if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
+        address = [_host substringWithRange:NSMakeRange(1, [_host rangeOfString:@"]" options:NSBackwardsSearch].location-1)];
+    } // Check if the host is {IPv6}
+    else if (components >= 3) {
+        address = _host;
     }
 
-    return addr;
-}
-
-- (BOOL)isIp:(NSString *)address {
-    struct in_addr pin;
-    int success = inet_aton([address UTF8String], &pin);
-
-    return (success == 1);
-}
-
-- (NSString *)ipFromDomainName:(NSString *)address {
-    struct hostent *hostEnt = gethostbyname([address UTF8String]);
-
-    if (hostEnt && hostEnt->h_addr_list && hostEnt->h_addr_list[0]) {
-        struct in_addr *inAddr = (struct in_addr *)hostEnt->h_addr_list[0];
-        return [NSString stringWithFormat:@"%s", inet_ntoa(*inAddr)];
+    CFHostRef host = CFHostCreateWithName(kCFAllocatorDefault, (__bridge CFStringRef)address);
+    CFStreamError error;
+    NSArray *addresses = nil;
+    
+    if (host) {
+        NMSSHLogVerbose(@"NMSSH: Start %@ resolution", address);
+        if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
+            addresses = (__bridge NSArray *)(CFHostGetAddressing(host, NULL));
+        } else {
+            NMSSHLogError(@"NMSSH: Unable to resolve host %@", address);
+        }
+        
+        CFRelease(host);
+    } else {
+        NMSSHLogError(@"NMSSH: Error allocating CFHost for %@", address);
     }
-
-    return @"";
+    
+    return addresses;
 }
 
 - (NSNumber *)port {
     NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
+    NSInteger components = [hostComponents count];
 
-    // If no port was defined, use 22 by default
-    if ([hostComponents count] == 1) {
-        return [NSNumber numberWithInt:22];
+    // Check if the host is {hostname}:{port} or {IPv4}:{port}
+    if (components == 2) {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+
+        return [formatter numberFromString:[hostComponents lastObject]];
+    } // Check if the host is [{IPv6}]:{port}
+    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+
+        return [formatter numberFromString:[hostComponents lastObject]];
     }
 
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-    [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-    return [formatter numberFromString:[hostComponents objectAtIndex:1]];
+    // If no port was defined, use 22 by default
+    return @22;
 }
 
 - (NSNumber *)timeout {
@@ -130,102 +155,82 @@
 
     NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
 
-    // Try to establish a connection to the server
-    [self setSock:socket(AF_INET, SOCK_STREAM, 0)];
-    if (self.sock < 0) {
+    // Try to create the socket
+    [self setSocket:CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL)];
+    if (!self.socket) {
         NMSSHLogError(@"NMSSH: Error creating the socket");
         return NO;
     }
 
     // Set NOSIGPIPE
     int set = 1;
-    setsockopt(_sock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(int));
-
-    struct sockaddr_in sin;
-    sin.sin_family = AF_INET;
-    sin.sin_port = htons([self.port intValue]);
-    sin.sin_addr.s_addr = inet_addr([self.hostIPAddress UTF8String]);
-
-    // Set non-blocking
-    long arg;
-    if ((arg = fcntl(self.sock, F_GETFL, NULL)) < 0) {
-        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
+    if (setsockopt(CFSocketGetNative(self.socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
+        NMSSHLogError(@"NMSSH: Error setting socket option");
+        [self disconnect];
         return NO;
     }
 
-    arg |= O_NONBLOCK;
-    if (fcntl(self.sock, F_SETFL, arg) < 0) {
-        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
-        return NO;
-    }
-
-    // Trying to connect with timeout
-    int res = connect(self.sock, (struct sockaddr *)(&sin), sizeof(struct sockaddr_in));
-    if (res < 0) {
-        if (errno == EINPROGRESS) {
-            NMSSHLogVerbose(@"NMSSH: EINPROGRESS in connect() - selecting");
-
-            struct timeval tv;
-            fd_set myset;
-            int valopt;
-            socklen_t lon;
-
-            do {
-                tv.tv_sec = [timeout longValue];
-                tv.tv_usec = 0;
-                FD_ZERO(&myset);
-                FD_SET(self.sock, &myset);
-                res = select(self.sock+1, NULL, &myset, NULL, &tv);
-
-                if (res < 0 && errno != EINTR) {
-                    NMSSHLogError(@"NMSSH: Error connecting");
-                    return NO;
-                }
-                else if (res > 0) {
-                    // Socket selected for write
-                    lon = sizeof(int);
-                    if (getsockopt(self.sock, SOL_SOCKET, SO_ERROR, (void *)(&valopt), &lon) < 0) {
-                        NMSSHLogError(@"NMSSH: Error in getsockopt()");
-                        return NO;
-                    }
-
-                    // Check the value returned...
-                    if (valopt) {
-                        NMSSHLogError(@"NMSSH: Error in delayed connection() %d", valopt);
-                        return NO;
-                    }
-
-                    NMSSHLogVerbose(@"NMSSH: libssh2 connected");
-                    break;
-                }
-                else {
-                    NMSSHLogError(@"NMSSH: Connection to socket timed out");
-                    return NO;
-                }
-            } while (true);
+    // Try to establish a connection to the server
+    NSUInteger index = -1;
+    NSInteger port = [self.port integerValue];
+    NSArray *addresses = [self hostIPAddresses];
+    CFSocketError error = 1;
+    struct sockaddr_storage *address = NULL;
+    
+    while (addresses && ++index < [addresses count] && error) {
+        NSData *addressData = addresses[index];
+        NSString *ipAddress;
+        
+        // IPv4
+        if ([addressData length] == sizeof(struct sockaddr_in)) {
+            struct sockaddr_in address4;
+            [addressData getBytes:&address4 length:sizeof(address4)];
+            address4.sin_port = htons(port);
+            
+            address = (struct sockaddr_storage *)(&address4);
+            address->ss_len = sizeof(address4);
+            
+            char str[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &(address4.sin_addr), str, INET_ADDRSTRLEN);
+            ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
+        } // IPv6
+        else if([addressData length] == sizeof(struct sockaddr_in6)) {
+            struct sockaddr_in6 address6;
+            [addressData getBytes:&address6 length:sizeof(address6)];
+            address6.sin6_port = htons(port);
+            
+            address = (struct sockaddr_storage *)(&address6);
+            address->ss_len = sizeof(address6);
+            
+            char str[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, &(address6.sin6_addr), str, INET6_ADDRSTRLEN);
+            ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
         }
         else {
-            NMSSHLogError(@"NMSSH: Failed connection to socket");
-            return NO;
+            NMSSHLogVerbose(@"NMSSH: Unknown address, it's not IPv4 or IPv6!");
+            continue;
+        }
+        
+        error = CFSocketConnectToAddress(self.socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
+        
+        if (error) {
+            NMSSHLogVerbose(@"NMSSH: Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
+        } else {
+            NMSSHLogInfo(@"NMSSH: Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
-
-    // Set to blocking mode again...
-    if ((arg = fcntl(self.sock, F_GETFL, NULL)) < 0) {
-        NMSSHLogError(@"NMSSH: Error fcntl(..., F_GETFL)");
-        return NO;
-    }
-
-    arg &= (~O_NONBLOCK);
-    if (fcntl(self.sock, F_SETFL, arg) < 0) {
-        NMSSHLogError(@"NMSSH: Error fcntl(..., F_SETFL)");
+    
+    if (error) {
+        NMSSHLogError(@"NMSSH: Failure establishing socket connection");
+        [self disconnect];
         return NO;
     }
 
     // Create a session instance and start it up.
     [self setSession:libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self))];
-    if (libssh2_session_handshake(self.session, self.sock)) {
+    if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
+        [self disconnect];
         return NO;
     }
 
@@ -233,6 +238,9 @@
 
     // Set a callback for disconnection
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
+    
+    // Set blocking mode
+    libssh2_session_set_blocking(self.session, 1);
 
     // We managed to successfully setup a connection
     [self setConnected:YES];
@@ -242,9 +250,7 @@
 
 - (void)disconnect {
     if (_channel) {
-        if ([_channel type] == NMSSHChannelTypeShell) {
-            [_channel closeShell];
-        }
+        [_channel closeShell];
         [self setChannel:nil];
     }
 
@@ -267,9 +273,10 @@
         [self setSession:NULL];
     }
 
-    if (self.sock) {
-        close(self.sock);
-        [self setSock:0];
+    if (self.socket) {
+        CFSocketInvalidate(self.socket);
+        CFRelease(self.socket);
+        [self setSocket:NULL];
     }
 
     libssh2_exit();
@@ -343,7 +350,6 @@
         return NO;
     }
 
-    libssh2_session_set_blocking(self.session, 1);
     self.kbAuthenticationBlock = authenticationBlock;
     int rc = libssh2_userauth_keyboard_interactive(self.session, [self.username UTF8String], &kb_callback);
     self.kbAuthenticationBlock = nil;
