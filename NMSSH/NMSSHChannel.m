@@ -9,7 +9,11 @@
 @property (nonatomic, assign) const char *ptyTerminalName;
 @property (nonatomic, strong) NSString *lastResponse;
 
+#if OS_OBJECT_USE_OBJC
+@property (nonatomic, strong) dispatch_source_t source;
+#elif
 @property (nonatomic, assign) dispatch_source_t source;
+#endif
 @end
 
 @implementation NMSSHChannel
