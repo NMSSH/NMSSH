@@ -410,13 +410,13 @@
     }
 
     NMSSHLogVerbose(@"NMSSH: Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
-    int rc;
+    ssize_t rc;
 
     // Set the timeout
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
 
     // Try writing on shell
-    while ((rc = libssh2_channel_write(self.channel, [command UTF8String], strlen([command UTF8String]))) == LIBSSH2_ERROR_EAGAIN) {
+    while ((rc = libssh2_channel_write(self.channel, [command UTF8String], [command lengthOfBytesUsingEncoding:NSUTF8StringEncoding])) == LIBSSH2_ERROR_EAGAIN) {
         // Check if the connection timed out
         if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
             if (error) {
@@ -576,7 +576,7 @@
         size_t amount = sizeof(mem);
 
         if ((fileinfo.st_size - got) < amount) {
-            amount = fileinfo.st_size - got;
+            amount = (size_t)(fileinfo.st_size - got);
         }
 
         ssize_t rc = libssh2_channel_read(self.channel, mem, amount);

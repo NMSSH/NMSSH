@@ -4,4 +4,6 @@
 
 #import "NMSSH.h"
 
+#define strlen (unsigned int)strlen
+
 #endif
