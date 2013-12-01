@@ -11,7 +11,7 @@
 
 #if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong) dispatch_source_t source;
-#elif
+#else
 @property (nonatomic, assign) dispatch_source_t source;
 #endif
 @end
