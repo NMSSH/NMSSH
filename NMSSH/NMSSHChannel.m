@@ -86,7 +86,7 @@
 
         if (rc != 0) {
             if (error) {
-                NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Error requesting %s pty: %@", self.ptyTerminalName, [self libssh2ErrorDescription:rc]] };
+                NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Error requesting %s pty: %@", self.ptyTerminalName, [[self.session lastError] localizedDescription]] };
 
                 *error = [NSError errorWithDomain:@"NMSSH"
                                              code:NMSSHChannelRequestPtyError
@@ -134,47 +134,6 @@
         rc = libssh2_channel_wait_eof(self.channel);
         NMSSHLogVerbose(@"NMSSH: Received host acknowledge for EOF (return code = %i)", rc);
     }
-}
-
-- (NSString *)libssh2ErrorDescription:(ssize_t)errorCode {
-    if (errorCode > 0) {
-        return @"";
-    }
-
-    switch (errorCode) {
-        case LIBSSH2_ERROR_ALLOC:
-            return @"internal allocation memory error";
-
-        case LIBSSH2_ERROR_SOCKET_SEND:
-            return @"unable to send data on socket";
-
-        case LIBSSH2_ERROR_CHANNEL_REQUEST_DENIED:
-            return @"request denied";
-
-        case LIBSSH2_ERROR_CHANNEL_CLOSED:
-            return @"channel has been closed";
-
-        case LIBSSH2_ERROR_CHANNEL_EOF_SENT:
-            return @"channel has been requested to be closed";
-
-        case LIBSSH2_ERROR_CHANNEL_FAILURE:
-            return @"channel failure";
-
-        case LIBSSH2_ERROR_SCP_PROTOCOL:
-            return @"scp protocol error";
-
-        case LIBSSH2_ERROR_TIMEOUT:
-            return @"timeout";
-
-        case LIBSSH2_ERROR_BAD_USE:
-            return @"bad use";
-
-        case LIBSSH2_ERROR_NONE:
-        case LIBSSH2_ERROR_EAGAIN:
-            return @"";
-    }
-
-    return [NSString stringWithFormat:@"unknown error [%zi]", errorCode];
 }
 
 // -----------------------------------------------------------------------------
@@ -230,7 +189,7 @@
 
     if (rc != 0) {
         if (error) {
-            [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedDescriptionKey];
+            [userInfo setObject:[[self.session lastError] localizedDescription] forKey:NSLocalizedDescriptionKey];
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
                                      userInfo:userInfo];
@@ -272,7 +231,7 @@
                     }
 
                     [userInfo setObject:desc forKey:NSLocalizedDescriptionKey];
-                    [userInfo setObject:[self libssh2ErrorDescription:erc] forKey:NSLocalizedFailureReasonErrorKey];
+                    [userInfo setObject:[NSString stringWithFormat:@"%zi", erc] forKey:NSLocalizedFailureReasonErrorKey];
 
                     *error = [NSError errorWithDomain:@"NMSSH"
                                                  code:NMSSHChannelExecutionError
@@ -323,7 +282,7 @@
 
     // If we've got this far, it means fetching execution response failed
     if (error) {
-        [userInfo setObject:[self libssh2ErrorDescription:rc] forKey:NSLocalizedDescriptionKey];
+        [userInfo setObject:[[self.session lastError] localizedDescription] forKey:NSLocalizedDescriptionKey];
         *error = [NSError errorWithDomain:@"NMSSH"
                                      code:NMSSHChannelExecutionResponseError
                                  userInfo:userInfo];
@@ -409,7 +368,7 @@
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelRequestShellError
-                                     userInfo:@{ NSLocalizedDescriptionKey : [self libssh2ErrorDescription:rc] }];
+                                     userInfo:@{ NSLocalizedDescriptionKey : [[self.session lastError] localizedDescription] }];
         }
 
         [self closeShell];
@@ -479,7 +438,7 @@
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelWriteError
-                                     userInfo:@{ NSLocalizedDescriptionKey : [self libssh2ErrorDescription:rc],
+                                     userInfo:@{ NSLocalizedDescriptionKey : [[self.session lastError] localizedDescription],
                                                  @"command"                : command }];
         }
     }

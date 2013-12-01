@@ -69,14 +69,29 @@
 #pragma mark - MANIPULATE DIRECTORIES
 // -----------------------------------------------------------------------------
 
+- (LIBSSH2_SFTP_HANDLE *)openDirectoryAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(self.sftpSession, [path UTF8String]);
+
+    if (!handle) {
+        NSError *error = [self.session lastError];
+        NMSSHLogError(@"NMSFTP: Could not open directory at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
+
+        if ([error code] == LIBSSH2_ERROR_SFTP_PROTOCOL) {
+            NMSSHLogError(@"NMSFTP: SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
+        }
+    }
+
+    return handle;
+}
+
 - (BOOL)directoryExistsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
-    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
 
     if (!handle) {
         return NO;
     }
 
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
     int rc = libssh2_sftp_fstat(handle, &fileAttributes);
     libssh2_sftp_close(handle);
 
@@ -97,10 +112,9 @@
 }
 
 - (NSArray *)contentsOfDirectoryAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_opendir(self.sftpSession, [path UTF8String]);
+    LIBSSH2_SFTP_HANDLE *handle = [self openDirectoryAtPath:path];
 
     if (!handle) {
-        NMSSHLogError(@"NMSFTP: Could not open directory");
         return nil;
     }
 
@@ -121,7 +135,7 @@
                 if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
                     fileName = [fileName stringByAppendingString:@"/"];
                 }
-                
+
                 [contents addObject:fileName];
             }
         }
@@ -131,7 +145,11 @@
         NMSSHLogError(@"NMSSH: Unable to read directory");
     }
 
-    libssh2_sftp_closedir(handle);
+    rc = libssh2_sftp_closedir(handle);
+
+    if (rc < 0) {
+        NMSSHLogError(@"NMSSH: Failed to close directory");
+    }
 
     return [contents sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 }
@@ -140,14 +158,29 @@
 #pragma mark - MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
 
+- (LIBSSH2_SFTP_HANDLE *)openFileAtPath:(NSString *)path flags:(unsigned long)flags mode:(long)mode {
+    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], flags, mode);
+
+    if (!handle) {
+        NSError *error = [self.session lastError];
+        NMSSHLogError(@"NMSFTP: Could not open file at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
+
+        if ([error code] == LIBSSH2_ERROR_SFTP_PROTOCOL) {
+            NMSSHLogError(@"NMSFTP: SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
+        }
+    }
+
+    return handle;
+}
+
 - (BOOL)fileExistsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
-    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
 
     if (!handle) {
         return NO;
     }
 
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
     int rc = libssh2_sftp_fstat(handle, &fileAttributes);
     libssh2_sftp_close(handle);
 
@@ -166,7 +199,7 @@
 }
 
 - (NSData *)contentsAtPath:(NSString *)path {
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], LIBSSH2_FXF_READ, 0);
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
 
     if (!handle) {
         return nil;
@@ -175,14 +208,9 @@
     char buffer[kNMSSHBufferSize];
     NSMutableData *data = [[NSMutableData alloc] init];
     ssize_t rc;
-    do {
-        rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer));
-
-        if (rc > 0) {
-            [data appendBytes:buffer length:rc];
-        }
-
-    } while (rc > 0 || rc == EAGAIN);
+    while ((rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer))) > 0) {
+        [data appendBytes:buffer length:rc];
+    }
 
     libssh2_sftp_close(handle);
 
@@ -211,12 +239,12 @@
         return NO;
     }
 
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
-                                                    LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC,
-                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path
+                                                 flags:LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_TRUNC
+                                                  mode:LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH];
+
     if (!handle) {
         [inputStream close];
-        NMSSHLogError(@"NMSSH: Unable to open file %@", path);
         return NO;
     }
 
@@ -242,12 +270,12 @@
         return NO;
     }
 
-    LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String],
-                                                    LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_READ,
-                                                    LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH);
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path
+                                                 flags:LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_READ
+                                                  mode:LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH];
+
     if (!handle) {
         [inputStream close];
-        NMSSHLogError(@"NMSSH: Unable to open file %@", path);
         return NO;
     }
 

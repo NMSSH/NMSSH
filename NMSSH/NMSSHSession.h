@@ -93,6 +93,9 @@ In it's simplest form it works like this:
 /** Timeout for libssh2 blocking functions. */
 @property (nonatomic, strong) NSNumber *timeout;
 
+/** Last session error */
+@property (nonatomic, readonly) NSError *lastError;
+
 /// ----------------------------------------------------------------------------
 /// @name Raw libssh2 session and socket reference
 /// ----------------------------------------------------------------------------
@@ -191,7 +194,6 @@ In it's simplest form it works like this:
  * @returns Authentication success
  */
 - (BOOL)connectToAgent;
-
 
 /**
  * Get supported authentication methods

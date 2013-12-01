@@ -134,6 +134,15 @@
     }
 }
 
+- (NSError *)lastError {
+    char *message;
+    int error = libssh2_session_last_error(self.rawSession, &message, NULL, 0);
+
+    return [NSError errorWithDomain:@"libssh2"
+                               code:error
+                           userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithUTF8String:message] }];
+}
+
 // -----------------------------------------------------------------------------
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
