@@ -22,4 +22,14 @@
  */
 - (void)session:(NMSSHSession *)session didDisconnectWithError:(NSError *)error;
 
+/**
+ * Called when a session is connecting to a host, the fingerprint is used
+ * to verify the authenticity of the host.
+ * 
+ * @param session The session that is connecting
+ * @param fingerprint The host's fingerprint
+ * @returns YES if the session should trust the host, otherwise NO.
+ */
+- (BOOL)session:(NMSSHSession *)session shouldConnectToHostWithFingerprint:(NSString *)fingerprint;
+
 @end

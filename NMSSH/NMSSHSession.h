@@ -1,5 +1,10 @@
 #import "NMSSHSessionDelegate.h"
 
+typedef NS_ENUM(NSInteger, NMSSHSessionHash) {
+    NMSSHSessionHashMD5,
+    NMSSHSessionHashSHA1
+};
+
 /**
 NMSSHSession provides the functionality required to setup a SSH connection
 and authorize against it.
@@ -95,6 +100,12 @@ In it's simplest form it works like this:
 
 /** Last session error */
 @property (nonatomic, readonly) NSError *lastError;
+
+/**
+ * The hash algorithm to use to encode the fingerprint
+ * during connection, default value is NMSSHSessionHashMD5.
+ */
+@property (nonatomic, assign) NMSSHSessionHash fingerprintHash;
 
 /// ----------------------------------------------------------------------------
 /// @name Raw libssh2 session and socket reference
@@ -201,6 +212,15 @@ In it's simplest form it works like this:
  * @returns Array of string descripting supported authentication methods
  */
 - (NSArray *)supportedAuthenticationMethods;
+
+/**
+ * Get the fingerprint of the remote host.
+ * The session must be connected to an host.
+ *
+ * @param hashType The hash algorithm to use to encode the fingerprint
+ * @returns The host's fingerprint
+ */
+- (NSString *)fingerprint:(NMSSHSessionHash)hashType;
 
 /// ----------------------------------------------------------------------------
 /// @name Quick channel/sftp access

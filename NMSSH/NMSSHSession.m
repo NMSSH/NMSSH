@@ -56,6 +56,7 @@
         [self setHost:host];
         [self setUsername:username];
         [self setConnected:NO];
+        [self setFingerprintHash:NMSSHSessionHashMD5];
     }
 
     return self;
@@ -235,21 +236,35 @@
         return NO;
     }
 
-    // Create a session instance and start it up.
+    // Create a session instance
     [self setSession:libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self))];
+
+    // Set a callback for disconnection
+    libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
+
+    // Set blocking mode
+    libssh2_session_set_blocking(self.session, 1);
+
+    // Start the session
     if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         [self disconnect];
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: SSH session started");
+    // Get the fingerprint of the host
+    NSString *fingerprint = [self fingerprint:self.fingerprintHash];
+    NMSSHLogInfo(@"NMSSH: The host's fingerprint is %@", fingerprint);
 
-    // Set a callback for disconnection
-    libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
-    
-    // Set blocking mode
-    libssh2_session_set_blocking(self.session, 1);
+    if (self.delegate && [self.delegate respondsToSelector:@selector(session:shouldConnectToHostWithFingerprint:)] &&
+        ![self.delegate session:self shouldConnectToHostWithFingerprint:fingerprint]) {
+        NMSSHLogWarn(@"NMSSH: Fingerprint refused, aborting connection...");
+        [self disconnect];
+
+        return NO;
+    }
+
+    NMSSHLogVerbose(@"NMSSH: SSH session started");
 
     // We managed to successfully setup a connection
     [self setConnected:YES];
@@ -417,8 +432,6 @@
     return NO;
 }
 
-
-
 - (NSArray *)supportedAuthenticationMethods {
     char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
@@ -435,6 +448,33 @@
 
 - (BOOL)supportsAuthenticationMethod:(NSString *)method {
     return [[self supportedAuthenticationMethods] containsObject:method];
+}
+
+- (NSString *)fingerprint:(NMSSHSessionHash)hashType {
+    if (!self.session) {
+        return nil;
+    }
+
+    int libssh2_hash, hashLength;
+    switch (hashType) {
+        case NMSSHSessionHashMD5:  libssh2_hash = LIBSSH2_HOSTKEY_HASH_MD5;  hashLength = 16; break;
+        case NMSSHSessionHashSHA1: libssh2_hash = LIBSSH2_HOSTKEY_HASH_SHA1; hashLength = 20; break;
+    }
+
+    const char *hash = libssh2_hostkey_hash(self.session, libssh2_hash);
+    if (!hash) {
+        NMSSHLogWarn(@"NMSSH: Unable to retrive host's fingerprint");
+
+        return nil;
+    }
+
+    NSMutableString *fingerprint = [[NSMutableString alloc] initWithFormat:@"%02X", (unsigned char)hash[0]];
+
+    for (int i = 1; i < hashLength; i++) {
+        [fingerprint appendFormat:@":%02X", (unsigned char)hash[i]];
+    }
+
+    return [fingerprint copy];
 }
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
