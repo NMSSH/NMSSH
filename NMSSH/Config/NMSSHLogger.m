@@ -8,7 +8,11 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 };
 
 @interface NMSSHLogger ()
-@property (nonatomic, copy) void (^logBlockBackup)(NMSSHLogLevel level, NSString *format);
+#if OS_OBJECT_USE_OBJC
+@property (nonatomic, strong) dispatch_queue_t loggerQueue;
+#else
+@property (nonatomic, assign) dispatch_queue_t loggerQueue;
+#endif
 @end
 
 @implementation NMSSHLogger
@@ -35,36 +39,27 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
         [self setLogBlock:^(NMSSHLogLevel level, NSString *format) {
             NSLog(@"%@", format);
         }];
+        [self setLoggerQueue:dispatch_queue_create("NMSSH.loggerQueue", DISPATCH_QUEUE_SERIAL)];
     }
 
     return self;
 }
 
-// -----------------------------------------------------------------------------
-#pragma mark - LOGGER SETTINGS
-// -----------------------------------------------------------------------------
-
-- (void)setEnabled:(BOOL)enabled {
-    if (enabled == _enabled) {
-        return;
-    }
-
-    _enabled = enabled;
-
-    if (enabled) {
-        [self setLogBlock:self.logBlockBackup];
-    } else {
-        [self setLogBlock:^(NMSSHLogLevel level, NSString *format) {}];
-    }
+#if !(OS_OBJECT_USE_OBJC)
+- (void)dealloc {
+    dispatch_release(self.loggerQueue);
 }
+#endif
 
 // -----------------------------------------------------------------------------
 #pragma mark - LOGGING
 // -----------------------------------------------------------------------------
 
 - (void)log:(NSString *)format level:(NMSSHLogLevel)level flag:(NMSSHLogFlag)flag {
-    if (flag & self.logLevel) {
-        self.logBlock(level, format);
+    if (flag & self.logLevel && self.enabled) {
+        dispatch_async(self.loggerQueue, ^{
+            self.logBlock(level, format);
+        });
     }
 }
 
