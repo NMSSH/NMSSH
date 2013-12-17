@@ -328,9 +328,11 @@
     // Try to authenticate by password
     int error = libssh2_userauth_password(self.session, [self.username UTF8String], [password UTF8String]);
     if (error) {
-        NMSSHLogError(@"NMSSH: Password authentication failed");
+        NMSSHLogError(@"NMSSH: Password authentication failed with reason %i", error);
         return NO;
     }
+
+    NMSSHLogVerbose(@"NMSSH: Password authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -358,9 +360,11 @@
                                                     [password UTF8String]);
 
     if (error) {
-        NMSSHLogError(@"NMSSH: Public key authentication failed");
+        NMSSHLogError(@"NMSSH: Public key authentication failed with reason %i", error);
         return NO;
     }
+
+    NMSSHLogVerbose(@"NMSSH: Public key authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -379,11 +383,11 @@
     self.kbAuthenticationBlock = nil;
 
     if (rc != 0) {
-        NMSSHLogError(@"NMSSH: Authentication by keyboard-interactive failed!");
+        NMSSHLogError(@"NMSSH: Keyboard-interactive authentication failed with reason %i", rc);
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Authentication by keyboard-interactive succeeded.");
+    NMSSHLogVerbose(@"NMSSH: Keyboard-interactive authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -436,7 +440,7 @@
     char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
     if (userauthlist == NULL){
-        NMSSHLogInfo(@"NMSSH: Failed to get authentication method for %@", _host);
+        NMSSHLogInfo(@"NMSSH: Failed to get authentication method for host %@", self.host);
         return nil;
     }
     
@@ -464,7 +468,6 @@
     const char *hash = libssh2_hostkey_hash(self.session, libssh2_hash);
     if (!hash) {
         NMSSHLogWarn(@"NMSSH: Unable to retrive host's fingerprint");
-
         return nil;
     }
 
