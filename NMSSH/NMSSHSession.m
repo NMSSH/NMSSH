@@ -480,6 +480,109 @@
     return [fingerprint copy];
 }
 
+- (const char *)knownHostsFilename {
+    return [[@"~/.ssh/known_hosts" stringByExpandingTildeInPath] UTF8String];
+}
+
+- (NMSSHKnownHostStatus)knownHostStatus {
+    LIBSSH2_KNOWNHOSTS *nh = libssh2_knownhost_init(self.session);
+    if (!nh) {
+        return NMSSHKnownHostStatusFailure;
+    }
+    
+    libssh2_knownhost_readfile(nh,
+                               [self knownHostsFilename],
+                               LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+
+    int keytype;
+    size_t keylen;
+    const char *remotekey = libssh2_session_hostkey(self.session,
+                                                    &keylen,
+                                                    &keytype);
+    int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
+                                                       : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+    
+
+    struct libssh2_knownhost *host;
+    int check = libssh2_knownhost_checkp(nh,
+                                         [self.host UTF8String],
+                                         [self.port intValue],
+                                         remotekey,
+                                         keylen,
+                                         (LIBSSH2_KNOWNHOST_TYPE_PLAIN |
+                                          LIBSSH2_KNOWNHOST_KEYENC_RAW |
+                                          keybit),
+                                         &host);
+
+    libssh2_knownhost_free(nh);
+
+    switch (check) {
+        case LIBSSH2_KNOWNHOST_CHECK_MATCH:
+            return NMSSHKnownHostStatusMatch;
+        case LIBSSH2_KNOWNHOST_CHECK_MISMATCH:
+            return NMSSHKnownHostStatusMismatch;
+        case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
+            return NMSSHKnownHostStatusNotFound;
+        default:
+        case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
+            return NMSSHKnownHostStatusFailure;
+    }
+}
+
+- (BOOL)addCurrentHostToKnownHosts {
+    const char *hostkey;
+	size_t hklen;
+	int hktype;
+    hostkey = libssh2_session_hostkey(self.session, &hklen, &hktype);
+    if (!hostkey) {
+        NSLog(@"Failed to get hostkey. hostkey='%s'", hostkey);
+        return NO;
+    }
+    NSLog(@"hktype=%d", hktype);
+    LIBSSH2_KNOWNHOSTS *nh = libssh2_knownhost_init(self.session);
+    if (!nh) {
+        return NO;
+    }
+    
+    libssh2_knownhost_readfile(nh,
+                               [self knownHostsFilename],
+                               LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    int keybit = (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
+                                                      : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+
+    int result = libssh2_knownhost_addc(nh,
+                                        [self.host UTF8String],
+                                        NULL,
+                                        hostkey,
+                                        hklen,
+                                        NULL,
+                                        0,
+                                        (LIBSSH2_KNOWNHOST_TYPE_PLAIN |
+                                         LIBSSH2_KNOWNHOST_KEYENC_RAW |
+                                         keybit),
+                                        NULL);
+    if (result) {
+        char *buffer;
+        int len;
+        libssh2_session_last_error(self.session, &buffer, &len, 0);
+        NMSSHLogError(@"Failed to add host to known hosts: error %d (%s)",
+                      result,
+                      [self lastError]);
+    } else {
+        NSLog(@"Add was apparently successful.");
+        int wrc = libssh2_knownhost_writefile(nh,
+                                              [self knownHostsFilename],
+                                              LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+        if (wrc) {
+            NMSSHLogError(@"Couldn't write to %s: %@",
+                          [self knownHostsFilename], [self lastError]);
+        }
+    }
+    libssh2_knownhost_free(nh);
+    return result == 0;
+}
+
+
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
     NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
 
