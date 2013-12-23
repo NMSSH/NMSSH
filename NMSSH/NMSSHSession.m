@@ -82,7 +82,7 @@
     CFHostRef host = CFHostCreateWithName(kCFAllocatorDefault, (__bridge CFStringRef)address);
     CFStreamError error;
     NSArray *addresses = nil;
-    
+
     if (host) {
         NMSSHLogVerbose(@"NMSSH: Start %@ resolution", address);
         if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
@@ -90,12 +90,12 @@
         } else {
             NMSSHLogError(@"NMSSH: Unable to resolve host %@", address);
         }
-        
+
         CFRelease(host);
     } else {
         NMSSHLogError(@"NMSSH: Error allocating CFHost for %@", address);
     }
-    
+
     return addresses;
 }
 
@@ -119,6 +119,23 @@
 
     // If no port was defined, use 22 by default
     return @22;
+}
+
+- (NSString *)hostnameWithoutPort {
+    NSArray *hostComponents = [self.host componentsSeparatedByString:@":"];
+    NSInteger components = [hostComponents count];
+
+    // Check if the host is {hostname}:{port} or {IPv4}:{port}
+    if (components == 2) {
+        return hostComponents[0];
+    } // Check if the host is [{IPv6}]:{port}
+    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
+        hostComponents = [hostComponents subarrayWithRange:NSMakeRange(0, components - 1)];
+        NSString *bracketedHostname = [hostComponents componentsJoinedByString:@":"];
+        return [bracketedHostname substringWithRange:NSMakeRange(1, bracketedHostname.length - 2)];
+    }
+
+    return self.host;
 }
 
 - (NSNumber *)timeout {
@@ -186,20 +203,20 @@
     NSArray *addresses = [self hostIPAddresses];
     CFSocketError error = 1;
     struct sockaddr_storage *address = NULL;
-    
+
     while (addresses && ++index < [addresses count] && error) {
         NSData *addressData = addresses[index];
         NSString *ipAddress;
-        
+
         // IPv4
         if ([addressData length] == sizeof(struct sockaddr_in)) {
             struct sockaddr_in address4;
             [addressData getBytes:&address4 length:sizeof(address4)];
             address4.sin_port = htons(port);
-            
+
             address = (struct sockaddr_storage *)(&address4);
             address->ss_len = sizeof(address4);
-            
+
             char str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &(address4.sin_addr), str, INET_ADDRSTRLEN);
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
@@ -208,10 +225,10 @@
             struct sockaddr_in6 address6;
             [addressData getBytes:&address6 length:sizeof(address6)];
             address6.sin6_port = htons(port);
-            
+
             address = (struct sockaddr_storage *)(&address6);
             address->ss_len = sizeof(address6);
-            
+
             char str[INET6_ADDRSTRLEN];
             inet_ntop(AF_INET6, &(address6.sin6_addr), str, INET6_ADDRSTRLEN);
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
@@ -220,16 +237,16 @@
             NMSSHLogVerbose(@"NMSSH: Unknown address, it's not IPv4 or IPv6!");
             continue;
         }
-        
+
         error = CFSocketConnectToAddress(self.socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
-        
+
         if (error) {
             NMSSHLogVerbose(@"NMSSH: Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
         } else {
             NMSSHLogInfo(@"NMSSH: Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
-    
+
     if (error) {
         NMSSHLogError(@"NMSSH: Failure establishing socket connection");
         [self disconnect];
@@ -443,10 +460,10 @@
         NMSSHLogInfo(@"NMSSH: Failed to get authentication method for host %@", self.host);
         return nil;
     }
-    
+
     NSString *authList = [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding];
     NMSSHLogVerbose(@"NMSSH: User auth list: %@", authList);
-    
+
     return [authList componentsSeparatedByString:@","];
 }
 
@@ -478,6 +495,210 @@
     }
 
     return [fingerprint copy];
+}
+
+// -----------------------------------------------------------------------------
+#pragma mark - KNOWN HOSTS
+// -----------------------------------------------------------------------------
+
+- (NSString *)applicationSupportDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                         NSUserDomainMask,
+                                                         YES);
+    NSString *applicationSupportDirectory = [paths objectAtIndex:0];
+    NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:nmsshDirectory
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:NULL];
+    }
+    return nmsshDirectory;
+}
+
+- (NSString *)userKnownHostsFileName {
+#if TARGET_OS_IPHONE
+    return [[self applicationSupportDirectory] stringByAppendingPathComponent:@"known_hosts"];
+#else
+    return [@"~/.ssh/known_hosts" stringByExpandingTildeInPath];
+#endif
+}
+
+#if !TARGET_OS_IPHONE
+- (NSString *)systemKnownHostsFileName {
+    return @"/etc/ssh/ssh_known_hosts";
+}
+#endif
+
+- (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files {
+    if (!files) {
+#if TARGET_OS_IPHONE
+        files = @[ [self userKnownHostsFileName] ];
+#else
+        files = @[ [self systemKnownHostsFileName], [self userKnownHostsFileName] ];
+#endif
+    }
+
+    NMSSHKnownHostStatus status = NMSSHKnownHostStatusFailure;
+    for (NSString *filename in files) {
+        status = [self knownHostStatusWithFile:filename];
+        if (status != NMSSHKnownHostStatusNotFound && status != NMSSHKnownHostStatusFailure) {
+            return status;
+        }
+    }
+    return status;
+}
+
+- (NMSSHKnownHostStatus)knownHostStatusWithFile:(NSString *)filename {
+    LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
+    if (!knownHosts) {
+        return NMSSHKnownHostStatusFailure;
+    }
+
+    int rc = libssh2_knownhost_readfile(knownHosts,
+                                        [filename UTF8String],
+                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    if (rc < 0) {
+        libssh2_knownhost_free(knownHosts);
+        if (rc == LIBSSH2_ERROR_FILE) {
+            NMSSHLogInfo(@"NMSSH: No known hosts file %@.", filename);
+            return NMSSHKnownHostStatusNotFound;
+        }
+        else {
+            NMSSHLogError(@"NMSSH: Failed to read known hosts file %@.",
+                          filename);
+            return NMSSHKnownHostStatusFailure;
+        }
+    }
+
+    int keytype;
+    size_t keylen;
+    const char *remotekey = libssh2_session_hostkey(self.session,
+                                                    &keylen,
+                                                    &keytype);
+    if (!remotekey) {
+        NMSSHLogError(@"NMSSH: Failed to get host key.");
+        libssh2_knownhost_free(knownHosts);
+        return NMSSHKnownHostStatusFailure;
+    }
+    int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA ? LIBSSH2_KNOWNHOST_KEY_SSHRSA : LIBSSH2_KNOWNHOST_KEY_SSHDSS);
+    struct libssh2_knownhost *host;
+    NMSSHLogInfo(@"NMSSH: Check for host %@, port %@ in file %@",
+                 [self hostnameWithoutPort],
+                 self.port,
+                 filename);
+    int check = libssh2_knownhost_checkp(knownHosts,
+                                         [[self hostnameWithoutPort] UTF8String],
+                                         [self.port intValue],
+                                         remotekey,
+                                         keylen,
+                                         (LIBSSH2_KNOWNHOST_TYPE_PLAIN |
+                                          LIBSSH2_KNOWNHOST_KEYENC_RAW |
+                                          keybit),
+                                         &host);
+
+    libssh2_knownhost_free(knownHosts);
+
+    switch (check) {
+        case LIBSSH2_KNOWNHOST_CHECK_MATCH:
+            NMSSHLogInfo(@"NMSSH: Match");
+            return NMSSHKnownHostStatusMatch;
+        case LIBSSH2_KNOWNHOST_CHECK_MISMATCH:
+            NMSSHLogInfo(@"NMSSH: Mismatch");
+            return NMSSHKnownHostStatusMismatch;
+        case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
+            NMSSHLogInfo(@"NMSSH: Not found");
+            return NMSSHKnownHostStatusNotFound;
+        case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
+        default:
+            NMSSHLogInfo(@"NMSSH: Failure");
+            return NMSSHKnownHostStatusFailure;
+    }
+}
+
+- (BOOL)addKnownHostName:(NSString *)hostnameWithoutPort
+                    port:(NSInteger)port
+                  toFile:(NSString *)fileName
+                withSalt:(NSString *)salt {
+    const char *hostkey;
+    size_t hklen;
+    int hktype;
+    NSString *hostname;  // Formatted as {host} or [{host}]:{port}.
+
+    if (port == 22) {
+        hostname = hostnameWithoutPort;
+    } else {
+        hostname = [NSString stringWithFormat:@"[%@]:%d", hostnameWithoutPort, (int)port];
+    }
+
+    if (!fileName) {
+        fileName = [self userKnownHostsFileName];
+    }
+
+    hostkey = libssh2_session_hostkey(self.session, &hklen, &hktype);
+    if (!hostkey) {
+        NMSSHLogError(@"NMSSH: Failed to get host key.");
+        return NO;
+    }
+
+    LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
+    if (!knownHosts) {
+        NMSSHLogError(@"NMSSH: Failed to initialize knownhosts.");
+        return NO;
+    }
+
+    int rc = libssh2_knownhost_readfile(knownHosts,
+                                        [fileName UTF8String],
+                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    if (rc < 0 && rc != LIBSSH2_ERROR_FILE) {
+        NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
+        libssh2_knownhost_free(knownHosts);
+        return NO;
+    }
+
+    int keybit = LIBSSH2_KNOWNHOST_KEYENC_RAW;
+    if (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHRSA;
+    }
+    else {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+    }
+    if (salt) {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_SHA1;
+    }
+    else {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_PLAIN;
+    }
+
+    int result = libssh2_knownhost_addc(knownHosts,
+                                        [hostname UTF8String],
+                                        [salt UTF8String],
+                                        hostkey,
+                                        hklen,
+                                        NULL,
+                                        0,
+                                        keybit,
+                                        NULL);
+    if (result) {
+        NMSSHLogError(@"NMSSH: Failed to add host to known hosts: error %d (%@)",
+                      result,
+                      [self lastError]);
+    }
+    else {
+        result = libssh2_knownhost_writefile(knownHosts,
+                                             [fileName UTF8String],
+                                             LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+        if (result < 0) {
+            NMSSHLogError(@"NMSSH: Couldn't write to %@: %@",
+                          [self userKnownHostsFileName], [self lastError]);
+        }
+        else {
+            NMSSHLogInfo(@"NMSSH: Host added to known hosts.");
+        }
+    }
+
+    libssh2_knownhost_free(knownHosts);
+    return result == 0;
 }
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {

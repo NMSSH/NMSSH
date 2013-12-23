@@ -5,11 +5,18 @@ typedef NS_ENUM(NSInteger, NMSSHSessionHash) {
     NMSSHSessionHashSHA1
 };
 
+typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
+    NMSSHKnownHostStatusMatch,
+    NMSSHKnownHostStatusMismatch,
+    NMSSHKnownHostStatusNotFound,
+    NMSSHKnownHostStatusFailure
+};
+
 /**
 NMSSHSession provides the functionality required to setup a SSH connection
 and authorize against it.
 
-In it's simplest form it works like this:
+In its simplest form it works like this:
 
     NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
                                              withUsername:@"user"];
@@ -88,6 +95,9 @@ In it's simplest form it works like this:
 
 /** Full server hostname in the format `@"{hostname}:{port}"`. */
 @property (nonatomic, readonly) NSString *host;
+
+/** Full server hostname (unlike -host, it does not include a port number). */
+@property (nonatomic, readonly) NSString *hostnameWithoutPort;
 
 /** The server port to connect to. */
 @property (nonatomic, readonly) NSNumber *port;
@@ -221,6 +231,47 @@ In it's simplest form it works like this:
  * @returns The host's fingerprint
  */
 - (NSString *)fingerprint:(NMSSHSessionHash)hashType;
+
+/// ----------------------------------------------------------------------------
+/// @name Known hosts
+/// ----------------------------------------------------------------------------
+
+/**
+ * Checks if the hosts's key is recognized. The session must be connected. Each
+ * file is checked in order, returning as soon as the host is found. In a
+ * sandboxed Mac app, _files_ must not be nil as the default files are not
+ * accessible.
+ *
+ * @param files An array of filenames to check, or nil to use the default paths.
+ * @returns Known host status for current host.
+ */
+- (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files;
+
+/**
+ * Adds the passed-in host to the user's known hosts file. _hostName_ may be a
+ * numerical IP address or a full name. If it includes a port number, it should
+ * be formatted as [host]:port (e.g., @"[example.com]:2222"). If _salt_ is set,
+ * then _hostName_ must contain a hostname salted and hashed with SHA1 and then
+ * base64-encoded. On Mac OS, the default filename is ~/.ssh/known_hosts, and
+ * will not be writable in a sandboxed environment.
+ *
+ * A simple example:
+ *   [session addKnownHostName:session.hostnameWithoutPort
+ *                        port:[session.port intValue]
+ *                      toFile:nil
+ *                    withSalt:nil];
+ *
+ *
+ * @param hostnameWithoutPort The hostname or IP address to add.
+ * @param port The port number of the host to add.
+ * @param fileName The path to the known_hosts file, or nil for the default.
+ * @param salt The base64-encoded salt used for hashing. May be nil.
+ * @returns Success status.
+ */
+- (BOOL)addKnownHostName:(NSString *)hostnameWithoutPort
+                    port:(NSInteger)port
+                  toFile:(NSString *)fileName
+                withSalt:(NSString *)salt;
 
 /// ----------------------------------------------------------------------------
 /// @name Quick channel/sftp access
