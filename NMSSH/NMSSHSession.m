@@ -337,11 +337,11 @@
     return self.isAuthorized;
 }
 
-- (BOOL)authenticateByPublicKey:(NSString *)publicKey
-                     privateKey:(NSString *)privateKey
-                    andPassword:(NSString *)password {
+- (int)internalAuthenticateByPublicKey:(NSString *)publicKey
+                            privateKey:(NSString *)privateKey
+                           andPassword:(NSString *)password {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
-        return NO;
+        return LIBSSH2_ERROR_AUTHENTICATION_FAILED;
     }
 
     if (password == nil) {
@@ -353,11 +353,43 @@
     const char *privKey = [[privateKey stringByExpandingTildeInPath] UTF8String] ?: NULL;
 
     // Try to authenticate with key pair and password
-    int error = libssh2_userauth_publickey_fromfile(self.session,
-                                                    [self.username UTF8String],
-                                                    pubKey,
-                                                    privKey,
-                                                    [password UTF8String]);
+    return libssh2_userauth_publickey_fromfile(self.session,
+                                               [self.username UTF8String],
+                                               pubKey,
+                                               privKey,
+                                               [password UTF8String]);
+}
+
+- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                     privateKey:(NSString *)privateKey
+          optionalPasswordBlock:(NSString *(^)())passwordBlock {
+    int error = [self internalAuthenticateByPublicKey:publicKey
+                                           privateKey:privateKey
+                                          andPassword:@""];
+    if (error == LIBSSH2_ERROR_PUBLICKEY_UNVERIFIED) {
+        NSString *password = passwordBlock();
+        if (password) {
+            error = [self internalAuthenticateByPublicKey:publicKey
+                                               privateKey:privateKey
+                                              andPassword:password];
+        }
+    }
+    if (error) {
+        NMSSHLogError(@"NMSSH: Public key authentication failed with reason %i", error);
+        return NO;
+    }
+    
+    NMSSHLogVerbose(@"NMSSH: Public key authentication succeeded.");
+    
+    return self.isAuthorized;
+}
+
+- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                     privateKey:(NSString *)privateKey
+                    andPassword:(NSString *)password {
+    int error = [self internalAuthenticateByPublicKey:publicKey
+                                           privateKey:privateKey
+                                          andPassword:password];
 
     if (error) {
         NMSSHLogError(@"NMSSH: Public key authentication failed with reason %i", error);
@@ -480,18 +512,31 @@
     return [fingerprint copy];
 }
 
-- (const char *)knownHostsFilename {
+- (const char *)globalKnownHostsFilename {
+    return "/etc/ssh/ssh_known_hosts";
+}
+
+- (const char *)perUserKnownHostsFilename {
     return [[@"~/.ssh/known_hosts" stringByExpandingTildeInPath] UTF8String];
 }
 
 - (NMSSHKnownHostStatus)knownHostStatus {
+    NMSSHKnownHostStatus status =
+        [self knownHostStatusWithFilename:[self globalKnownHostsFilename]];
+    if (status == NMSSHKnownHostStatusNotFound) {
+        status = [self knownHostStatusWithFilename:[self perUserKnownHostsFilename]];
+    }
+    return status;
+}
+
+- (NMSSHKnownHostStatus)knownHostStatusWithFilename:(const char *)knownHostsFilename {
     LIBSSH2_KNOWNHOSTS *nh = libssh2_knownhost_init(self.session);
     if (!nh) {
         return NMSSHKnownHostStatusFailure;
     }
     
     libssh2_knownhost_readfile(nh,
-                               [self knownHostsFilename],
+                               knownHostsFilename,
                                LIBSSH2_KNOWNHOST_FILE_OPENSSH);
 
     int keytype;
@@ -544,8 +589,9 @@
         return NO;
     }
     
+    const char *filename = [self perUserKnownHostsFilename];
     libssh2_knownhost_readfile(nh,
-                               [self knownHostsFilename],
+                               filename,
                                LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     int keybit = (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
                                                       : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
@@ -565,17 +611,16 @@
         char *buffer;
         int len;
         libssh2_session_last_error(self.session, &buffer, &len, 0);
-        NMSSHLogError(@"Failed to add host to known hosts: error %d (%s)",
+        NMSSHLogError(@"Failed to add host to known hosts: error %d (%@)",
                       result,
-                      [self lastError]);
+                      [[self lastError] localizedDescription]);
     } else {
         NSLog(@"Add was apparently successful.");
         int wrc = libssh2_knownhost_writefile(nh,
-                                              [self knownHostsFilename],
+                                              filename,
                                               LIBSSH2_KNOWNHOST_FILE_OPENSSH);
         if (wrc) {
-            NMSSHLogError(@"Couldn't write to %s: %@",
-                          [self knownHostsFilename], [self lastError]);
+            NMSSHLogError(@"Couldn't write to %s: %@", filename, [self lastError]);
         }
     }
     libssh2_knownhost_free(nh);
