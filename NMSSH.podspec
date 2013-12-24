@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '5.0'
   s.osx.deployment_target = '10.7'
 
-  s.libraries      = 'ssl', 'ssh2', 'crypto'
+  s.libraries      = 'z', 'ssl', 'ssh2', 'crypto'
 
   s.ios.source_files = 'NMSSH-iOS', 'NMSSH-iOS/**/*.h'
   s.ios.preserve_paths = 'NMSSH-iOS'
