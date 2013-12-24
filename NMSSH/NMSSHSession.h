@@ -1,3 +1,5 @@
+#import "NMSSH.h"
+
 #import "NMSSHSessionDelegate.h"
 
 typedef NS_ENUM(NSInteger, NMSSHSessionHash) {
