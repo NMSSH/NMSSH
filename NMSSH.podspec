@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary      = "NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2."
   s.homepage     = "https://github.com/Lejdborg/NMSSH"
   s.license      = 'MIT'
-  s.author       = { "Tommaso Madonia" => "", "@Shirk" => "", "Endika Gutiérrez" => "me@endika.net" }
+  s.author       = { "Christoffer Lejdborg" => "hello@9muses.se", "Tommaso Madonia" => "", "@Shirk" => "", "Endika Gutiérrez" => "me@endika.net" }
 
   # https://github.com/Lejdborg/NMSSH.git
   # uses endSly repository for testing.
