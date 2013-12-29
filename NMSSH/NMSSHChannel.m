@@ -522,11 +522,10 @@
             else {
                 // rc indicates how many bytes were written this time
                 total += rc;
-                if (progress) {
-                    if (!progress(total)) {
-                        abort = YES;
-                        break;
-                    }
+                if (progress && !progress(total)) {
+                    [self closeChannel];
+                    abort = YES;
+                    break;
                 }
                 ptr += rc;
                 nread -= rc;
@@ -593,7 +592,6 @@
 
     // Save data to local file
     off_t got = 0;
-    NSUInteger total = 0;
     while (got < fileinfo.st_size) {
         char mem[self.bufferSize];
         size_t amount = sizeof(mem);
@@ -612,13 +610,12 @@
                 [self closeChannel];
                 return NO;
             }
-            total += n;
-            if (progress) {
-                if (!progress(total, (NSUInteger)fileinfo.st_size)) {
-                    return NO;
-                }
-            }
             got += rc;
+            if (progress && !progress(got, (NSUInteger)fileinfo.st_size)) {
+                close(localFile);
+                [self closeChannel];
+                return NO;
+            }
         }
         else if (rc < 0) {
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
