@@ -154,6 +154,8 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  */
 - (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
 
+- (BOOL)requestSizeRows:(NSUInteger)rows cols:(NSUInteger)cols;
+
 /// ----------------------------------------------------------------------------
 /// @name SCP file transfer
 /// ----------------------------------------------------------------------------

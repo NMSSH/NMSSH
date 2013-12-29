@@ -446,6 +446,12 @@
     return YES;
 }
 
+- (BOOL)requestSizeRows:(NSUInteger)rows cols:(NSUInteger)cols
+{
+    return libssh2_channel_request_pty_size(self.channel, (int) cols, (int) rows);
+}
+
+
 // -----------------------------------------------------------------------------
 #pragma mark - SCP FILE TRANSFER
 // -----------------------------------------------------------------------------
