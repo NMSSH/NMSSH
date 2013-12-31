@@ -451,6 +451,12 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath {
+    return [self uploadFile:localPath to:remotePath progress:NULL];
+}
+
+- (BOOL)uploadFile:(NSString *)localPath
+                to:(NSString *)remotePath
+          progress:(BOOL (^)(NSUInteger))progress {
     if (self.channel != NULL) {
         NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
         if (self.type == NMSSHChannelTypeShell) {
@@ -499,7 +505,9 @@
     size_t nread;
     char *ptr;
     long rc;
-    while ((nread = fread(mem, 1, sizeof(mem), local)) > 0) {
+    NSUInteger total = 0;
+    BOOL abort = NO;
+    while (!abort && (nread = fread(mem, 1, sizeof(mem), local)) > 0) {
         ptr = mem;
 
         do {
@@ -513,6 +521,11 @@
             }
             else {
                 // rc indicates how many bytes were written this time
+                total += rc;
+                if (progress && !progress(total)) {
+                    abort = YES;
+                    break;
+                }
                 ptr += rc;
                 nread -= rc;
             }
@@ -524,10 +537,17 @@
     [self sendEOFandWait];
     [self closeChannel];
 
-    return YES;
+    return !abort;
 }
 
-- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
+- (BOOL)downloadFile:(NSString *)remotePath
+                  to:(NSString *)localPath {
+    return [self downloadFile:remotePath to:localPath progress:NULL];
+}
+
+- (BOOL)downloadFile:(NSString *)remotePath
+                  to:(NSString *)localPath
+            progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     if (self.channel != NULL) {
         NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
         if (self.type == NMSSHChannelTypeShell) {
@@ -582,8 +602,19 @@
         ssize_t rc = libssh2_channel_read(self.channel, mem, amount);
 
         if (rc > 0) {
-            write(localFile, mem, rc);
+            size_t n = write(localFile, mem, rc);
+            if (n < rc) {
+                NMSSHLogError(@"NMSSH: Failed to write to local file");
+                close(localFile);
+                [self closeChannel];
+                return NO;
+            }
             got += rc;
+            if (progress && !progress(got, (NSUInteger)fileinfo.st_size)) {
+                close(localFile);
+                [self closeChannel];
+                return NO;
+            }
         }
         else if (rc < 0) {
             NMSSHLogError(@"NMSSH: Failed to read SCP data");
