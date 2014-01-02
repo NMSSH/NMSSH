@@ -485,13 +485,26 @@
 }
 
 - (NMSSHKnownHostStatus)knownHostStatus {
+    // First try the system known_hosts file.
+    NMSSHKnownHostStatus status =
+        [self knownHostStatusWithFile:"/etc/ssh/ssh_known_hosts"];
+    if (status == NMSSHKnownHostStatusNotFound ||
+        status == NMSSHKnownHostStatusFailure) {
+        // If the system file was broken or didn't contain any info about the
+        // host, try the file in the user's home directory.
+        status = [self knownHostStatusWithFile:[self knownHostsFilename]];
+    }
+    return status;
+}
+
+- (NMSSHKnownHostStatus)knownHostStatusWithFile:(const char *)filename {
     LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
     if (!knownHosts) {
         return NMSSHKnownHostStatusFailure;
     }
     
     int rc = libssh2_knownhost_readfile(knownHosts,
-                                        [self knownHostsFilename],
+                                        filename,
                                         LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0) {
         libssh2_knownhost_free(knownHosts);
@@ -542,7 +555,8 @@
     }
 }
 
-- (BOOL)addCurrentHostToKnownHosts {
+- (BOOL)addHostToKnownHosts:(NSString *)hostName
+                   withSalt:(NSString *)salt {
     const char *hostkey;
     size_t hklen;
     int hktype;
@@ -568,18 +582,26 @@
         return NO;
     }
 
-    int keybit = (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
-                                                      : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+    int keybit = LIBSSH2_KNOWNHOST_KEYENC_RAW;
+    if (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHRSA;
+    } else {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+    }
+    if (salt) {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_SHA1;
+    } else {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_PLAIN;
+    }
+
     int result = libssh2_knownhost_addc(knownHosts,
-                                        [self.host UTF8String],
-                                        NULL,
+                                        [hostName UTF8String],
+                                        [salt UTF8String],
                                         hostkey,
                                         hklen,
                                         NULL,
                                         0,
-                                        (LIBSSH2_KNOWNHOST_TYPE_PLAIN |
-                                         LIBSSH2_KNOWNHOST_KEYENC_RAW |
-                                         keybit),
+                                        keybit,
                                         NULL);
     if (result) {
         NMSSHLogError(@"NMSSH: Failed to add host to known hosts: error %d (%@)",
