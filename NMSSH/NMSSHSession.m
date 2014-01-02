@@ -512,44 +512,57 @@
     return [fingerprint copy];
 }
 
-- (const char *)globalKnownHostsFilename {
-    return "/etc/ssh/ssh_known_hosts";
-}
-
-- (const char *)perUserKnownHostsFilename {
+- (const char *)knownHostsFilename {
     return [[@"~/.ssh/known_hosts" stringByExpandingTildeInPath] UTF8String];
 }
 
 - (NMSSHKnownHostStatus)knownHostStatus {
+    // First try the system known_hosts file.
     NMSSHKnownHostStatus status =
-        [self knownHostStatusWithFilename:[self globalKnownHostsFilename]];
-    if (status == NMSSHKnownHostStatusNotFound) {
-        status = [self knownHostStatusWithFilename:[self perUserKnownHostsFilename]];
+        [self knownHostStatusWithFile:"/etc/ssh/ssh_known_hosts"];
+    if (status == NMSSHKnownHostStatusNotFound ||
+        status == NMSSHKnownHostStatusFailure) {
+        // If the system file was broken or didn't contain any info about the
+        // host, try the file in the user's home directory.
+        status = [self knownHostStatusWithFile:[self knownHostsFilename]];
     }
     return status;
 }
 
-- (NMSSHKnownHostStatus)knownHostStatusWithFilename:(const char *)knownHostsFilename {
-    LIBSSH2_KNOWNHOSTS *nh = libssh2_knownhost_init(self.session);
-    if (!nh) {
+- (NMSSHKnownHostStatus)knownHostStatusWithFile:(const char *)filename {
+    LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
+    if (!knownHosts) {
         return NMSSHKnownHostStatusFailure;
     }
-    
-    libssh2_knownhost_readfile(nh,
-                               knownHostsFilename,
-                               LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+
+    int rc = libssh2_knownhost_readfile(knownHosts,
+                                        filename,
+                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    if (rc < 0) {
+        libssh2_knownhost_free(knownHosts);
+        if (rc == LIBSSH2_ERROR_FILE) {
+            NMSSHLogInfo(@"NMSSH: No known hosts file.");
+            return NMSSHKnownHostStatusNotFound;
+        } else {
+            NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
+            return NMSSHKnownHostStatusFailure;
+        }
+    }
 
     int keytype;
     size_t keylen;
     const char *remotekey = libssh2_session_hostkey(self.session,
                                                     &keylen,
                                                     &keytype);
+    if (!remotekey) {
+        NMSSHLogError(@"NMSSH: Failed to get host key.");
+        libssh2_knownhost_free(knownHosts);
+        return NMSSHKnownHostStatusFailure;
+    }
     int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
                                                        : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
-    
-
     struct libssh2_knownhost *host;
-    int check = libssh2_knownhost_checkp(nh,
+    int check = libssh2_knownhost_checkp(knownHosts,
                                          [self.host UTF8String],
                                          [self.port intValue],
                                          remotekey,
@@ -559,7 +572,7 @@
                                           keybit),
                                          &host);
 
-    libssh2_knownhost_free(nh);
+    libssh2_knownhost_free(knownHosts);
 
     switch (check) {
         case LIBSSH2_KNOWNHOST_CHECK_MATCH:
@@ -568,62 +581,77 @@
             return NMSSHKnownHostStatusMismatch;
         case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
             return NMSSHKnownHostStatusNotFound;
-        default:
         case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
+        default:
             return NMSSHKnownHostStatusFailure;
     }
 }
 
-- (BOOL)addCurrentHostToKnownHosts {
+- (BOOL)addHostToKnownHosts:(NSString *)hostName
+                   withSalt:(NSString *)salt {
     const char *hostkey;
-	size_t hklen;
-	int hktype;
+    size_t hklen;
+    int hktype;
+
     hostkey = libssh2_session_hostkey(self.session, &hklen, &hktype);
     if (!hostkey) {
-        NSLog(@"Failed to get hostkey. hostkey='%s'", hostkey);
+        NMSSHLogError(@"NMSSH: Failed to get host key.");
         return NO;
     }
-    NSLog(@"hktype=%d", hktype);
-    LIBSSH2_KNOWNHOSTS *nh = libssh2_knownhost_init(self.session);
-    if (!nh) {
-        return NO;
-    }
-    
-    const char *filename = [self perUserKnownHostsFilename];
-    libssh2_knownhost_readfile(nh,
-                               filename,
-                               LIBSSH2_KNOWNHOST_FILE_OPENSSH);
-    int keybit = (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) ? LIBSSH2_KNOWNHOST_KEY_SSHRSA
-                                                      : LIBSSH2_KNOWNHOST_KEY_SSHDSS;
 
-    int result = libssh2_knownhost_addc(nh,
-                                        [self.host UTF8String],
-                                        NULL,
+    LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
+    if (!knownHosts) {
+        NMSSHLogError(@"NMSSH: Failed to initialize knownhosts.");
+        return NO;
+    }
+
+    int rc = libssh2_knownhost_readfile(knownHosts,
+                                        [self knownHostsFilename],
+                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    if (rc < 0 && rc != LIBSSH2_ERROR_FILE) {
+        NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
+        libssh2_knownhost_free(knownHosts);
+        return NO;
+    }
+
+    int keybit = LIBSSH2_KNOWNHOST_KEYENC_RAW;
+    if (hktype == LIBSSH2_HOSTKEY_TYPE_RSA) {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHRSA;
+    } else {
+        keybit |= LIBSSH2_KNOWNHOST_KEY_SSHDSS;
+    }
+    if (salt) {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_SHA1;
+    } else {
+        keybit |= LIBSSH2_KNOWNHOST_TYPE_PLAIN;
+    }
+
+    int result = libssh2_knownhost_addc(knownHosts,
+                                        [hostName UTF8String],
+                                        [salt UTF8String],
                                         hostkey,
                                         hklen,
                                         NULL,
                                         0,
-                                        (LIBSSH2_KNOWNHOST_TYPE_PLAIN |
-                                         LIBSSH2_KNOWNHOST_KEYENC_RAW |
-                                         keybit),
+                                        keybit,
                                         NULL);
     if (result) {
-        char *buffer;
-        int len;
-        libssh2_session_last_error(self.session, &buffer, &len, 0);
-        NMSSHLogError(@"Failed to add host to known hosts: error %d (%@)",
+        NMSSHLogError(@"NMSSH: Failed to add host to known hosts: error %d (%@)",
                       result,
-                      [[self lastError] localizedDescription]);
+                      [self lastError]);
     } else {
-        NSLog(@"Add was apparently successful.");
-        int wrc = libssh2_knownhost_writefile(nh,
-                                              filename,
-                                              LIBSSH2_KNOWNHOST_FILE_OPENSSH);
-        if (wrc) {
-            NMSSHLogError(@"Couldn't write to %s: %@", filename, [self lastError]);
+        result = libssh2_knownhost_writefile(knownHosts,
+                                             [self knownHostsFilename],
+                                             LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+        if (result < 0) {
+            NMSSHLogError(@"NMSSH: Couldn't write to %s: %@",
+                          [self knownHostsFilename], [self lastError]);
+        } else {
+            NMSSHLogInfo(@"NMSSH: Host added to known hosts.");
         }
     }
-    libssh2_knownhost_free(nh);
+
+    libssh2_knownhost_free(knownHosts);
     return result == 0;
 }
 
