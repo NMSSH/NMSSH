@@ -523,7 +523,6 @@
                 // rc indicates how many bytes were written this time
                 total += rc;
                 if (progress && !progress(total)) {
-                    [self closeChannel];
                     abort = YES;
                     break;
                 }
