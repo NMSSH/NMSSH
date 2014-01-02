@@ -533,31 +533,61 @@
 #pragma mark - KNOWN HOSTS
 // -----------------------------------------------------------------------------
 
-- (const char *)knownHostsFilename {
-    return [[@"~/.ssh/known_hosts" stringByExpandingTildeInPath] UTF8String];
+- (NSString *)applicationSupportDirectory {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
+                                                         NSUserDomainMask,
+                                                         YES);
+    NSString *applicationSupportDirectory = [paths objectAtIndex:0];
+    NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
+        [[NSFileManager defaultManager] createDirectoryAtPath:nmsshDirectory
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                        error:NULL];
+    }
+    return nmsshDirectory;
 }
+
+- (NSString *)userKnownHostsFileName {
+#if TARGET_OS_IPHONE
+    return [[self applicationSupportDirectory] stringByAppendingPathComponent:@"known_hosts"];
+#else
+    return [@"~/.ssh/known_hosts" stringByExpandingTildeInPath];
+#endif
+}
+
+#if !TARGET_OS_IPHONE
+- (NSString *)systemKnownHostsFileName {
+    return @"/etc/ssh/ssh_known_hosts";
+}
+#endif
 
 - (NMSSHKnownHostStatus)knownHostStatus {
     // First try the system known_hosts file.
-    NMSSHKnownHostStatus status =
-        [self knownHostStatusWithFile:"/etc/ssh/ssh_known_hosts"];
-    if (status == NMSSHKnownHostStatusNotFound ||
-        status == NMSSHKnownHostStatusFailure) {
-        // If the system file was broken or didn't contain any info about the
-        // host, try the file in the user's home directory.
-        status = [self knownHostStatusWithFile:[self knownHostsFilename]];
+#if TARGET_OS_IPHONE
+    NSArray *files = @[ [self userKnownHostsFileName] ];
+#else
+    NSArray *files = @[ [self systemKnownHostsFileName], [self userKnownHostsFileName] ];
+#endif
+    
+    NMSSHKnownHostStatus status = NMSSHKnownHostStatusFailure;
+    for (NSString *filename in files) {
+        status = [self knownHostStatusWithFile:filename];
+        if (status != NMSSHKnownHostStatusNotFound && status != NMSSHKnownHostStatusFailure) {
+            return status;
+        }
     }
     return status;
 }
 
-- (NMSSHKnownHostStatus)knownHostStatusWithFile:(const char *)filename {
+- (NMSSHKnownHostStatus)knownHostStatusWithFile:(NSString *)filename {
     LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
     if (!knownHosts) {
         return NMSSHKnownHostStatusFailure;
     }
 
     int rc = libssh2_knownhost_readfile(knownHosts,
-                                        filename,
+                                        [filename UTF8String],
                                         LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0) {
         libssh2_knownhost_free(knownHosts);
@@ -584,7 +614,7 @@
     int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA ? LIBSSH2_KNOWNHOST_KEY_SSHRSA : LIBSSH2_KNOWNHOST_KEY_SSHDSS);
     struct libssh2_knownhost *host;
     int check = libssh2_knownhost_checkp(knownHosts,
-                                         [self.host UTF8String],
+                                         [[self hostnameWithoutPort] UTF8String],
                                          [self.port intValue],
                                          remotekey,
                                          keylen,
@@ -636,7 +666,7 @@
     }
 
     int rc = libssh2_knownhost_readfile(knownHosts,
-                                        [self knownHostsFilename],
+                                        [[self userKnownHostsFileName] UTF8String],
                                         LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0 && rc != LIBSSH2_ERROR_FILE) {
         NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
@@ -674,11 +704,11 @@
     }
     else {
         result = libssh2_knownhost_writefile(knownHosts,
-                                             [self knownHostsFilename],
+                                             [[self userKnownHostsFileName] UTF8String],
                                              LIBSSH2_KNOWNHOST_FILE_OPENSSH);
         if (result < 0) {
-            NMSSHLogError(@"NMSSH: Couldn't write to %s: %@",
-                          [self knownHostsFilename], [self lastError]);
+            NMSSHLogError(@"NMSSH: Couldn't write to %@: %@",
+                          [self userKnownHostsFileName], [self lastError]);
         }
         else {
             NMSSHLogInfo(@"NMSSH: Host added to known hosts.");
