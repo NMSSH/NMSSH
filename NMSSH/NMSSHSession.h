@@ -245,26 +245,6 @@ In it's simplest form it works like this:
  */
 - (NSString *)fingerprint:(NMSSHSessionHash)hashType;
 
-/**
- * Checks if the hosts's key is recognized. The session must be connected.
- *
- * @returns Known host status for current host.
- */
-- (NMSSHKnownHostStatus)knownHostStatus;
-
-/**
- * Adds the current host to the user's known hosts file. The hostName may be a
- * numerical IP address or a full name. If it includes a port number, it should
- * be formatted as [host]:port (e.g., @"[example.com]:2222"). If salt is non-nil
- * then hostName must be hashed with SHA1 and then base64-encoded.
- *
- * @param hostName The hostname to add.
- * @param salt The base64-encoded salt used for hashing. May be nil.
- * @returns Success status.
- */
-- (BOOL)addHostToKnownHosts:(NSString *)hostName
-                   withSalt:(NSString *)salt;
-
 /// ----------------------------------------------------------------------------
 /// @name Known hosts
 /// ----------------------------------------------------------------------------
