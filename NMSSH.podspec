@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   # https://github.com/Lejdborg/NMSSH.git
   # uses endSly repository for testing.
 
-  s.source       = { :git => "https://github.com/endSly/NMSSH.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/Lejdborg/NMSSH.git", :tag => s.version.to_s }
   s.source_files = 'NMSSH', 'NMSSH/**/*.{h,m}' 
   s.requires_arc = true
   s.ios.deployment_target = '5.0'
