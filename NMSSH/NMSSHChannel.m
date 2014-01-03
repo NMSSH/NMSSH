@@ -446,11 +446,14 @@
     return YES;
 }
 
-- (BOOL)requestSizeRows:(NSUInteger)rows cols:(NSUInteger)cols
-{
-    return libssh2_channel_request_pty_size(self.channel, (int) cols, (int) rows);
-}
+- (BOOL)requestSizeRows:(NSUInteger)rows columns:(NSUInteger)columns {
+    int rc = libssh2_channel_request_pty_size(self.channel, (int)columns, (int)rows);
+    if (rc) {
+        NMSSHLogError(@"NMSSH: Request size failed with error %i", rc);
+    }
 
+    return rc == 0;
+}
 
 // -----------------------------------------------------------------------------
 #pragma mark - SCP FILE TRANSFER
