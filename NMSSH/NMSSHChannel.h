@@ -154,6 +154,12 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  */
 - (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
 
+/**
+ * Requests size for remote terminal
+ *
+ * @param rows Height in characters for terminal
+ * @param cols Width in characters for terminal
+ */
 - (BOOL)requestSizeRows:(NSUInteger)rows cols:(NSUInteger)cols;
 
 /// ----------------------------------------------------------------------------
