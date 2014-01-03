@@ -1,3 +1,5 @@
+#import "NMSSH.h"
+
 #import "NMSSHChannelDelegate.h"
 
 typedef NS_ENUM(NSInteger, NMSSHChannelError) {
@@ -151,6 +153,8 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  * @returns Shell write success
  */
 - (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
+
+- (BOOL)requestSizeRows:(NSUInteger)rows cols:(NSUInteger)cols;
 
 /// ----------------------------------------------------------------------------
 /// @name SCP file transfer

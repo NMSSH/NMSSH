@@ -1,3 +1,5 @@
+#import "NMSSH.h"
+
 /**
  * NMSFTP provides functionality for working with SFTP servers.
  */
