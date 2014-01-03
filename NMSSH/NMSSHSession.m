@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NMSSHChannel *channel;
 @property (nonatomic, strong) NMSFTP *sftp;
+@property (nonatomic, strong) NSNumber *port;
 @end
 
 @implementation NMSSHSession
@@ -22,14 +23,12 @@
 // -----------------------------------------------------------------------------
 
 + (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
+    NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
+                                                          port:port
+                                                   andUsername:username];
+    [session connect];
 
-    // Check if host is IPv6
-    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
-        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
-    }
-
-    return [self connectToHost:hostname withUsername:username];
+    return session;
 }
 
 + (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
@@ -41,25 +40,31 @@
 }
 
 - (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
-    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
-
-    // Check if host is IPv6
-    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
-        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
-    }
-
-    return [self initWithHost:hostname andUsername:username];
-}
-
-- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
     if ((self = [super init])) {
         [self setHost:host];
+        [self setPort:@(port)];
         [self setUsername:username];
         [self setConnected:NO];
         [self setFingerprintHash:NMSSHSessionHashMD5];
     }
 
     return self;
+}
+
++ (NSURL *)URLForHost:(NSString *)host {
+    // Check if host is IPv6 and wrap in square brackets.
+    if ([[host componentsSeparatedByString:@":"] count] >= 3 &&
+        ![host hasPrefix:@"["]) {
+        host = [NSString stringWithFormat:@"[%@]", host];
+    }
+    return [NSURL URLWithString:[@"ssh://" stringByAppendingString:host]];
+}
+
+- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
+    NSURL *url = [[self class] URLForHost:host];
+    return [self initWithHost:[url host]
+                         port:[([url port] ?: @22) intValue]
+                  andUsername:username];
 }
 
 // -----------------------------------------------------------------------------
@@ -97,45 +102,6 @@
     }
 
     return addresses;
-}
-
-- (NSNumber *)port {
-    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
-    NSInteger components = [hostComponents count];
-
-    // Check if the host is {hostname}:{port} or {IPv4}:{port}
-    if (components == 2) {
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-        return [formatter numberFromString:[hostComponents lastObject]];
-    } // Check if the host is [{IPv6}]:{port}
-    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-        return [formatter numberFromString:[hostComponents lastObject]];
-    }
-
-    // If no port was defined, use 22 by default
-    return @22;
-}
-
-- (NSString *)hostnameWithoutPort {
-    NSArray *hostComponents = [self.host componentsSeparatedByString:@":"];
-    NSInteger components = [hostComponents count];
-
-    // Check if the host is {hostname}:{port} or {IPv4}:{port}
-    if (components == 2) {
-        return hostComponents[0];
-    } // Check if the host is [{IPv6}]:{port}
-    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
-        hostComponents = [hostComponents subarrayWithRange:NSMakeRange(0, components - 1)];
-        NSString *bracketedHostname = [hostComponents componentsJoinedByString:@":"];
-        return [bracketedHostname substringWithRange:NSMakeRange(1, bracketedHostname.length - 2)];
-    }
-
-    return self.host;
 }
 
 - (NSNumber *)timeout {
@@ -457,7 +423,8 @@
     char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
     if (userauthlist == NULL){
-        NMSSHLogInfo(@"NMSSH: Failed to get authentication method for host %@", self.host);
+        NMSSHLogInfo(@"NMSSH: Failed to get authentication method for host %@:%@",
+                     self.host, self.port);
         return nil;
     }
 
@@ -584,11 +551,11 @@
     int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA ? LIBSSH2_KNOWNHOST_KEY_SSHRSA : LIBSSH2_KNOWNHOST_KEY_SSHDSS);
     struct libssh2_knownhost *host;
     NMSSHLogInfo(@"NMSSH: Check for host %@, port %@ in file %@",
-                 [self hostnameWithoutPort],
+                 self.host,
                  self.port,
                  filename);
     int check = libssh2_knownhost_checkp(knownHosts,
-                                         [[self hostnameWithoutPort] UTF8String],
+                                         [self.host UTF8String],
                                          [self.port intValue],
                                          remotekey,
                                          keylen,
@@ -616,7 +583,7 @@
     }
 }
 
-- (BOOL)addKnownHostName:(NSString *)hostnameWithoutPort
+- (BOOL)addKnownHostName:(NSString *)host
                     port:(NSInteger)port
                   toFile:(NSString *)fileName
                 withSalt:(NSString *)salt {
@@ -626,9 +593,9 @@
     NSString *hostname;  // Formatted as {host} or [{host}]:{port}.
 
     if (port == 22) {
-        hostname = hostnameWithoutPort;
+        hostname = host;
     } else {
-        hostname = [NSString stringWithFormat:@"[%@]:%d", hostnameWithoutPort, (int)port];
+        hostname = [NSString stringWithFormat:@"[%@]:%d", host, (int)port];
     }
 
     if (!fileName) {

@@ -52,7 +52,8 @@ In its simplest form it works like this:
  * Shorthand method for initializing a NMSSHSession object and calling connect.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             `@":{portnr}"`
+ *             `@":{portnr}"`; for ipV6 addresses with a port, use
+ *             `@"[{host}]:{portnr}]"'.
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
@@ -73,14 +74,15 @@ In its simplest form it works like this:
  * Create and setup a new NMSSH instance.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             `@":{portnr}"`
+ *             `@":{portnr}"`; for ipV6 addresses with a port, use
+ *             `@"[{host}]:{portnr}]"'.
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
 - (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
 
 /**
- * Create and setup a new NMSSH instance.
+ * Create and setup a new NMSSH instance. This is the designated initializer.
  *
  * @param host The server hostname
  * @param port The port number
@@ -93,11 +95,8 @@ In its simplest form it works like this:
 /// @name Connection settings
 /// ----------------------------------------------------------------------------
 
-/** Full server hostname in the format `@"{hostname}:{port}"`. */
+/** Full server hostname in the format `@"{hostname}"`. */
 @property (nonatomic, readonly) NSString *host;
-
-/** Full server hostname (unlike -host, it does not include a port number). */
-@property (nonatomic, readonly) NSString *hostnameWithoutPort;
 
 /** The server port to connect to. */
 @property (nonatomic, readonly) NSNumber *port;
@@ -256,7 +255,7 @@ In its simplest form it works like this:
  * will not be writable in a sandboxed environment.
  *
  * A simple example:
- *   [session addKnownHostName:session.hostnameWithoutPort
+ *   [session addKnownHostName:session.host
  *                        port:[session.port intValue]
  *                      toFile:nil
  *                    withSalt:nil];
