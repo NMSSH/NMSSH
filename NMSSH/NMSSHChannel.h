@@ -155,15 +155,15 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
 - (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout;
 
 /**
- * Request a size for the pseudo terminal.
+ * Request size for the remote pseudo terminal.
  *
  * This method should be called only after startShell:
  *
- * @param rows Number of rows
- * @param columns Number of columns
+ * @param width Width in characters for terminal
+ * @param height Height in characters for terminal
  * @returns Size change success
  */
-- (BOOL)requestSizeRows:(NSUInteger)rows columns:(NSUInteger)columns;
+- (BOOL)requestSizeWidth:(NSUInteger)width height:(NSUInteger)height;
 
 /// ----------------------------------------------------------------------------
 /// @name SCP file transfer

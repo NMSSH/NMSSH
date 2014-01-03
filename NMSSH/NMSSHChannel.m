@@ -446,8 +446,8 @@
     return YES;
 }
 
-- (BOOL)requestSizeRows:(NSUInteger)rows columns:(NSUInteger)columns {
-    int rc = libssh2_channel_request_pty_size(self.channel, (int)columns, (int)rows);
+- (BOOL)requestSizeWidth:(NSUInteger)width height:(NSUInteger)height {
+    int rc = libssh2_channel_request_pty_size(self.channel, (int)width, (int)height);
     if (rc) {
         NMSSHLogError(@"NMSSH: Request size failed with error %i", rc);
     }
