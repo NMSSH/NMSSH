@@ -45,10 +45,19 @@ API documentation for NMSSH is available here: [http://docs.9muses.se/nmssh/](ht
 
 **Note:** Make sure that you have documented your code and that you follow the code conventions before opening the pull request.
 
-## Contributors
+## Developed by
 
+### Core team
+
+* [Christoffer Lejdborg (@Lejdborg)](https://github.com/Lejdborg) (creator)
 * [Tommaso Madonia (@Frugghi)](https://github.com/Frugghi)
+
+### Contributors
+
+* [Endika Gutiérrez (@endSly)](https://github.com/endSly)
+* [@gnachman](https://github.com/gnachman)
 * [@Shirk](https://github.com/Shirk)
+* [@touta](https://github.com/touta)
 
 ## License
 
