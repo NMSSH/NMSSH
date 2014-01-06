@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
     }
 
  ## Thread safety
+
  NMSSH classes are not thread safe, you should use them from the same thread
  where you created the NMSSHSession instance.
 
@@ -47,9 +48,9 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 
 /**
- * The receiver’s `delegate`.
- *
- * The `delegate` is sent messages when content is loading.
+ The receiver’s `delegate`.
+
+ The `delegate` is sent messages when content is loading.
  */
 @property (nonatomic, weak) id<NMSSHSessionDelegate> delegate;
 
@@ -58,45 +59,45 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 
 /**
- * Shorthand method for initializing a NMSSHSession object and calling connect.
- *
- * @param host The server hostname (a port number can be specified by appending
- *             `@":{port}"`; for IPv6 addresses with a port, use
- *             `@"[{host}]:{port}"`.
- * @param username A valid username the server will accept
- * @returns NMSSHSession instance
+ Shorthand method for initializing a NMSSHSession object and calling connect.
+
+ @param host The server hostname (a port number can be specified by appending
+             `@":{port}"`; for IPv6 addresses with a port, use
+             `@"[{host}]:{port}"`.
+ @param username A valid username the server will accept
+ @returns NMSSHSession instance
  */
 + (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username;
 
 /**
- * Shorthand method for initializing a NMSSHSession object and calling connect,
- * (explicitly setting a port number).
- *
- * @param host The server hostname
- * @param port The port number
- * @param username A valid username the server will accept
- * @returns NMSSHSession instance
+ Shorthand method for initializing a NMSSHSession object and calling connect,
+ (explicitly setting a port number).
+
+ @param host The server hostname
+ @param port The port number
+ @param username A valid username the server will accept
+ @returns NMSSHSession instance
  */
 + (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
 
 /**
- * Create and setup a new NMSSH instance.
- *
- * @param host The server hostname (a port number can be specified by appending
- *             `@":{port}"`; for IPv6 addresses with a port, use
- *             `@"[{host}]:{port}"`.
- * @param username A valid username the server will accept
- * @returns NMSSHSession instance
+ Create and setup a new NMSSH instance.
+
+ @param host The server hostname (a port number can be specified by appending
+             `@":{port}"`; for IPv6 addresses with a port, use
+             `@"[{host}]:{port}"`.
+ @param username A valid username the server will accept
+ @returns NMSSHSession instance
  */
 - (instancetype)initWithHost:(NSString *)host andUsername:(NSString *)username;
 
 /**
- * Create and setup a new NMSSH instance. This is the designated initializer.
- *
- * @param host The server hostname
- * @param port The port number
- * @param username A valid username the server will accept
- * @returns NMSSHSession instance
+ Create and setup a new NMSSH instance. This is the designated initializer.
+
+ @param host The server hostname
+ @param port The port number
+ @param username A valid username the server will accept
+ @returns NMSSHSession instance
  */
 - (instancetype)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
 
@@ -140,28 +141,28 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 
 /**
- * A Boolean value indicating whether the session connected successfully
- * (read-only).
+ A Boolean value indicating whether the session connected successfully
+ (read-only).
  */
 @property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
 /**
- * Connect to the server using the default timeout (10 seconds)
- *
- * @returns Connection status
+ Connect to the server using the default timeout (10 seconds)
+
+ @returns Connection status
  */
 - (BOOL)connect;
 
 /**
- * Connect to the server.
- *
- * @param timeout The time, in seconds, to wait before giving up.
- * @returns Connection status
+ Connect to the server.
+
+ @param timeout The time, in seconds, to wait before giving up.
+ @returns Connection status
  */
 - (BOOL)connectWithTimeout:(NSNumber *)timeout;
 
 /**
- * Close the session
+ Close the session
  */
 - (void)disconnect;
 
@@ -170,73 +171,73 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 
 /**
- * A Boolean value indicating whether the session is successfully authorized
- * (read-only).
+ A Boolean value indicating whether the session is successfully authorized
+ (read-only).
  */
 @property (nonatomic, readonly, getter = isAuthorized) BOOL authorized;
 
 /**
- * Authenticate by password
- *
- * @param password Password for connected user
- * @returns Authentication success
+ Authenticate by password
+
+ @param password Password for connected user
+ @returns Authentication success
  */
 - (BOOL)authenticateByPassword:(NSString *)password;
 
 /**
- * Authenticate by private key pair
- *
- * Use password:nil when the key is unencrypted
- *
- * @param publicKey Filepath to public key
- * @param privateKey Filepath to private key
- * @param password Password for encrypted private key
- * @returns Authentication success
+ Authenticate by private key pair
+
+ Use password:nil when the key is unencrypted
+
+ @param publicKey Filepath to public key
+ @param privateKey Filepath to private key
+ @param password Password for encrypted private key
+ @returns Authentication success
  */
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
                     andPassword:(NSString *)password;
 
 /**
- * Authenticate by keyboard-interactive using delegate.
- *
- * @returns Authentication success
+ Authenticate by keyboard-interactive using delegate.
+
+ @returns Authentication success
  */
 - (BOOL)authenticateByKeyboardInteractive;
 
 /**
- * Authenticate by keyboard-interactive using block.
- *
- * @param authenticationBlock The block to apply to server requests.
- *     The block takes one argument:
- *
- *     _request_ - Question from server<br>
- *     The block returns a NSString object that represents a valid response
- *     to the given question.
- * @returns Authentication success
+ Authenticate by keyboard-interactive using block.
+
+ @param authenticationBlock The block to apply to server requests.
+     The block takes one argument:
+
+     _request_ - Question from server<br>
+     The block returns a NSString object that represents a valid response
+     to the given question.
+ @returns Authentication success
  */
 - (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock;
 
 /**
- * Setup and connect to an SSH agent
- *
- * @returns Authentication success
+ Setup and connect to an SSH agent
+
+ @returns Authentication success
  */
 - (BOOL)connectToAgent;
 
 /**
- * Get supported authentication methods
- *
- * @returns Array of string descripting supported authentication methods
+ Get supported authentication methods
+
+ @returns Array of string descripting supported authentication methods
  */
 - (NSArray *)supportedAuthenticationMethods;
 
 /**
- * Get the fingerprint of the remote host.
- * The session must be connected to an host.
- *
- * @param hashType The hash algorithm to use to encode the fingerprint
- * @returns The host's fingerprint
+ Get the fingerprint of the remote host.
+ The session must be connected to an host.
+
+ @param hashType The hash algorithm to use to encode the fingerprint
+ @returns The host's fingerprint
  */
 - (NSString *)fingerprint:(NMSSHSessionHash)hashType;
 
@@ -245,15 +246,15 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 
 /**
- * Checks if the hosts's key is recognized.
- * 
- * The session must be connected. Each file is checked in order,
- * returning as soon as the host is found.
- *
- * @warning In a sandboxed Mac app or iOS app, _files_ must not be `nil` as the default files are not accessible.
- *
- * @param files An array of filenames to check, or `nil` to use the default paths.
- * @returns Known host status for current host.
+ Checks if the hosts's key is recognized.
+
+ The session must be connected. Each file is checked in order,
+ returning as soon as the host is found.
+
+ @warning In a sandboxed Mac app or iOS app, _files_ must not be `nil` as the default files are not accessible.
+
+ @param files An array of filenames to check, or `nil` to use the default paths.
+ @returns Known host status for current host.
  */
 - (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files;
 
