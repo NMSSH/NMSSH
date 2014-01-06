@@ -15,13 +15,13 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 };
 
 /**
-NMSSHSession provides the functionality required to setup a SSH connection
-and authorize against it.
+ NMSSHSession provides the functionality required to setup a SSH connection
+ and authorize against it.
 
-In its simplest form it works like this:
+ In its simplest form it works like this:
 
     NMSSHSession *session = [NMSSHSession connectToHost:@"127.0.0.1:22"
-                                             withUsername:@"user"];
+                                           withUsername:@"user"];
 
     if (session.isConnected) {
         NSLog(@"Successfully created a new session");
@@ -32,7 +32,14 @@ In its simplest form it works like this:
     if (session.isAuthorized) {
         NSLog(@"Successfully authorized");
     }
-*/
+
+ ## Thread safety
+ NMSSH classes are not thread safe, you should use them from the same thread
+ where you created the NMSSHSession instance.
+
+ If you want to use multiple NMSSHSession instances at once you should implement
+ the [crypto mutex callbacks](http://trac.libssh2.org/wiki/MultiThreading).
+ */
 @interface NMSSHSession : NSObject
 
 /// ----------------------------------------------------------------------------
@@ -54,8 +61,8 @@ In its simplest form it works like this:
  * Shorthand method for initializing a NMSSHSession object and calling connect.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             `@":{portnr}"`; for ipV6 addresses with a port, use
- *             `@"[{host}]:{portnr}]"'.
+ *             `@":{port}"`; for IPv6 addresses with a port, use
+ *             `@"[{host}]:{port}"`.
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
@@ -76,8 +83,8 @@ In its simplest form it works like this:
  * Create and setup a new NMSSH instance.
  *
  * @param host The server hostname (a port number can be specified by appending
- *             `@":{portnr}"`; for ipV6 addresses with a port, use
- *             `@"[{host}]:{portnr}]"'.
+ *             `@":{port}"`; for IPv6 addresses with a port, use
+ *             `@"[{host}]:{port}"`.
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
@@ -238,38 +245,41 @@ In its simplest form it works like this:
 /// ----------------------------------------------------------------------------
 
 /**
- * Checks if the hosts's key is recognized. The session must be connected. Each
- * file is checked in order, returning as soon as the host is found. In a
- * sandboxed Mac app, _files_ must not be nil as the default files are not
- * accessible.
+ * Checks if the hosts's key is recognized.
+ * 
+ * The session must be connected. Each file is checked in order,
+ * returning as soon as the host is found.
  *
- * @param files An array of filenames to check, or nil to use the default paths.
+ * @warning In a sandboxed Mac app or iOS app, _files_ must not be `nil` as the default files are not accessible.
+ *
+ * @param files An array of filenames to check, or `nil` to use the default paths.
  * @returns Known host status for current host.
  */
 - (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files;
 
 /**
- * Adds the passed-in host to the user's known hosts file. _hostName_ may be a
- * numerical IP address or a full name. If it includes a port number, it should
- * be formatted as [host]:port (e.g., @"[example.com]:2222"). If _salt_ is set,
- * then _hostName_ must contain a hostname salted and hashed with SHA1 and then
- * base64-encoded. On Mac OS, the default filename is ~/.ssh/known_hosts, and
- * will not be writable in a sandboxed environment.
- *
- * A simple example:
- *   [session addKnownHostName:session.host
- *                        port:[session.port intValue]
- *                      toFile:nil
- *                    withSalt:nil];
- *
- *
- * @param hostnameWithoutPort The hostname or IP address to add.
- * @param port The port number of the host to add.
- * @param fileName The path to the known_hosts file, or nil for the default.
- * @param salt The base64-encoded salt used for hashing. May be nil.
- * @returns Success status.
+ Adds the passed-in host to the user's known hosts file.
+
+ _hostName_ may be a numerical IP address or a full name. If it includes
+ a port number, it should be formatted as `@"[{host}]:{port}"` (e.g., `@"[example.com]:2222"`).
+ If _salt_ is set, then _hostName_ must contain a hostname salted and hashed with SHA1 and then base64-encoded.
+
+ A simple example:
+
+    [session addKnownHostName:session.host
+                         port:[session.port intValue]
+                       toFile:nil
+                     withSalt:nil];
+
+ @warning  On Mac OS, the default filename is `~/.ssh/known_hosts`, and will not be writable in a sandboxed environment.
+
+ @param hostName The hostname or IP address to add.
+ @param port The port number of the host to add.
+ @param fileName The path to the known_hosts file, or `nil` for the default.
+ @param salt The base64-encoded salt used for hashing. May be `nil`.
+ @returns Success status.
  */
-- (BOOL)addKnownHostName:(NSString *)hostnameWithoutPort
+- (BOOL)addKnownHostName:(NSString *)hostName
                     port:(NSInteger)port
                   toFile:(NSString *)fileName
                 withSalt:(NSString *)salt;

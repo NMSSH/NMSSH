@@ -83,7 +83,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
 /**
  * Execute a shell command on the server.
  *
- * If an error occurs, it will return nil and populate the error object.
+ * If an error occurs, it will return `nil` and populate the error object.
  * If requestPty is enabled request a pseudo terminal before running the
  * command.
  *
@@ -96,7 +96,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
 /**
  * Execute a shell command on the server with a given timeout.
  *
- * If an error occurs or the connection timed out, it will return nil and populate the error object.
+ * If an error occurs or the connection timed out, it will return `nil` and populate the error object.
  * If requestPty is enabled request a pseudo terminal before running the
  * command.
  *
@@ -111,7 +111,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
 /// @name Remote shell session
 /// ----------------------------------------------------------------------------
 
-/** User-defined environment variables for the session, defaults to nil */
+/** User-defined environment variables for the session, defaults to `nil` */
 @property (nonatomic, strong) NSDictionary *environmentVariables;
 
 /**
