@@ -347,6 +347,7 @@
                    }
                }
     });
+
     dispatch_source_set_cancel_handler(self.source, ^{
         NMSSHLogVerbose(@"NMSSH: Shell source cancelled");
 
@@ -354,6 +355,7 @@
             [self.delegate channelShellDidClose:self];
         }
     });
+
     dispatch_resume(self.source);
 
     int rc = 0;
@@ -468,6 +470,7 @@
           progress:(BOOL (^)(NSUInteger))progress {
     if (self.channel != NULL) {
         NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+
         if (self.type == NMSSHChannelTypeShell) {
             [self closeShell];
         }
@@ -503,6 +506,7 @@
     if (channel == NULL) {
         NMSSHLogError(@"NMSSH: Unable to open SCP session");
         fclose(local);
+
         return NO;
     }
 
@@ -559,6 +563,7 @@
             progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     if (self.channel != NULL) {
         NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+
         if (self.type == NMSSHChannelTypeShell) {
             [self closeShell];
         }
@@ -571,8 +576,7 @@
 
     // Inherit file name if to: contains a directory
     if ([localPath hasSuffix:@"/"]) {
-        localPath = [localPath stringByAppendingString:
-                     [[remotePath componentsSeparatedByString:@"/"] lastObject]];
+        localPath = [localPath stringByAppendingString:[[remotePath componentsSeparatedByString:@"/"] lastObject]];
     }
 
     // Set blocking mode

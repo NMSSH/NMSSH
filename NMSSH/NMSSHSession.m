@@ -91,14 +91,17 @@
 
     if (host) {
         NMSSHLogVerbose(@"NMSSH: Start %@ resolution", address);
+
         if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
             addresses = (__bridge NSArray *)(CFHostGetAddressing(host, NULL));
-        } else {
+        }
+        else {
             NMSSHLogError(@"NMSSH: Unable to resolve host %@", address);
         }
 
         CFRelease(host);
-    } else {
+    }
+    else {
         NMSSHLogError(@"NMSSH: Error allocating CFHost for %@", address);
     }
 
@@ -217,7 +220,8 @@
 
         if (error) {
             NMSSHLogVerbose(@"NMSSH: Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
-        } else {
+        }
+        else {
             NMSSHLogInfo(@"NMSSH: Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
@@ -225,6 +229,7 @@
     if (error) {
         NMSSHLogError(@"NMSSH: Failure establishing socket connection");
         [self disconnect];
+
         return NO;
     }
 
@@ -241,6 +246,7 @@
     if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
         NMSSHLogError(@"NMSSH: Failure establishing SSH session");
         [self disconnect];
+
         return NO;
     }
 
@@ -454,8 +460,15 @@
 
     int libssh2_hash, hashLength;
     switch (hashType) {
-        case NMSSHSessionHashMD5:  libssh2_hash = LIBSSH2_HOSTKEY_HASH_MD5;  hashLength = 16; break;
-        case NMSSHSessionHashSHA1: libssh2_hash = LIBSSH2_HOSTKEY_HASH_SHA1; hashLength = 20; break;
+        case NMSSHSessionHashMD5:
+            libssh2_hash = LIBSSH2_HOSTKEY_HASH_MD5;
+            hashLength = 16;
+            break;
+
+        case NMSSHSessionHashSHA1:
+            libssh2_hash = LIBSSH2_HOSTKEY_HASH_SHA1;
+            hashLength = 20;
+            break;
     }
 
     const char *hash = libssh2_hostkey_hash(self.session, libssh2_hash);
@@ -478,17 +491,17 @@
 // -----------------------------------------------------------------------------
 
 - (NSString *)applicationSupportDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                         NSUserDomainMask,
-                                                         YES);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *applicationSupportDirectory = [paths objectAtIndex:0];
     NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
+
     if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:nmsshDirectory
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:NULL];
     }
+
     return nmsshDirectory;
 }
 
@@ -509,19 +522,21 @@
 - (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files {
     if (!files) {
 #if TARGET_OS_IPHONE
-        files = @[ [self userKnownHostsFileName] ];
+        files = @[[self userKnownHostsFileName] ;
 #else
-        files = @[ [self systemKnownHostsFileName], [self userKnownHostsFileName] ];
+        files = @[[self systemKnownHostsFileName], [self userKnownHostsFileName]];
 #endif
     }
 
     NMSSHKnownHostStatus status = NMSSHKnownHostStatusFailure;
     for (NSString *filename in files) {
         status = [self knownHostStatusWithFile:filename];
+
         if (status != NMSSHKnownHostStatusNotFound && status != NMSSHKnownHostStatusFailure) {
             return status;
         }
     }
+
     return status;
 }
 
@@ -557,12 +572,10 @@
         libssh2_knownhost_free(knownHosts);
         return NMSSHKnownHostStatusFailure;
     }
+
     int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA ? LIBSSH2_KNOWNHOST_KEY_SSHRSA : LIBSSH2_KNOWNHOST_KEY_SSHDSS);
     struct libssh2_knownhost *host;
-    NMSSHLogInfo(@"NMSSH: Check for host %@, port %@ in file %@",
-                 self.host,
-                 self.port,
-                 filename);
+    NMSSHLogInfo(@"NMSSH: Check for host %@, port %@ in file %@", self.host, self.port, filename);
     int check = libssh2_knownhost_checkp(knownHosts,
                                          [self.host UTF8String],
                                          [self.port intValue],
@@ -579,12 +592,15 @@
         case LIBSSH2_KNOWNHOST_CHECK_MATCH:
             NMSSHLogInfo(@"NMSSH: Match");
             return NMSSHKnownHostStatusMatch;
+
         case LIBSSH2_KNOWNHOST_CHECK_MISMATCH:
             NMSSHLogInfo(@"NMSSH: Mismatch");
             return NMSSHKnownHostStatusMismatch;
+
         case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
             NMSSHLogInfo(@"NMSSH: Not found");
             return NMSSHKnownHostStatusNotFound;
+
         case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
         default:
             NMSSHLogInfo(@"NMSSH: Failure");
@@ -592,10 +608,7 @@
     }
 }
 
-- (BOOL)addKnownHostName:(NSString *)host
-                    port:(NSInteger)port
-                  toFile:(NSString *)fileName
-                withSalt:(NSString *)salt {
+- (BOOL)addKnownHostName:(NSString *)host port:(NSInteger)port toFile:(NSString *)fileName withSalt:(NSString *)salt {
     const char *hostkey;
     size_t hklen;
     int hktype;
@@ -603,7 +616,8 @@
 
     if (port == 22) {
         hostname = host;
-    } else {
+    }
+    else {
         hostname = [NSString stringWithFormat:@"[%@]:%d", host, (int)port];
     }
 
@@ -623,12 +637,11 @@
         return NO;
     }
 
-    int rc = libssh2_knownhost_readfile(knownHosts,
-                                        [fileName UTF8String],
-                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    int rc = libssh2_knownhost_readfile(knownHosts, [fileName UTF8String], LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0 && rc != LIBSSH2_ERROR_FILE) {
         NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
         libssh2_knownhost_free(knownHosts);
+
         return NO;
     }
 
@@ -639,6 +652,7 @@
     else {
         keybit |= LIBSSH2_KNOWNHOST_KEY_SSHDSS;
     }
+
     if (salt) {
         keybit |= LIBSSH2_KNOWNHOST_TYPE_SHA1;
     }
