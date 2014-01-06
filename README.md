@@ -34,7 +34,7 @@ BOOL success = [session.channel uploadFile:@"~/index.html" to:@"/var/www/9muses.
 
 ## Documentation
 
-API documentation for NMSSH is available here: [http://docs.9muses.se/nmssh/](http://docs.9muses.se/nmssh/)
+API documentation for NMSSH is available here: [http://cocoadocs.org/docsets/NMSSH/](http://cocoadocs.org/docsets/NMSSH/)
 
 ## Contributing
 
