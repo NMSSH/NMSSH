@@ -59,7 +59,7 @@ In its simplest form it works like this:
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
-+ (id)connectToHost:(NSString *)host withUsername:(NSString *)username;
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username;
 
 /**
  * Shorthand method for initializing a NMSSHSession object and calling connect,
@@ -70,7 +70,7 @@ In its simplest form it works like this:
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
-+ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
 
 /**
  * Create and setup a new NMSSH instance.
@@ -81,7 +81,7 @@ In its simplest form it works like this:
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
-- (id)initWithHost:(NSString *)host andUsername:(NSString *)username;
+- (instancetype)initWithHost:(NSString *)host andUsername:(NSString *)username;
 
 /**
  * Create and setup a new NMSSH instance. This is the designated initializer.
@@ -91,7 +91,7 @@ In its simplest form it works like this:
  * @param username A valid username the server will accept
  * @returns NMSSHSession instance
  */
-- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
+- (instancetype)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username;
 
 /// ----------------------------------------------------------------------------
 /// @name Connection settings

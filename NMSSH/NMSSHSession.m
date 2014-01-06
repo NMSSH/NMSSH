@@ -22,7 +22,7 @@
 #pragma mark - INITIALIZE A NEW SSH SESSION
 // -----------------------------------------------------------------------------
 
-+ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                           port:port
                                                    andUsername:username];
@@ -31,7 +31,7 @@
     return session;
 }
 
-+ (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                    andUsername:username];
     [session connect];
@@ -39,7 +39,7 @@
     return session;
 }
 
-- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
+- (instancetype)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
     if ((self = [super init])) {
         [self setHost:host];
         [self setPort:@(port)];
@@ -51,20 +51,21 @@
     return self;
 }
 
+- (instancetype)initWithHost:(NSString *)host andUsername:(NSString *)username {
+    NSURL *url = [[self class] URLForHost:host];
+    return [self initWithHost:[url host]
+                         port:[([url port] ?: @22) intValue]
+                  andUsername:username];
+}
+
 + (NSURL *)URLForHost:(NSString *)host {
     // Check if host is IPv6 and wrap in square brackets.
     if ([[host componentsSeparatedByString:@":"] count] >= 3 &&
         ![host hasPrefix:@"["]) {
         host = [NSString stringWithFormat:@"[%@]", host];
     }
-    return [NSURL URLWithString:[@"ssh://" stringByAppendingString:host]];
-}
 
-- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
-    NSURL *url = [[self class] URLForHost:host];
-    return [self initWithHost:[url host]
-                         port:[([url port] ?: @22) intValue]
-                  andUsername:username];
+    return [NSURL URLWithString:[@"ssh://" stringByAppendingString:host]];
 }
 
 // -----------------------------------------------------------------------------
@@ -140,13 +141,21 @@
         [self disconnect];
     }
 
-    // Try to initialize libssh2
-    if (libssh2_init(0) != 0) {
-        NMSSHLogError(@"NMSSH: libssh2 initialization failed");
+    __block BOOL initialized = YES;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // Try to initialize libssh2
+        if (libssh2_init(0) != 0) {
+            NMSSHLogError(@"NMSSH: libssh2 initialization failed");
+            initialized = NO;
+        }
+
+        NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
+    });
+
+    if (!initialized) {
         return NO;
     }
-
-    NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
 
     // Try to create the socket
     [self setSocket:CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL)];

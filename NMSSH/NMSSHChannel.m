@@ -22,7 +22,7 @@
 #pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
-- (id)initWithSession:(NMSSHSession *)session {
+- (instancetype)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
         [self setSession:session];
         [self setBufferSize:kNMSSHBufferSize];

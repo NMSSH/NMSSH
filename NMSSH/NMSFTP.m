@@ -12,14 +12,14 @@
 #pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
-+ (id)connectWithSession:(NMSSHSession *)session {
++ (instancetype)connectWithSession:(NMSSHSession *)session {
     NMSFTP *sftp = [[NMSFTP alloc] initWithSession:session];
     [sftp connect];
 
     return sftp;
 }
 
-- (id)initWithSession:(NMSSHSession *)session {
+- (instancetype)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
         [self setSession:session];
 

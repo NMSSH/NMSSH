@@ -32,7 +32,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
     return logger;
 }
 
-- (id)init {
+- (instancetype)init {
     if ((self = [super init])) {
         [self setEnabled:YES];
         [self setLogLevel:NMSSHLogLevelVerbose];

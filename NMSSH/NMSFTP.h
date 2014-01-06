@@ -21,7 +21,7 @@
  * @param session A valid, connected, NMSSHSession instance
  * @returns Connected NMSFTP instance
  */
-+ (id)connectWithSession:(NMSSHSession *)session;
++ (instancetype)connectWithSession:(NMSSHSession *)session;
 
 /**
  * Create a new NMSFTP instance.
@@ -29,7 +29,7 @@
  * @param session A valid, connected, NMSSHSession instance
  * @returns New NMSFTP instance
  */
-- (id)initWithSession:(NMSSHSession *)session;
+- (instancetype)initWithSession:(NMSSHSession *)session;
 
 /// ----------------------------------------------------------------------------
 /// @name Connection

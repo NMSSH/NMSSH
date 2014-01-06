@@ -65,7 +65,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  * @param session A valid, connected, NMSSHSession instance
  * @returns New NMSSHChannel instance
  */
-- (id)initWithSession:(NMSSHSession *)session;
+- (instancetype)initWithSession:(NMSSHSession *)session;
 
 /// ----------------------------------------------------------------------------
 /// @name Shell command execution
