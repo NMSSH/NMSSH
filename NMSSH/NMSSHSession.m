@@ -491,7 +491,7 @@
 
 - (NSString *)applicationSupportDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *applicationSupportDirectory = [paths objectAtIndex:0];
+    NSString *applicationSupportDirectory = paths[0];
     NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
@@ -521,7 +521,7 @@
 - (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files {
     if (!files) {
 #if TARGET_OS_IPHONE
-        files = @[[self userKnownHostsFileName] ;
+        files = @[[self userKnownHostsFileName]];
 #else
         files = @[[self systemKnownHostsFileName], [self userKnownHostsFileName]];
 #endif

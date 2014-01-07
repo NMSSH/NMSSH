@@ -117,13 +117,10 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /** Timeout for libssh2 blocking functions. */
 @property (nonatomic, strong) NSNumber *timeout;
 
-/** Last session error */
+/** Last session error. */
 @property (nonatomic, readonly) NSError *lastError;
 
-/**
- * The hash algorithm to use to encode the fingerprint
- * during connection, default value is NMSSHSessionHashMD5.
- */
+/** The hash algorithm to use to encode the fingerprint during connection, default value is NMSSHSessionHashMD5. */
 @property (nonatomic, assign) NMSSHSessionHash fingerprintHash;
 
 /// ----------------------------------------------------------------------------
