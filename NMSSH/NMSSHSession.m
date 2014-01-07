@@ -131,6 +131,16 @@
                            userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithUTF8String:message] }];
 }
 
+- (NSString *)remoteBanner {
+    const char *banner = libssh2_session_banner_get(self.session);
+
+    if (!banner) {
+        return nil;
+    }
+
+    return [[NSString alloc] initWithCString:banner encoding:NSUTF8StringEncoding];
+}
+
 // -----------------------------------------------------------------------------
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
@@ -242,6 +252,11 @@
     // Set blocking mode
     libssh2_session_set_blocking(self.session, 1);
 
+    // Set the custom banner
+    if (self.banner && libssh2_session_banner_set(self.session, [self.banner UTF8String])) {
+        NMSSHLogError(@"Failure setting the banner");
+    }
+
     // Start the session
     if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
         NMSSHLogError(@"Failure establishing SSH session");
@@ -249,6 +264,8 @@
 
         return NO;
     }
+
+    NMSSHLogVerbose(@"Remote host banner is %@", [self remoteBanner]);
 
     // Get the fingerprint of the host
     NSString *fingerprint = [self fingerprint:self.fingerprintHash];

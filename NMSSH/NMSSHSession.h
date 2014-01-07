@@ -123,6 +123,12 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /** The hash algorithm to use to encode the fingerprint during connection, default value is NMSSHSessionHashMD5. */
 @property (nonatomic, assign) NMSSHSessionHash fingerprintHash;
 
+/** The banner that will be sent to the remote host when the SSH session is started. */
+@property (nonatomic, strong) NSString *banner;
+
+/** The remote host banner. */
+@property (nonatomic, readonly) NSString *remoteBanner;
+
 /// ----------------------------------------------------------------------------
 /// @name Raw libssh2 session and socket reference
 /// ----------------------------------------------------------------------------
