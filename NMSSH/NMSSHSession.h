@@ -202,25 +202,24 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
                     andPassword:(NSString *)password;
 
 /**
- * Authenticate by private key pair. First it tries to authenticate with an empty passphrase on the
- * private key. If that fails, |passwordBlock| is called to get the passpharse for the private key
- * and authentication is attempted again.
- *
- *
- * @param publicKey Filepath to public key
- * @param privateKey Filepath to private key
- * @param passwordBlock Returns the passphrase for the private key. Only called if the private key
- *   is encrypted. May return nil to abort authentication.
- * @returns Authentication success
+ Authenticate by private key pair. First it tries to authenticate with an empty passphrase on the
+ private key. If that fails, |passwordBlock| is called to get the passpharse for the private key
+ and authentication is attempted again.
+
+ @param publicKey Filepath to public key
+ @param privateKey Filepath to private key
+ @param passwordBlock Returns the passphrase for the private key. Only called if the private key
+   is encrypted. May return nil to abort authentication.
+ @returns Authentication success
  */
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
           optionalPasswordBlock:(NSString *(^)())passwordBlock;
 
 /**
- * Authenticate by keyboard-interactive using delegate.
- *
- * @returns Authentication success
+ Authenticate by keyboard-interactive using delegate.
+
+ @returns Authentication success
  */
 - (BOOL)authenticateByKeyboardInteractive;
 

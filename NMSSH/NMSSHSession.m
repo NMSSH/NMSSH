@@ -108,44 +108,6 @@
     return addresses;
 }
 
-- (NSNumber *)port {
-    NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
-    NSInteger components = [hostComponents count];
-
-    // Check if the host is {hostname}:{port} or {IPv4}:{port}
-    if (components == 2) {
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-        return [formatter numberFromString:[hostComponents lastObject]];
-    } // Check if the host is [{IPv6}]:{port}
-    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-
-        return [formatter numberFromString:[hostComponents lastObject]];
-    }
-
-    return addresses;
-}
-
-- (NSString *)hostnameWithoutPort {
-    NSArray *hostComponents = [self.host componentsSeparatedByString:@":"];
-    NSInteger components = [hostComponents count];
-
-    // Check if the host is {hostname}:{port} or {IPv4}:{port}
-    if (components == 2) {
-        return hostComponents[0];
-    } // Check if the host is [{IPv6}]:{port}
-    else if (components >= 4 && [hostComponents[0] hasPrefix:@"["] && [hostComponents[components-2] hasSuffix:@"]"]) {
-        hostComponents = [hostComponents subarrayWithRange:NSMakeRange(0, components - 1)];
-        NSString *bracketedHostname = [hostComponents componentsJoinedByString:@":"];
-        return [bracketedHostname substringWithRange:NSMakeRange(1, bracketedHostname.length - 2)];
-    }
-
-    return self.host;
-}
-
 - (NSNumber *)timeout {
     if (self.session) {
         return @(libssh2_session_get_timeout(self.session) / 1000);
@@ -428,11 +390,11 @@
         }
     }
     if (error) {
-        NMSSHLogError(@"NMSSH: Public key authentication failed with reason %i", error);
+        NMSSHLogError(@"Public key authentication failed with reason %i", error);
         return NO;
     }
     
-    NMSSHLogVerbose(@"NMSSH: Public key authentication succeeded.");
+    NMSSHLogVerbose(@"Public key authentication succeeded.");
     
     return self.isAuthorized;
 }
@@ -530,7 +492,7 @@
     }
 
     NSString *authList = [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding];
-    NMSSHLogVerbose(@"NMSSH: User auth list: %@", authList);
+    NMSSHLogVerbose(@"User auth list: %@", authList);
 
     return [authList componentsSeparatedByString:@","];
 }
@@ -577,10 +539,8 @@
 // -----------------------------------------------------------------------------
 
 - (NSString *)applicationSupportDirectory {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,
-                                                         NSUserDomainMask,
-                                                         YES);
-    NSString *applicationSupportDirectory = [paths objectAtIndex:0];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *applicationSupportDirectory = paths[0];
     NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
 
     if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
