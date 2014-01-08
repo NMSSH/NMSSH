@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NMSSHChannel *channel;
 @property (nonatomic, strong) NMSFTP *sftp;
+@property (nonatomic, strong) NSNumber *port;
 @end
 
 @implementation NMSSHSession
@@ -21,18 +22,16 @@
 #pragma mark - INITIALIZE A NEW SSH SESSION
 // -----------------------------------------------------------------------------
 
-+ (id)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
-    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
+    NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
+                                                          port:port
+                                                   andUsername:username];
+    [session connect];
 
-    // Check if host is IPv6
-    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
-        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
-    }
-
-    return [self connectToHost:hostname withUsername:username];
+    return session;
 }
 
-+ (id)connectToHost:(NSString *)host withUsername:(NSString *)username {
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                    andUsername:username];
     [session connect];
@@ -40,26 +39,33 @@
     return session;
 }
 
-- (id)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
-    NSString *hostname = [NSString stringWithFormat:@"%@:%ld", host, (long)port];
-
-    // Check if host is IPv6
-    if ([[host componentsSeparatedByString:@":"] count] >= 3) {
-        hostname = [NSString stringWithFormat:@"[%@]:%ld", host, (long)port];
-    }
-
-    return [self initWithHost:hostname andUsername:username];
-}
-
-- (id)initWithHost:(NSString *)host andUsername:(NSString *)username {
+- (instancetype)initWithHost:(NSString *)host port:(NSInteger)port andUsername:(NSString *)username {
     if ((self = [super init])) {
         [self setHost:host];
+        [self setPort:@(port)];
         [self setUsername:username];
         [self setConnected:NO];
         [self setFingerprintHash:NMSSHSessionHashMD5];
     }
 
     return self;
+}
+
+- (instancetype)initWithHost:(NSString *)host andUsername:(NSString *)username {
+    NSURL *url = [[self class] URLForHost:host];
+    return [self initWithHost:[url host]
+                         port:[([url port] ?: @22) intValue]
+                  andUsername:username];
+}
+
++ (NSURL *)URLForHost:(NSString *)host {
+    // Check if host is IPv6 and wrap in square brackets.
+    if ([[host componentsSeparatedByString:@":"] count] >= 3 &&
+        ![host hasPrefix:@"["]) {
+        host = [NSString stringWithFormat:@"[%@]", host];
+    }
+
+    return [NSURL URLWithString:[@"ssh://" stringByAppendingString:host]];
 }
 
 // -----------------------------------------------------------------------------
@@ -84,16 +90,19 @@
     NSArray *addresses = nil;
 
     if (host) {
-        NMSSHLogVerbose(@"NMSSH: Start %@ resolution", address);
+        NMSSHLogVerbose(@"Start %@ resolution", address);
+
         if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
             addresses = (__bridge NSArray *)(CFHostGetAddressing(host, NULL));
-        } else {
-            NMSSHLogError(@"NMSSH: Unable to resolve host %@", address);
+        }
+        else {
+            NMSSHLogError(@"Unable to resolve host %@", address);
         }
 
         CFRelease(host);
-    } else {
-        NMSSHLogError(@"NMSSH: Error allocating CFHost for %@", address);
+    }
+    else {
+        NMSSHLogError(@"Error allocating CFHost for %@", address);
     }
 
     return addresses;
@@ -117,8 +126,7 @@
         return [formatter numberFromString:[hostComponents lastObject]];
     }
 
-    // If no port was defined, use 22 by default
-    return @22;
+    return addresses;
 }
 
 - (NSString *)hostnameWithoutPort {
@@ -161,6 +169,16 @@
                            userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithUTF8String:message] }];
 }
 
+- (NSString *)remoteBanner {
+    const char *banner = libssh2_session_banner_get(self.session);
+
+    if (!banner) {
+        return nil;
+    }
+
+    return [[NSString alloc] initWithCString:banner encoding:NSUTF8StringEncoding];
+}
+
 // -----------------------------------------------------------------------------
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
@@ -174,25 +192,33 @@
         [self disconnect];
     }
 
-    // Try to initialize libssh2
-    if (libssh2_init(0) != 0) {
-        NMSSHLogError(@"NMSSH: libssh2 initialization failed");
+    __block BOOL initialized = YES;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // Try to initialize libssh2
+        if (libssh2_init(0) != 0) {
+            NMSSHLogError(@"libssh2 initialization failed");
+            initialized = NO;
+        }
+
+        NMSSHLogVerbose(@"libssh2 (v%s) initialized", libssh2_version(0));
+    });
+
+    if (!initialized) {
         return NO;
     }
-
-    NMSSHLogVerbose(@"NMSSH: libssh2 (v%s) initialized", libssh2_version(0));
 
     // Try to create the socket
     [self setSocket:CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL)];
     if (!self.socket) {
-        NMSSHLogError(@"NMSSH: Error creating the socket");
+        NMSSHLogError(@"Error creating the socket");
         return NO;
     }
 
     // Set NOSIGPIPE
     int set = 1;
     if (setsockopt(CFSocketGetNative(self.socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
-        NMSSHLogError(@"NMSSH: Error setting socket option");
+        NMSSHLogError(@"Error setting socket option");
         [self disconnect];
         return NO;
     }
@@ -234,22 +260,24 @@
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
         }
         else {
-            NMSSHLogVerbose(@"NMSSH: Unknown address, it's not IPv4 or IPv6!");
+            NMSSHLogVerbose(@"Unknown address, it's not IPv4 or IPv6!");
             continue;
         }
 
         error = CFSocketConnectToAddress(self.socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
 
         if (error) {
-            NMSSHLogVerbose(@"NMSSH: Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
-        } else {
-            NMSSHLogInfo(@"NMSSH: Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
+            NMSSHLogVerbose(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
+        }
+        else {
+            NMSSHLogInfo(@"Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
 
     if (error) {
-        NMSSHLogError(@"NMSSH: Failure establishing socket connection");
+        NMSSHLogError(@"Failure establishing socket connection");
         [self disconnect];
+
         return NO;
     }
 
@@ -262,26 +290,34 @@
     // Set blocking mode
     libssh2_session_set_blocking(self.session, 1);
 
+    // Set the custom banner
+    if (self.banner && libssh2_session_banner_set(self.session, [self.banner UTF8String])) {
+        NMSSHLogError(@"Failure setting the banner");
+    }
+
     // Start the session
     if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
-        NMSSHLogError(@"NMSSH: Failure establishing SSH session");
+        NMSSHLogError(@"Failure establishing SSH session");
         [self disconnect];
+
         return NO;
     }
+
+    NMSSHLogVerbose(@"Remote host banner is %@", [self remoteBanner]);
 
     // Get the fingerprint of the host
     NSString *fingerprint = [self fingerprint:self.fingerprintHash];
-    NMSSHLogInfo(@"NMSSH: The host's fingerprint is %@", fingerprint);
+    NMSSHLogInfo(@"The host's fingerprint is %@", fingerprint);
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(session:shouldConnectToHostWithFingerprint:)] &&
         ![self.delegate session:self shouldConnectToHostWithFingerprint:fingerprint]) {
-        NMSSHLogWarn(@"NMSSH: Fingerprint refused, aborting connection...");
+        NMSSHLogWarn(@"Fingerprint refused, aborting connection...");
         [self disconnect];
 
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: SSH session started");
+    NMSSHLogVerbose(@"SSH session started");
 
     // We managed to successfully setup a connection
     [self setConnected:YES];
@@ -321,7 +357,7 @@
     }
 
     libssh2_exit();
-    NMSSHLogVerbose(@"NMSSH: Disconnected");
+    NMSSHLogVerbose(@"Disconnected");
     [self setConnected:NO];
 }
 
@@ -345,11 +381,11 @@
     // Try to authenticate by password
     int error = libssh2_userauth_password(self.session, [self.username UTF8String], [password UTF8String]);
     if (error) {
-        NMSSHLogError(@"NMSSH: Password authentication failed with reason %i", error);
+        NMSSHLogError(@"Password authentication failed with reason %i", error);
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Password authentication succeeded.");
+    NMSSHLogVerbose(@"Password authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -409,11 +445,11 @@
                                           andPassword:password];
 
     if (error) {
-        NMSSHLogError(@"NMSSH: Public key authentication failed with reason %i", error);
+        NMSSHLogError(@"Public key authentication failed with reason %i", error);
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Public key authentication succeeded.");
+    NMSSHLogVerbose(@"Public key authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -432,11 +468,11 @@
     self.kbAuthenticationBlock = nil;
 
     if (rc != 0) {
-        NMSSHLogError(@"NMSSH: Keyboard-interactive authentication failed with reason %i", rc);
+        NMSSHLogError(@"Keyboard-interactive authentication failed with reason %i", rc);
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Keyboard-interactive authentication succeeded.");
+    NMSSHLogVerbose(@"Keyboard-interactive authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -449,19 +485,19 @@
     // Try to setup a connection to the SSH-agent
     [self setAgent:libssh2_agent_init(self.session)];
     if (!self.agent) {
-        NMSSHLogError(@"NMSSH: Could not start a new agent");
+        NMSSHLogError(@"Could not start a new agent");
         return NO;
     }
 
     // Try connecting to the agent
     if (libssh2_agent_connect(self.agent)) {
-        NMSSHLogError(@"NMSSH: Failed connection to agent");
+        NMSSHLogError(@"Failed connection to agent");
         return NO;
     }
 
     // Try to fetch available SSH identities
     if (libssh2_agent_list_identities(self.agent)) {
-        NMSSHLogError(@"NMSSH: Failed to request agent identities");
+        NMSSHLogError(@"Failed to request agent identities");
         return NO;
     }
 
@@ -470,7 +506,7 @@
     while (1) {
         int error = libssh2_agent_get_identity(self.agent, &identity, prev_identity);
         if (error) {
-            NMSSHLogError(@"NMSSH: Failed to find a valid identity for the agent");
+            NMSSHLogError(@"Failed to find a valid identity for the agent");
             return NO;
         }
 
@@ -489,7 +525,7 @@
     char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
     if (userauthlist == NULL){
-        NMSSHLogInfo(@"NMSSH: Failed to get authentication method for host %@", self.host);
+        NMSSHLogInfo(@"Failed to get authentication method for host %@:%@", self.host, self.port);
         return nil;
     }
 
@@ -510,13 +546,20 @@
 
     int libssh2_hash, hashLength;
     switch (hashType) {
-        case NMSSHSessionHashMD5:  libssh2_hash = LIBSSH2_HOSTKEY_HASH_MD5;  hashLength = 16; break;
-        case NMSSHSessionHashSHA1: libssh2_hash = LIBSSH2_HOSTKEY_HASH_SHA1; hashLength = 20; break;
+        case NMSSHSessionHashMD5:
+            libssh2_hash = LIBSSH2_HOSTKEY_HASH_MD5;
+            hashLength = 16;
+            break;
+
+        case NMSSHSessionHashSHA1:
+            libssh2_hash = LIBSSH2_HOSTKEY_HASH_SHA1;
+            hashLength = 20;
+            break;
     }
 
     const char *hash = libssh2_hostkey_hash(self.session, libssh2_hash);
     if (!hash) {
-        NMSSHLogWarn(@"NMSSH: Unable to retrive host's fingerprint");
+        NMSSHLogWarn(@"Unable to retrive host's fingerprint");
         return nil;
     }
 
@@ -539,12 +582,14 @@
                                                          YES);
     NSString *applicationSupportDirectory = [paths objectAtIndex:0];
     NSString *nmsshDirectory = [applicationSupportDirectory stringByAppendingPathComponent:@"NMSSH"];
+
     if (![[NSFileManager defaultManager] fileExistsAtPath:nmsshDirectory]) {
         [[NSFileManager defaultManager] createDirectoryAtPath:nmsshDirectory
                                   withIntermediateDirectories:YES
                                                    attributes:nil
                                                         error:NULL];
     }
+
     return nmsshDirectory;
 }
 
@@ -562,21 +607,24 @@
 }
 #endif
 
-- (NMSSHKnownHostStatus)knownHostStatus {
-    // First try the system known_hosts file.
+- (NMSSHKnownHostStatus)knownHostStatusInFiles:(NSArray *)files {
+    if (!files) {
 #if TARGET_OS_IPHONE
-    NSArray *files = @[ [self userKnownHostsFileName] ];
+        files = @[[self userKnownHostsFileName]];
 #else
-    NSArray *files = @[ [self systemKnownHostsFileName], [self userKnownHostsFileName] ];
+        files = @[[self systemKnownHostsFileName], [self userKnownHostsFileName]];
 #endif
-    
+    }
+
     NMSSHKnownHostStatus status = NMSSHKnownHostStatusFailure;
     for (NSString *filename in files) {
         status = [self knownHostStatusWithFile:filename];
+
         if (status != NMSSHKnownHostStatusNotFound && status != NMSSHKnownHostStatusFailure) {
             return status;
         }
     }
+
     return status;
 }
 
@@ -591,30 +639,32 @@
                                         LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0) {
         libssh2_knownhost_free(knownHosts);
+
         if (rc == LIBSSH2_ERROR_FILE) {
-            NMSSHLogInfo(@"NMSSH: No known hosts file.");
+            NMSSHLogInfo(@"No known hosts file %@.", filename);
             return NMSSHKnownHostStatusNotFound;
         }
         else {
-            NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
+            NMSSHLogError(@"Failed to read known hosts file %@.", filename);
             return NMSSHKnownHostStatusFailure;
         }
     }
 
     int keytype;
     size_t keylen;
-    const char *remotekey = libssh2_session_hostkey(self.session,
-                                                    &keylen,
-                                                    &keytype);
+    const char *remotekey = libssh2_session_hostkey(self.session, &keylen, &keytype);
     if (!remotekey) {
-        NMSSHLogError(@"NMSSH: Failed to get host key.");
+        NMSSHLogError(@"Failed to get host key.");
         libssh2_knownhost_free(knownHosts);
+
         return NMSSHKnownHostStatusFailure;
     }
+
     int keybit = (keytype == LIBSSH2_HOSTKEY_TYPE_RSA ? LIBSSH2_KNOWNHOST_KEY_SSHRSA : LIBSSH2_KNOWNHOST_KEY_SSHDSS);
     struct libssh2_knownhost *host;
+    NMSSHLogInfo(@"Check for host %@, port %@ in file %@", self.host, self.port, filename);
     int check = libssh2_knownhost_checkp(knownHosts,
-                                         [[self hostnameWithoutPort] UTF8String],
+                                         [self.host UTF8String],
                                          [self.port intValue],
                                          remotekey,
                                          keylen,
@@ -627,50 +677,58 @@
 
     switch (check) {
         case LIBSSH2_KNOWNHOST_CHECK_MATCH:
+            NMSSHLogInfo(@"Match");
             return NMSSHKnownHostStatusMatch;
+
         case LIBSSH2_KNOWNHOST_CHECK_MISMATCH:
+            NMSSHLogInfo(@"Mismatch");
             return NMSSHKnownHostStatusMismatch;
+
         case LIBSSH2_KNOWNHOST_CHECK_NOTFOUND:
+            NMSSHLogInfo(@"Not found");
             return NMSSHKnownHostStatusNotFound;
+
         case LIBSSH2_KNOWNHOST_CHECK_FAILURE:
         default:
+            NMSSHLogInfo(@"Failure");
             return NMSSHKnownHostStatusFailure;
     }
 }
 
-- (BOOL)addCurrentHostToKnownHostsUnhashed {
-    NSString *hostname = [self hostnameWithoutPort];
-    int port = [[self port] intValue];
-    if (port != 22) {
-        hostname = [NSString stringWithFormat:@"[%@]:%d", hostname, port];
-    }
-    return [self addHostToKnownHosts:hostname withSalt:nil];
-}
-
-- (BOOL)addHostToKnownHosts:(NSString *)hostName
-                   withSalt:(NSString *)salt {
+- (BOOL)addKnownHostName:(NSString *)host port:(NSInteger)port toFile:(NSString *)fileName withSalt:(NSString *)salt {
     const char *hostkey;
     size_t hklen;
     int hktype;
+    NSString *hostname;  // Formatted as {host} or [{host}]:{port}.
+
+    if (port == 22) {
+        hostname = host;
+    }
+    else {
+        hostname = [NSString stringWithFormat:@"[%@]:%d", host, (int)port];
+    }
+
+    if (!fileName) {
+        fileName = [self userKnownHostsFileName];
+    }
 
     hostkey = libssh2_session_hostkey(self.session, &hklen, &hktype);
     if (!hostkey) {
-        NMSSHLogError(@"NMSSH: Failed to get host key.");
+        NMSSHLogError(@"Failed to get host key.");
         return NO;
     }
 
     LIBSSH2_KNOWNHOSTS *knownHosts = libssh2_knownhost_init(self.session);
     if (!knownHosts) {
-        NMSSHLogError(@"NMSSH: Failed to initialize knownhosts.");
+        NMSSHLogError(@"Failed to initialize knownhosts.");
         return NO;
     }
 
-    int rc = libssh2_knownhost_readfile(knownHosts,
-                                        [[self userKnownHostsFileName] UTF8String],
-                                        LIBSSH2_KNOWNHOST_FILE_OPENSSH);
+    int rc = libssh2_knownhost_readfile(knownHosts, [fileName UTF8String], LIBSSH2_KNOWNHOST_FILE_OPENSSH);
     if (rc < 0 && rc != LIBSSH2_ERROR_FILE) {
-        NMSSHLogError(@"NMSSH: Failed to read known hosts file.");
+        NMSSHLogError(@"Failed to read known hosts file.");
         libssh2_knownhost_free(knownHosts);
+
         return NO;
     }
 
@@ -681,6 +739,7 @@
     else {
         keybit |= LIBSSH2_KNOWNHOST_KEY_SSHDSS;
     }
+
     if (salt) {
         keybit |= LIBSSH2_KNOWNHOST_TYPE_SHA1;
     }
@@ -689,7 +748,7 @@
     }
 
     int result = libssh2_knownhost_addc(knownHosts,
-                                        [hostName UTF8String],
+                                        [hostname UTF8String],
                                         [salt UTF8String],
                                         hostkey,
                                         hklen,
@@ -698,20 +757,20 @@
                                         keybit,
                                         NULL);
     if (result) {
-        NMSSHLogError(@"NMSSH: Failed to add host to known hosts: error %d (%@)",
+        NMSSHLogError(@"Failed to add host to known hosts: error %d (%@)",
                       result,
                       [self lastError]);
     }
     else {
         result = libssh2_knownhost_writefile(knownHosts,
-                                             [[self userKnownHostsFileName] UTF8String],
+                                             [fileName UTF8String],
                                              LIBSSH2_KNOWNHOST_FILE_OPENSSH);
         if (result < 0) {
-            NMSSHLogError(@"NMSSH: Couldn't write to %@: %@",
+            NMSSHLogError(@"Couldn't write to %@: %@",
                           [self userKnownHostsFileName], [self lastError]);
         }
         else {
-            NMSSHLogInfo(@"NMSSH: Host added to known hosts.");
+            NMSSHLogInfo(@"Host added to known hosts.");
         }
     }
 
@@ -720,7 +779,7 @@
 }
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
-    NMSSHLogVerbose(@"NMSSH: Server request '%@'", request);
+    NMSSHLogVerbose(@"Server request '%@'", request);
 
     if (self.kbAuthenticationBlock) {
         return self.kbAuthenticationBlock(request);
@@ -729,7 +788,7 @@
         return [self.delegate session:self keyboardInteractiveRequest:request];
     }
 
-    NMSSHLogWarn(@"NMSSH: Keyboard interactive requires a delegate that responds to session:keyboardInteractiveRequest: or a block!");
+    NMSSHLogWarn(@"Keyboard interactive requires a delegate that responds to session:keyboardInteractiveRequest: or a block!");
 
     return @"";
 }

@@ -22,7 +22,7 @@
 #pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
-- (id)initWithSession:(NMSSHSession *)session {
+- (instancetype)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
         [self setSession:session];
         [self setBufferSize:kNMSSHBufferSize];
@@ -41,7 +41,7 @@
 
 - (BOOL)openChannel:(NSError *__autoreleasing *)error {
     if (self.channel != NULL) {
-        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        NMSSHLogWarn(@"The channel will be closed before continue");
         if (self.type == NMSSHChannelTypeShell) {
             [self closeShell];
         }
@@ -57,7 +57,7 @@
     LIBSSH2_CHANNEL *channel = libssh2_channel_open_session(self.session.rawSession);
 
     if (channel == NULL){
-        NMSSHLogError(@"NMSSH: Unable to open a session");
+        NMSSHLogError(@"Unable to open a session");
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelAllocationError
@@ -93,7 +93,7 @@
                                          userInfo:userInfo];
             }
 
-            NMSSHLogError(@"NMSSH: Error requesting pseudo terminal");
+            NMSSHLogError(@"Error requesting pseudo terminal");
             [self closeChannel];
 
             return NO;
@@ -127,12 +127,12 @@
 
     // Send EOF to host
     rc = libssh2_channel_send_eof(self.channel);
-    NMSSHLogVerbose(@"NMSSH: Sent EOF to host (return code = %i)", rc);
+    NMSSHLogVerbose(@"Sent EOF to host (return code = %i)", rc);
 
     if (rc == 0) {
         // Wait for host acknowledge
         rc = libssh2_channel_wait_eof(self.channel);
-        NMSSHLogVerbose(@"NMSSH: Received host acknowledge for EOF (return code = %i)", rc);
+        NMSSHLogVerbose(@"Received host acknowledge for EOF (return code = %i)", rc);
     }
 }
 
@@ -170,7 +170,7 @@
 }
 
 - (NSString *)execute:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
-    NMSSHLogInfo(@"NMSSH: Exec command %@", command);
+    NMSSHLogInfo(@"Exec command %@", command);
 
     // In case of error...
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:command forKey:@"command"];
@@ -195,7 +195,7 @@
                                      userInfo:userInfo];
         }
 
-        NMSSHLogError(@"NMSSH: Error executing command");
+        NMSSHLogError(@"Error executing command");
         [self closeChannel];
         return nil;
     }
@@ -288,7 +288,7 @@
                                  userInfo:userInfo];
     }
 
-    NMSSHLogError(@"NMSSH: Error fetching response from command");
+    NMSSHLogError(@"Error fetching response from command");
     [self closeChannel];
 
     return nil;
@@ -299,7 +299,7 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)startShell:(NSError *__autoreleasing *)error  {
-    NMSSHLogInfo(@"NMSSH: Starting shell");
+    NMSSHLogInfo(@"Starting shell");
 
     if (![self openChannel:error]) {
         return NO;
@@ -319,7 +319,7 @@
     [self setSource:dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, CFSocketGetNative([self.session socket]),
                                            0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))];
     dispatch_source_set_event_handler(self.source, ^{
-        NMSSHLogVerbose(@"NMSSH: Data available on the socket!");
+        NMSSHLogVerbose(@"Data available on the socket!");
         ssize_t rc, erc;
         char buffer[self.bufferSize];
 
@@ -341,19 +341,21 @@
                        }
                    }
                    else if (libssh2_channel_eof(self.channel) == 1) {
-                       NMSSHLogVerbose(@"NMSSH: Host EOF received, closing channel...");
+                       NMSSHLogVerbose(@"Host EOF received, closing channel...");
                        [self closeShell];
                        return;
                    }
                }
     });
+
     dispatch_source_set_cancel_handler(self.source, ^{
-        NMSSHLogVerbose(@"NMSSH: Shell source cancelled");
+        NMSSHLogVerbose(@"Shell source cancelled");
 
         if (self.delegate && [self.delegate respondsToSelector:@selector(channelShellDidClose:)]) {
             [self.delegate channelShellDidClose:self];
         }
     });
+
     dispatch_resume(self.source);
 
     int rc = 0;
@@ -364,7 +366,7 @@
     }
 
     if (rc != 0) {
-        NMSSHLogError(@"NMSSH: Shell request error");
+        NMSSHLogError(@"Shell request error");
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelRequestShellError
@@ -375,7 +377,7 @@
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Shell allocated");
+    NMSSHLogVerbose(@"Shell allocated");
     [self setType:NMSSHChannelTypeShell];
 
     return YES;
@@ -405,11 +407,11 @@
 
 - (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout {
     if (self.type != NMSSHChannelTypeShell) {
-        NMSSHLogError(@"NMSSH: Shell required");
+        NMSSHLogError(@"Shell required");
         return NO;
     }
 
-    NMSSHLogVerbose(@"NMSSH: Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
+    NMSSHLogVerbose(@"Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
     ssize_t rc;
 
     // Set the timeout
@@ -434,7 +436,7 @@
     }
 
     if (rc < 0) {
-        NMSSHLogError(@"NMSSH: Error writing on the shell");
+        NMSSHLogError(@"Error writing on the shell");
         if (error) {
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelWriteError
@@ -446,6 +448,15 @@
     return YES;
 }
 
+- (BOOL)requestSizeWidth:(NSUInteger)width height:(NSUInteger)height {
+    int rc = libssh2_channel_request_pty_size(self.channel, (int)width, (int)height);
+    if (rc) {
+        NMSSHLogError(@"Request size failed with error %i", rc);
+    }
+
+    return rc == 0;
+}
+
 // -----------------------------------------------------------------------------
 #pragma mark - SCP FILE TRANSFER
 // -----------------------------------------------------------------------------
@@ -454,11 +465,10 @@
     return [self uploadFile:localPath to:remotePath progress:NULL];
 }
 
-- (BOOL)uploadFile:(NSString *)localPath
-                to:(NSString *)remotePath
-          progress:(BOOL (^)(NSUInteger))progress {
+- (BOOL)uploadFile:(NSString *)localPath to:(NSString *)remotePath progress:(BOOL (^)(NSUInteger))progress {
     if (self.channel != NULL) {
-        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        NMSSHLogWarn(@"The channel will be closed before continue");
+
         if (self.type == NMSSHChannelTypeShell) {
             [self closeShell];
         }
@@ -478,7 +488,7 @@
     // Read local file
     FILE *local = fopen([localPath UTF8String], "rb");
     if (!local) {
-        NMSSHLogError(@"NMSSH: Can't read local file");
+        NMSSHLogError(@"Can't read local file");
         return NO;
     }
 
@@ -492,8 +502,9 @@
                                                   (unsigned long)fileinfo.st_size, 0, 0);;
 
     if (channel == NULL) {
-        NMSSHLogError(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"Unable to open SCP session");
         fclose(local);
+
         return NO;
     }
 
@@ -515,7 +526,7 @@
             rc = libssh2_channel_write(self.channel, ptr, nread);
 
             if (rc < 0) {
-                NMSSHLogError(@"NMSSH: Failed writing file");
+                NMSSHLogError(@"Failed writing file");
                 [self closeChannel];
                 return NO;
             }
@@ -540,16 +551,14 @@
     return !abort;
 }
 
-- (BOOL)downloadFile:(NSString *)remotePath
-                  to:(NSString *)localPath {
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath {
     return [self downloadFile:remotePath to:localPath progress:NULL];
 }
 
-- (BOOL)downloadFile:(NSString *)remotePath
-                  to:(NSString *)localPath
-            progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
+- (BOOL)downloadFile:(NSString *)remotePath to:(NSString *)localPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     if (self.channel != NULL) {
-        NMSSHLogWarn(@"NMSSH: The channel will be closed before continue");
+        NMSSHLogWarn(@"The channel will be closed before continue");
+
         if (self.type == NMSSHChannelTypeShell) {
             [self closeShell];
         }
@@ -562,8 +571,7 @@
 
     // Inherit file name if to: contains a directory
     if ([localPath hasSuffix:@"/"]) {
-        localPath = [localPath stringByAppendingString:
-                     [[remotePath componentsSeparatedByString:@"/"] lastObject]];
+        localPath = [localPath stringByAppendingString:[[remotePath componentsSeparatedByString:@"/"] lastObject]];
     }
 
     // Set blocking mode
@@ -574,7 +582,7 @@
     LIBSSH2_CHANNEL *channel = libssh2_scp_recv(self.session.rawSession, [remotePath UTF8String], &fileinfo);
 
     if (channel == NULL) {
-        NMSSHLogError(@"NMSSH: Unable to open SCP session");
+        NMSSHLogError(@"Unable to open SCP session");
         return NO;
     }
 
@@ -582,7 +590,7 @@
     [self setType:NMSSHChannelTypeSCP];
 
     if ([[NSFileManager defaultManager] fileExistsAtPath:localPath]) {
-        NMSSHLogInfo(@"NMSSH: A file already exists at %@, it will be overwritten", localPath);
+        NMSSHLogInfo(@"A file already exists at %@, it will be overwritten", localPath);
         [[NSFileManager defaultManager] removeItemAtPath:localPath error:nil];
     }
 
@@ -604,7 +612,7 @@
         if (rc > 0) {
             size_t n = write(localFile, mem, rc);
             if (n < rc) {
-                NMSSHLogError(@"NMSSH: Failed to write to local file");
+                NMSSHLogError(@"Failed to write to local file");
                 close(localFile);
                 [self closeChannel];
                 return NO;
@@ -617,7 +625,7 @@
             }
         }
         else if (rc < 0) {
-            NMSSHLogError(@"NMSSH: Failed to read SCP data");
+            NMSSHLogError(@"Failed to read SCP data");
             close(localFile);
             [self closeChannel];
 

@@ -12,14 +12,14 @@
 #pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
-+ (id)connectWithSession:(NMSSHSession *)session {
++ (instancetype)connectWithSession:(NMSSHSession *)session {
     NMSFTP *sftp = [[NMSFTP alloc] initWithSession:session];
     [sftp connect];
 
     return sftp;
 }
 
-- (id)initWithSession:(NMSSHSession *)session {
+- (instancetype)initWithSession:(NMSSHSession *)session {
     if ((self = [super init])) {
         [self setSession:session];
 
@@ -43,7 +43,7 @@
     [self setSftpSession:libssh2_sftp_init(self.session.rawSession)];
 
     if (!self.sftpSession) {
-        NMSSHLogError(@"NMSFTP: Unable to init SFTP session");
+        NMSSHLogError(@"Unable to init SFTP session");
         return NO;
     }
 
@@ -74,10 +74,10 @@
 
     if (!handle) {
         NSError *error = [self.session lastError];
-        NMSSHLogError(@"NMSFTP: Could not open directory at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
+        NMSSHLogError(@"Could not open directory at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
 
         if ([error code] == LIBSSH2_ERROR_SFTP_PROTOCOL) {
-            NMSSHLogError(@"NMSFTP: SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
+            NMSSHLogError(@"SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
         }
     }
 
@@ -142,13 +142,13 @@
     } while (rc > 0);
 
     if (rc < 0) {
-        NMSSHLogError(@"NMSSH: Unable to read directory");
+        NMSSHLogError(@"Unable to read directory");
     }
 
     rc = libssh2_sftp_closedir(handle);
 
     if (rc < 0) {
-        NMSSHLogError(@"NMSSH: Failed to close directory");
+        NMSSHLogError(@"Failed to close directory");
     }
 
     return [contents sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
@@ -163,10 +163,10 @@
 
     if (!handle) {
         NSError *error = [self.session lastError];
-        NMSSHLogError(@"NMSFTP: Could not open file at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
+        NMSSHLogError(@"Could not open file at path %@ (Error %li: %@)", path, (long)error.code, error.localizedDescription);
 
         if ([error code] == LIBSSH2_ERROR_SFTP_PROTOCOL) {
-            NMSSHLogError(@"NMSFTP: SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
+            NMSSHLogError(@"SFTP error %lu", libssh2_sftp_last_error(self.sftpSession));
         }
     }
 
@@ -235,7 +235,7 @@
     }
 
     if (![inputStream hasBytesAvailable]) {
-        NMSSHLogWarn(@"NMSSH: No bytes available in the stream");
+        NMSSHLogWarn(@"No bytes available in the stream");
         return NO;
     }
 
@@ -266,7 +266,7 @@
     }
 
     if (![inputStream hasBytesAvailable]) {
-        NMSSHLogWarn(@"NMSSH: No bytes available in the stream");
+        NMSSHLogWarn(@"No bytes available in the stream");
         return NO;
     }
 
@@ -282,12 +282,12 @@
     LIBSSH2_SFTP_ATTRIBUTES attributes;
     if (libssh2_sftp_fstat(handle, &attributes) < 0) {
         [inputStream close];
-        NMSSHLogError(@"NMSSH: Unable to get attributes of file %@", path);
+        NMSSHLogError(@"Unable to get attributes of file %@", path);
         return NO;
     }
 
     libssh2_sftp_seek64(handle, attributes.filesize);
-    NMSSHLogVerbose(@"NMSSH: Seek to position %ld", (long)attributes.filesize);
+    NMSSHLogVerbose(@"Seek to position %ld", (long)attributes.filesize);
 
     BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
 
