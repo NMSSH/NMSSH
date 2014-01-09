@@ -352,11 +352,11 @@
     return self.isAuthorized;
 }
 
-- (int)internalAuthenticateByPublicKey:(NSString *)publicKey
-                            privateKey:(NSString *)privateKey
-                           andPassword:(NSString *)password {
+- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+                     privateKey:(NSString *)privateKey
+                    andPassword:(NSString *)password {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
-        return LIBSSH2_ERROR_AUTHENTICATION_FAILED;
+        return NO;
     }
 
     if (password == nil) {
@@ -368,43 +368,11 @@
     const char *privKey = [[privateKey stringByExpandingTildeInPath] UTF8String] ?: NULL;
 
     // Try to authenticate with key pair and password
-    return libssh2_userauth_publickey_fromfile(self.session,
-                                               [self.username UTF8String],
-                                               pubKey,
-                                               privKey,
-                                               [password UTF8String]);
-}
-
-- (BOOL)authenticateByPublicKey:(NSString *)publicKey
-                     privateKey:(NSString *)privateKey
-          optionalPasswordBlock:(NSString *(^)())passwordBlock {
-    int error = [self internalAuthenticateByPublicKey:publicKey
-                                           privateKey:privateKey
-                                          andPassword:@""];
-    if (error == LIBSSH2_ERROR_PUBLICKEY_UNVERIFIED) {
-        NSString *password = passwordBlock();
-        if (password) {
-            error = [self internalAuthenticateByPublicKey:publicKey
-                                               privateKey:privateKey
-                                              andPassword:password];
-        }
-    }
-    if (error) {
-        NMSSHLogError(@"Public key authentication failed with reason %i", error);
-        return NO;
-    }
-    
-    NMSSHLogVerbose(@"Public key authentication succeeded.");
-    
-    return self.isAuthorized;
-}
-
-- (BOOL)authenticateByPublicKey:(NSString *)publicKey
-                     privateKey:(NSString *)privateKey
-                    andPassword:(NSString *)password {
-    int error = [self internalAuthenticateByPublicKey:publicKey
-                                           privateKey:privateKey
-                                          andPassword:password];
+    int error = libssh2_userauth_publickey_fromfile(self.session,
+                                                    [self.username UTF8String],
+                                                    pubKey,
+                                                    privKey,
+                                                    [password UTF8String]);
 
     if (error) {
         NMSSHLogError(@"Public key authentication failed with reason %i", error);
