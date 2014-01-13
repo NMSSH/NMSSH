@@ -8,7 +8,7 @@ Are you using NMSSH for something cool? [Let me know](http://twitter.com/Lejdbor
 
 ### Cocoapods
 
-    pod 'nmssh'
+    pod 'NMSSH'
 
 ### Build from source
 
