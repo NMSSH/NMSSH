@@ -8,7 +8,7 @@
 
 #define kNMSSHBufferSize (0x4000)
 
-@class NMSSHSession, NMSSHChannel, NMSFTP;
+@class NMSSHSession, NMSSHChannel, NMSFTP, NMSFTPFile;
 
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
