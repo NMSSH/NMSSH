@@ -132,11 +132,11 @@
 - (BOOL)removeFileAtPath:(NSString *)path;
 
 /**
- * Reads the attributes from a file.
- *
- * @param path An existing file path
- * @return A NMSFTPFile that contains the fetched file attributes.
- **/
+ Reads the attributes from a file.
+ 
+ @param path An existing file path
+ @return A NMSFTPFile that contains the fetched file attributes.
+ */
 - (NMSFTPFile*)infoForFileAtPath:(NSString*)path;
 
 /**

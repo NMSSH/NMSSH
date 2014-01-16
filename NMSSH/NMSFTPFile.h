@@ -23,10 +23,10 @@
 - (id)initWithFilename:(NSString*)filename;
 
 /**
- * Populates the file properties with the attributes taken from the LIBSSH2_SFTP_ATTRIBUTES object.
- *
- * @param fileAttributes The LIBSSH2_SFTP_ATTRIBUTES object that contains the attributes that are being extracted.
- **/
+ Populates the file properties with the attributes taken from the LIBSSH2_SFTP_ATTRIBUTES object.
+ 
+ @param fileAttributes The LIBSSH2_SFTP_ATTRIBUTES object that contains the attributes that are being extracted.
+ */
 - (void)populateValuesFromSFTPAttributes:(LIBSSH2_SFTP_ATTRIBUTES)fileAttributes;
 
 @end
