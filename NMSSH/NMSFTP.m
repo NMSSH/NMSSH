@@ -135,8 +135,10 @@
                 if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
                     fileName = [fileName stringByAppendingString:@"/"];
                 }
-
-                [contents addObject:fileName];
+                
+                NMSFTPFile* file = [[NMSFTPFile alloc] initWithFilename:fileName];
+                [file populateValuesFromSFTPAttributes:fileAttributes];
+                [contents addObject:file];
             }
         }
     } while (rc > 0);
@@ -151,7 +153,11 @@
         NMSSHLogError(@"Failed to close directory");
     }
 
-    return [contents sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSArray* sortedContents = [contents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    }];
+    
+    return sortedContents;
 }
 
 // -----------------------------------------------------------------------------
@@ -196,6 +202,27 @@
 
 - (BOOL)removeFileAtPath:(NSString *)path {
     return libssh2_sftp_unlink(self.sftpSession, [path UTF8String]) == 0;
+}
+
+- (NMSFTPFile*)infoForFileAtPath:(NSString*)path
+{
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
+    
+    if (!handle) {
+        return nil;
+    }
+    
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+    ssize_t rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    libssh2_sftp_close(handle);
+    
+    if (rc < 0) {
+        return nil;
+    }
+    
+    NMSFTPFile* file = [[NMSFTPFile alloc] initWithFilename:path.lastPathComponent];
+    [file populateValuesFromSFTPAttributes:fileAttributes];
+    return file;
 }
 
 - (NSData *)contentsAtPath:(NSString *)path {

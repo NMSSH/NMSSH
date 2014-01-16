@@ -1,4 +1,5 @@
 #import "NMSSH.h"
+#import "NMSFTPFile.h"
 
 /**
  NMSFTP provides functionality for working with SFTP servers.
@@ -91,7 +92,7 @@
 - (BOOL)removeDirectoryAtPath:(NSString *)path;
 
 /**
- Get a list of file names for a directory path
+ Get a list of files for a directory path
 
  @param path Existing directory to list items from
  @returns List of relative paths
@@ -129,6 +130,14 @@
  @returns Remove success
  */
 - (BOOL)removeFileAtPath:(NSString *)path;
+
+/**
+ * Reads the attributes from a file.
+ *
+ * @param path An existing file path
+ * @return A NMSFTPFile that contains the fetched file attributes.
+ **/
+- (NMSFTPFile*)infoForFileAtPath:(NSString*)path;
 
 /**
  Read the contents of a file
