@@ -1,4 +1,5 @@
 #import "NMSFTP.h"
+#import "NMSFTPFile.h"
 
 @interface NMSFTP ()
 @property (nonatomic, strong) NMSSHSession *session;
