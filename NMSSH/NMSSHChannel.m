@@ -618,7 +618,7 @@
                 return NO;
             }
             got += rc;
-            if (progress && !progress(got, (NSUInteger)fileinfo.st_size)) {
+            if (progress && !progress((NSUInteger)got, (NSUInteger)fileinfo.st_size)) {
                 close(localFile);
                 [self closeChannel];
                 return NO;
