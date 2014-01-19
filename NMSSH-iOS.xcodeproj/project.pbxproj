@@ -115,7 +115,7 @@
 		18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D217D6AA7B008B76FB /* libssl.a */; };
 		18F1A2D218158D78000635AB /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F1A2D018158D78000635AB /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18F1A2D318158D78000635AB /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1A2D118158D78000635AB /* NMSSHLogger.m */; };
-		E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */; };
+		E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E46F9E22188AC7010056E5DB /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E46F9E20188AC7010056E5DB /* NMSFTPFile.m */; };
 /* End PBXBuildFile section */
 
@@ -437,6 +437,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */,
+				E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */,
 				18A0967317D6AA51008B76FB /* NMSSH.h in Headers */,
 				18A0967417D6AA51008B76FB /* NMSSHChannel.h in Headers */,
 				18A0967617D6AA51008B76FB /* NMSSHSession.h in Headers */,
@@ -496,7 +497,6 @@
 				18A0970517D6AA7B008B76FB /* pkcs12.h in Headers */,
 				18A0970617D6AA7B008B76FB /* pkcs7.h in Headers */,
 				18A0970717D6AA7B008B76FB /* pqueue.h in Headers */,
-				E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */,
 				18A0970817D6AA7B008B76FB /* rand.h in Headers */,
 				18A0970917D6AA7B008B76FB /* rc2.h in Headers */,
 				18A0970A17D6AA7B008B76FB /* rc4.h in Headers */,
