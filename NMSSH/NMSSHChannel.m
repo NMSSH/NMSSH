@@ -1,5 +1,5 @@
 #import "NMSSHChannel.h"
-#import "socket_helper.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSSHChannel ()
 @property (nonatomic, strong) NMSSHSession *session;

@@ -1,7 +1,5 @@
 #import "NMSSH.h"
 
-#import "NMSSHChannelDelegate.h"
-
 typedef NS_ENUM(NSInteger, NMSSHChannelError) {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,

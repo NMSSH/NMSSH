@@ -3,6 +3,9 @@
 
 @class NMSSHSession, NMSSHChannel, NMSFTP, NMSFTPFile;
 
+#import "NMSSHSessionDelegate.h"
+#import "NMSSHChannelDelegate.h"
+
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
 #import "NMSFTP.h"

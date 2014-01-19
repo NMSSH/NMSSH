@@ -1,15 +1,5 @@
 #ifdef __OBJC__
 
 #import <Foundation/Foundation.h>
-#import <CoreFoundation/CoreFoundation.h>
-#import <netinet/in.h>
-#import <sys/socket.h>
-#import <arpa/inet.h>
-
-#define kNMSSHBufferSize (0x4000)
-
-#import "NMSSH.h"
-
-#define strlen (unsigned int)strlen
 
 #endif

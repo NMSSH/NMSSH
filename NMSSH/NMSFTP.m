@@ -1,5 +1,5 @@
 #import "NMSFTP.h"
-#import "NMSFTPFile.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSFTP ()
 @property (nonatomic, strong) NMSSHSession *session;

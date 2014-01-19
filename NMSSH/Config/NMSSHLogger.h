@@ -1,8 +1,3 @@
-#define NMSSHLogVerbose(frmt, ...) [[NMSSHLogger logger] logVerbose:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
-#define NMSSHLogInfo(frmt, ...) [[NMSSHLogger logger] logInfo:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
-#define NMSSHLogWarn(frmt, ...) [[NMSSHLogger logger] logWarn:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
-#define NMSSHLogError(frmt, ...) [[NMSSHLogger logger] logError:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
-
 typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
     NMSSHLogLevelVerbose = (1 << 0 | 1 << 1 | 1 << 2 | 1 << 3),
     NMSSHLogLevelInfo    = (1 << 1 | 1 << 2 | 1 << 3),
