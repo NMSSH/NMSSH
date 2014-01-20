@@ -1,16 +1,15 @@
 #import <SenTestingKit/SenTestingKit.h>
+#import "NMSFTPFile.h"
 
 @interface NMSFTPFileTests : SenTestCase
 
 @end
 
-@implementation NMSFTPFileTests
-{
-    NMSFTPFile* _file;
+@implementation NMSFTPFileTests {
+    NMSFTPFile *_file;
 }
 
-- (void)setUp
-{
+- (void)setUp {
     [super setUp];
     _file = [[NMSFTPFile alloc] initWithFilename:@"test.txt"];
 }
@@ -18,18 +17,16 @@
 /**
  Tests whether the filename attribute is correct after initialization.
  */
-- (void)testInitialization
-{
+- (void)testInitialization {
     STAssertEqualObjects(_file.filename, @"test.txt", @"Filename attribut has not been set");
-    NMSFTPFile* anotherFile = [NMSFTPFile fileWithName:@"test.txt"];
+    NMSFTPFile *anotherFile = [NMSFTPFile fileWithName:@"test.txt"];
     STAssertEqualObjects(anotherFile.filename, @"test.txt", @"Filename attribut has not been set");
 }
 
 /**
  Tests whether the permissions conversion from numeric to symbolic notation is correct
  */
--(void)testPermissionsConversion
-{
+-(void)testPermissionsConversion {
     LIBSSH2_SFTP_ATTRIBUTES attributes;
     attributes.permissions = 33188;
     [_file populateValuesFromSFTPAttributes:attributes];

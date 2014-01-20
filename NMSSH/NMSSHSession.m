@@ -1,4 +1,5 @@
 #import "NMSSHSession.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSSHSession ()
 @property (nonatomic, assign) LIBSSH2_AGENT *agent;

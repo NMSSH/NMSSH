@@ -1,6 +1,5 @@
 #import "NMSSH.h"
 
-
 /**
  NMSFTP provides functionality for working with SFTP servers.
  */
@@ -104,6 +103,14 @@
 /// ----------------------------------------------------------------------------
 
 /**
+ Reads the attributes from a file.
+
+ @param path An existing file path
+ @return A NMSFTPFile that contains the fetched file attributes.
+ */
+- (NMSFTPFile *)infoForFileAtPath:(NSString *)path;
+
+/**
  Test if a file exists at the specified path.
 
  Note: Will return NO if a directory exists at the path, but not a file.
@@ -130,14 +137,6 @@
  @returns Remove success
  */
 - (BOOL)removeFileAtPath:(NSString *)path;
-
-/**
- Reads the attributes from a file.
- 
- @param path An existing file path
- @return A NMSFTPFile that contains the fetched file attributes.
- */
-- (NMSFTPFile*)infoForFileAtPath:(NSString*)path;
 
 /**
  Read the contents of a file

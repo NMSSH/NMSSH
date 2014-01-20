@@ -19,7 +19,7 @@ Consult the Wiki for detailed information about how to:
 
 ### Include it in your project
 
-Add `#include <NMSSH/NMSSH.h>` to your source file.
+Add `#import <NMSSH/NMSSH.h>` to your source file.
 
 ## What does it look like?
 
@@ -87,6 +87,7 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 
 ### Contributors
 
+* [Sebastian Hunkeler (@lightforce)](https://github.com/lightforce)
 * [Endika Gutiérrez (@endSly)](https://github.com/endSly)
 * [@gnachman](https://github.com/gnachman)
 * [@Shirk](https://github.com/Shirk)

@@ -80,6 +80,7 @@
 - (void)testUploadingFileToWritableDirWorks {
     channel = [[NMSSHChannel alloc] initWithSession:session];
     NSString *dir = [settings objectForKey:@"writable_dir"];
+    STAssertTrue([dir hasSuffix:@"/"], @"Directory must end with a slash");
 
     BOOL result;
     STAssertNoThrow(result = [channel uploadFile:localFilePath to:dir],

@@ -113,8 +113,11 @@
 		18A0972117D6AA7B008B76FB /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D017D6AA7B008B76FB /* libcrypto.a */; };
 		18A0972217D6AA7C008B76FB /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D117D6AA7B008B76FB /* libssh2.a */; };
 		18A0972317D6AA7C008B76FB /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D217D6AA7B008B76FB /* libssl.a */; };
+		18B4FE83188C8774004E05FF /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE82188C8195004E05FF /* NMSSH+Protected.h */; };
 		18F1A2D218158D78000635AB /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F1A2D018158D78000635AB /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18F1A2D318158D78000635AB /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1A2D118158D78000635AB /* NMSSHLogger.m */; };
+		E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E46F9E22188AC7010056E5DB /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E46F9E20188AC7010056E5DB /* NMSFTPFile.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -213,8 +216,11 @@
 		18A096D117D6AA7B008B76FB /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
 		18A096D217D6AA7B008B76FB /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
 		18A0972417D6AAA8008B76FB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		18B4FE82188C8195004E05FF /* NMSSH+Protected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH+Protected.h"; sourceTree = "<group>"; };
 		18F1A2D018158D78000635AB /* NMSSHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHLogger.h; sourceTree = "<group>"; };
 		18F1A2D118158D78000635AB /* NMSSHLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHLogger.m; sourceTree = "<group>"; };
+		E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPFile.h; sourceTree = "<group>"; };
+		E46F9E20188AC7010056E5DB /* NMSFTPFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFile.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,11 +266,13 @@
 		18A0965217D6A8C4008B76FB /* NMSSH */ = {
 			isa = PBXGroup;
 			children = (
-				18A0966A17D6AA51008B76FB /* NMSFTP.h */,
-				18A0966B17D6AA51008B76FB /* NMSFTP.m */,
 				18A0966C17D6AA51008B76FB /* NMSSH.h */,
 				18A0966D17D6AA51008B76FB /* NMSSHChannel.h */,
 				18A0966E17D6AA51008B76FB /* NMSSHChannel.m */,
+				18A0966A17D6AA51008B76FB /* NMSFTP.h */,
+				18A0966B17D6AA51008B76FB /* NMSFTP.m */,
+				E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */,
+				E46F9E20188AC7010056E5DB /* NMSFTPFile.m */,
 				18A0966F17D6AA51008B76FB /* NMSSHSession.h */,
 				18A0967017D6AA51008B76FB /* NMSSHSession.m */,
 				18A0967D17D6AA7B008B76FB /* Libraries */,
@@ -290,6 +298,7 @@
 				18A0966617D6AA3D008B76FB /* socket_helper.m */,
 				18F1A2D018158D78000635AB /* NMSSHLogger.h */,
 				18F1A2D118158D78000635AB /* NMSSHLogger.m */,
+				18B4FE82188C8195004E05FF /* NMSSH+Protected.h */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -431,6 +440,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */,
+				E46F9E21188AC7010056E5DB /* NMSFTPFile.h in Headers */,
 				18A0967317D6AA51008B76FB /* NMSSH.h in Headers */,
 				18A0967417D6AA51008B76FB /* NMSSHChannel.h in Headers */,
 				18A0967617D6AA51008B76FB /* NMSSHSession.h in Headers */,
@@ -439,6 +449,7 @@
 				18F1A2D218158D78000635AB /* NMSSHLogger.h in Headers */,
 				18A096D317D6AA7B008B76FB /* libssh2.h in Headers */,
 				18A096D517D6AA7B008B76FB /* libssh2_sftp.h in Headers */,
+				18B4FE83188C8774004E05FF /* NMSSH+Protected.h in Headers */,
 				18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */,
 				18A096D417D6AA7B008B76FB /* libssh2_publickey.h in Headers */,
 				18A096D617D6AA7B008B76FB /* aes.h in Headers */,
@@ -614,6 +625,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */,
+				E46F9E22188AC7010056E5DB /* NMSFTPFile.m in Sources */,
 				18A0967217D6AA51008B76FB /* NMSFTP.m in Sources */,
 				18A0967517D6AA51008B76FB /* NMSSHChannel.m in Sources */,
 				18F1A2D318158D78000635AB /* NMSSHLogger.m in Sources */,

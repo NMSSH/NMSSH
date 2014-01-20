@@ -1,5 +1,5 @@
 #import "NMSFTP.h"
-#import "NMSFTPFile.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSFTP ()
 @property (nonatomic, strong) NMSSHSession *session;
@@ -137,7 +137,7 @@
                     fileName = [fileName stringByAppendingString:@"/"];
                 }
                 
-                NMSFTPFile* file = [[NMSFTPFile alloc] initWithFilename:fileName];
+                NMSFTPFile *file = [[NMSFTPFile alloc] initWithFilename:fileName];
                 [file populateValuesFromSFTPAttributes:fileAttributes];
                 [contents addObject:file];
             }
@@ -154,16 +154,35 @@
         NMSSHLogError(@"Failed to close directory");
     }
 
-    NSArray* sortedContents = [contents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    return [contents sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         return [obj1 compare:obj2];
     }];
-    
-    return sortedContents;
 }
 
 // -----------------------------------------------------------------------------
 #pragma mark - MANIPULATE SYMLINKS AND FILES
 // -----------------------------------------------------------------------------
+
+- (NMSFTPFile *)infoForFileAtPath:(NSString *)path {
+    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
+
+    if (!handle) {
+        return nil;
+    }
+
+    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
+    ssize_t rc = libssh2_sftp_fstat(handle, &fileAttributes);
+    libssh2_sftp_close(handle);
+
+    if (rc < 0) {
+        return nil;
+    }
+
+    NMSFTPFile *file = [[NMSFTPFile alloc] initWithFilename:path.lastPathComponent];
+    [file populateValuesFromSFTPAttributes:fileAttributes];
+
+    return file;
+}
 
 - (LIBSSH2_SFTP_HANDLE *)openFileAtPath:(NSString *)path flags:(unsigned long)flags mode:(long)mode {
     LIBSSH2_SFTP_HANDLE *handle = libssh2_sftp_open(self.sftpSession, [path UTF8String], flags, mode);
@@ -203,27 +222,6 @@
 
 - (BOOL)removeFileAtPath:(NSString *)path {
     return libssh2_sftp_unlink(self.sftpSession, [path UTF8String]) == 0;
-}
-
-- (NMSFTPFile*)infoForFileAtPath:(NSString*)path
-{
-    LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
-    
-    if (!handle) {
-        return nil;
-    }
-    
-    LIBSSH2_SFTP_ATTRIBUTES fileAttributes;
-    ssize_t rc = libssh2_sftp_fstat(handle, &fileAttributes);
-    libssh2_sftp_close(handle);
-    
-    if (rc < 0) {
-        return nil;
-    }
-    
-    NMSFTPFile* file = [[NMSFTPFile alloc] initWithFilename:path.lastPathComponent];
-    [file populateValuesFromSFTPAttributes:fileAttributes];
-    return file;
 }
 
 - (NSData *)contentsAtPath:(NSString *)path {
