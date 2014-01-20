@@ -51,15 +51,15 @@ NMSFTP* client = session.sftp;
 [session connect];
 
 if (session.isConnected) {
-        [client.session authenticateByPassword:@"1234"];
+  [client.session authenticateByPassword:@"1234"];
         
-        if (session.isAuthorized){
-            [client connect];
-            NSArray* remoteFileList = [client contentsOfDirectoryAtPath:@"/"];
-            for(NMSFTPFile* file in remoteFileList) {
-        		  NSLog("%@",file.filename);
-            }					
-        }
+  if (session.isAuthorized){
+    [client connect];
+    NSArray* remoteFileList = [client contentsOfDirectoryAtPath:@"/"];
+    for(NMSFTPFile* file in remoteFileList) {
+      NSLog("%@",file.filename);
+    }
+  }
   [client disconnect];
   [session disconnect];
 }
