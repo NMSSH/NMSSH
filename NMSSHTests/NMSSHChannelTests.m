@@ -104,8 +104,7 @@
     channel = [[NMSSHChannel alloc] initWithSession:session];
 
     [[NSFileManager defaultManager] removeItemAtPath:localFilePath error:nil];
-    NSString *remoteFile = [NSString stringWithFormat:@"%@nmssh-test.txt",
-                            [settings objectForKey:@"writable_dir"]];
+    NSString *remoteFile = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent:@"nmssh-test.txt"];
 
     BOOL result;
     STAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
