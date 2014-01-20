@@ -18,6 +18,7 @@
 		6EB9E8051887F52C003A9BE4 /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EB9E8031887F52C003A9BE4 /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6EB9E8061887F52C003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
 		6EB9E8071887F533003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
+		6EE908A5188D597300997E11 /* NMSFTPFileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EE908A4188D597300997E11 /* NMSFTPFileTests.m */; };
 		E42815BC1593D13800CF680C /* YAML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
 		E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */; };
 		E42815C21593D95200CF680C /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = E42815C01593D95200CF680C /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -86,6 +87,7 @@
 		18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
 		6EB9E8031887F52C003A9BE4 /* NMSFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPFile.h; sourceTree = "<group>"; };
 		6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFile.m; sourceTree = "<group>"; };
+		6EE908A4188D597300997E11 /* NMSFTPFileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFileTests.m; sourceTree = "<group>"; };
 		E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionTests.h; sourceTree = "<group>"; };
 		E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSessionTests.m; sourceTree = "<group>"; };
 		E42815C01593D95200CF680C /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */,
 				E48DA7B715D0DCC100721060 /* NMSFTPTests.h */,
 				E48DA7B815D0DCC100721060 /* NMSFTPTests.m */,
+				6EE908A4188D597300997E11 /* NMSFTPFileTests.m */,
 			);
 			path = NMSSHTests;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EE908A5188D597300997E11 /* NMSFTPFileTests.m in Sources */,
 				E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */,
 				6EB9E8071887F533003A9BE4 /* NMSFTPFile.m in Sources */,
 				E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */,

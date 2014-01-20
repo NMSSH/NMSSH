@@ -70,6 +70,7 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 * [@gnachman](https://github.com/gnachman)
 * [@Shirk](https://github.com/Shirk)
 * [@touta](https://github.com/touta)
+* [Sebastian Hunkeler](https://github.com/lightforce)
 
 ## License
 

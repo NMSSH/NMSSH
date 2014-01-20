@@ -102,7 +102,13 @@
     }
 
     // Test entry listing
-    NSArray *entries = @[@"a/", @"b/", @"c/", @"d.txt", @"e.txt", @"f.txt"];
+    NSArray *entries = @[[NMSFTPFile fileWithName:@"a/"],
+                         [NMSFTPFile fileWithName:@"b/"],
+                         [NMSFTPFile fileWithName:@"c/"],
+                         [NMSFTPFile fileWithName:@"d.txt"],
+                         [NMSFTPFile fileWithName:@"e.txt"],
+                         [NMSFTPFile fileWithName:@"f.txt"]];
+    
     STAssertEqualObjects([sftp contentsOfDirectoryAtPath:baseDir], entries,
                          @"Get a list of directory entries");
 
@@ -173,6 +179,29 @@
                   @"Should return false if a directory is provided");
 
     STAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
+}
+
+-(void)testRetrievingFileInfo {
+    NSString *destPath = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent: @"file_test.txt"];
+    NSString *destDirectoryPath = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent: @"directory_test"];
+    STAssertTrue([sftp writeContents:[@"test" dataUsingEncoding:NSUTF8StringEncoding] toFileAtPath:destPath],@"Write contents to file");
+    STAssertTrue([sftp createDirectoryAtPath:destDirectoryPath], @"Couldn't create directory");
+    
+    NMSFTPFile *fileInfo = [sftp infoForFileAtPath:destPath];
+    STAssertNotNil(fileInfo, @"Couldn't retrieve file info");
+    STAssertNotNil(fileInfo.filename, @"Couldn't retrieve filename");
+    STAssertNotNil(fileInfo.fileSize, @"Couldn't retrieve file size");
+    STAssertNotNil(fileInfo.permissions, @"Couldn't retrieve permissions");
+    STAssertNotNil(fileInfo.modificationDate, @"Couldn't retrieve modification date");
+    STAssertTrue(fileInfo.ownerGroupID > 0, @"Couldn't retrieve owner group ID");
+    STAssertTrue(fileInfo.ownerUserID > 0, @"Couldn't retrieve owner user ID");
+    STAssertFalse(fileInfo.isDirectory, @"File isn't a driectory");
+    
+    NMSFTPFile *directoryInfo = [sftp infoForFileAtPath:destDirectoryPath];
+    STAssertTrue(directoryInfo.isDirectory, @"Target file is a directory");
+    
+    STAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
+    STAssertTrue([sftp removeDirectoryAtPath:destDirectoryPath], @"Remove directory");
 }
 
 @end
