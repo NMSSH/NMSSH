@@ -1,11 +1,3 @@
-//
-//  NMSFTPFileTests.m
-//  NMSSH
-//
-//  Created by Sebastian Hunkeler on 20/01/14.
-//
-//
-
 #import <SenTestingKit/SenTestingKit.h>
 
 @interface NMSFTPFileTests : SenTestCase
