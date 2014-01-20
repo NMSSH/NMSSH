@@ -8,28 +8,27 @@
 
 /* Begin PBXBuildFile section */
 		18B4FE85188C87F3004E05FF /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */; };
+		18B4FE8E188CB2BB004E05FF /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE89188CB2BB004E05FF /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18B4FE8F188CB2BB004E05FF /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */; };
+		18B4FE90188CB2BB004E05FF /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE8B188CB2BB004E05FF /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18B4FE91188CB2BB004E05FF /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B4FE8D188CB2BB004E05FF /* libssh2.a */; };
 		18E4D2391815F6F600432102 /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E4D2381815F6F600432102 /* NMSSHLogger.m */; };
 		18E4D23A1815F70D00432102 /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = E4F1CBB217206D730025EBFC /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A04ECAE174F51E8006DD8E7 /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6EB9E8051887F52C003A9BE4 /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 6EB9E8031887F52C003A9BE4 /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6EB9E8061887F52C003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
 		6EB9E8071887F533003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
-		E40D7BBF15DCCAFB002F4B41 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E40D7BBE15DCCAFB002F4B41 /* libssh2.a */; };
 		E42815BC1593D13800CF680C /* YAML.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
 		E42815BF1593D6E900CF680C /* NMSSHSessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */; };
 		E42815C21593D95200CF680C /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = E42815C01593D95200CF680C /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E42815C31593D95200CF680C /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = E42815C11593D95200CF680C /* NMSSHSession.m */; };
 		E42815FE15962B7600CF680C /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E96D94158E10FD002E6E0A /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = E42816091596629A00CF680C /* libssh2_publickey.h */; };
-		E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = E428160A1596629A00CF680C /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E428160E1596629A00CF680C /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = E428160B1596629A00CF680C /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E46A02E115919BE3007049AB /* ConfigHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E46A02E015919BE3007049AB /* ConfigHelper.m */; };
 		E4814268172BC4F700283132 /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E49AA6DB17228C33007101A4 /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E48DA7B915D0DCC100721060 /* NMSFTPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7B815D0DCC100721060 /* NMSFTPTests.m */; };
 		E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = E48DA7BB15D0EB2800721060 /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E48DA7BE15D0EB2800721060 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7BC15D0EB2800721060 /* NMSFTP.m */; };
 		E48DA7BF15D0EB2800721060 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = E48DA7BC15D0EB2800721060 /* NMSFTP.m */; };
-		E4D99A9B15DE142200EB5615 /* libssh2.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = E40D7BBE15DCCAFB002F4B41 /* libssh2.a */; };
 		E4D99A9D15DE149D00EB5615 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D99A9C15DE149D00EB5615 /* libssl.dylib */; };
 		E4D99AA215DE15A600EB5615 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D99AA115DE15A600EB5615 /* libcrypto.dylib */; };
 		E4D99AA415DE15B300EB5615 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D99AA315DE15B300EB5615 /* libz.dylib */; };
@@ -72,7 +71,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E4D99A9B15DE142200EB5615 /* libssh2.a in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,18 +78,18 @@
 
 /* Begin PBXFileReference section */
 		18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH+Protected.h"; sourceTree = "<group>"; };
+		18B4FE89188CB2BB004E05FF /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
+		18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
+		18B4FE8B188CB2BB004E05FF /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
+		18B4FE8D188CB2BB004E05FF /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
 		18E4D2381815F6F600432102 /* NMSSHLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHLogger.m; sourceTree = "<group>"; };
 		18F9DABF17302F7F004CECAA /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
 		6EB9E8031887F52C003A9BE4 /* NMSFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPFile.h; sourceTree = "<group>"; };
 		6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFile.m; sourceTree = "<group>"; };
-		E40D7BBE15DCCAFB002F4B41 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
 		E42815BD1593D6E900CF680C /* NMSSHSessionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionTests.h; sourceTree = "<group>"; };
 		E42815BE1593D6E900CF680C /* NMSSHSessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSessionTests.m; sourceTree = "<group>"; };
 		E42815C01593D95200CF680C /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
 		E42815C11593D95200CF680C /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
-		E42816091596629A00CF680C /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
-		E428160A1596629A00CF680C /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
-		E428160B1596629A00CF680C /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
 		E46A02DF15919BE3007049AB /* ConfigHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigHelper.h; sourceTree = "<group>"; };
 		E46A02E015919BE3007049AB /* ConfigHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConfigHelper.m; sourceTree = "<group>"; };
 		E48DA7B715D0DCC100721060 /* NMSFTPTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPTests.h; sourceTree = "<group>"; };
@@ -132,8 +130,8 @@
 				E4E96D88158E10FD002E6E0A /* Cocoa.framework in Frameworks */,
 				E4D99AA415DE15B300EB5615 /* libz.dylib in Frameworks */,
 				E4D99AA215DE15A600EB5615 /* libcrypto.dylib in Frameworks */,
+				18B4FE91188CB2BB004E05FF /* libssh2.a in Frameworks */,
 				E4D99A9D15DE149D00EB5615 /* libssl.dylib in Frameworks */,
-				E40D7BBF15DCCAFB002F4B41 /* libssh2.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +149,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18B4FE86188CB2BB004E05FF /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				18B4FE87188CB2BB004E05FF /* include */,
+				18B4FE8C188CB2BB004E05FF /* lib */,
+			);
+			name = Libraries;
+			path = "NMSSH-OSX/Libraries";
+			sourceTree = SOURCE_ROOT;
+		};
+		18B4FE87188CB2BB004E05FF /* include */ = {
+			isa = PBXGroup;
+			children = (
+				18B4FE88188CB2BB004E05FF /* libssh2 */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		18B4FE88188CB2BB004E05FF /* libssh2 */ = {
+			isa = PBXGroup;
+			children = (
+				18B4FE89188CB2BB004E05FF /* libssh2.h */,
+				18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */,
+				18B4FE8B188CB2BB004E05FF /* libssh2_sftp.h */,
+			);
+			path = libssh2;
+			sourceTree = "<group>";
+		};
+		18B4FE8C188CB2BB004E05FF /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				18B4FE8D188CB2BB004E05FF /* libssh2.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
 		E49AA6DA17228C25007101A4 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -206,7 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				E4F1CBB117206D640025EBFC /* Config */,
-				E4E96DBD158EFBB4002E6E0A /* libssh2 */,
+				18B4FE86188CB2BB004E05FF /* Libraries */,
 				E49AA6DA17228C25007101A4 /* Protocols */,
 				E4E96D8E158E10FD002E6E0A /* Supporting Files */,
 				E4E96D94158E10FD002E6E0A /* NMSSH.h */,
@@ -254,17 +288,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E4E96DBD158EFBB4002E6E0A /* libssh2 */ = {
-			isa = PBXGroup;
-			children = (
-				E40D7BBE15DCCAFB002F4B41 /* libssh2.a */,
-				E42816091596629A00CF680C /* libssh2_publickey.h */,
-				E428160A1596629A00CF680C /* libssh2_sftp.h */,
-				E428160B1596629A00CF680C /* libssh2.h */,
-			);
-			path = libssh2;
-			sourceTree = "<group>";
-		};
 		E4E96DD0158FD309002E6E0A /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -303,18 +326,18 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18B4FE8F188CB2BB004E05FF /* libssh2_publickey.h in Headers */,
 				E42815FE15962B7600CF680C /* NMSSH.h in Headers */,
 				18B4FE85188C87F3004E05FF /* NMSSH+Protected.h in Headers */,
 				E42815C21593D95200CF680C /* NMSSHSession.h in Headers */,
 				E4814268172BC4F700283132 /* NMSSHSessionDelegate.h in Headers */,
 				4A04ECAE174F51E8006DD8E7 /* NMSSHChannelDelegate.h in Headers */,
+				18B4FE90188CB2BB004E05FF /* libssh2_sftp.h in Headers */,
+				18B4FE8E188CB2BB004E05FF /* libssh2.h in Headers */,
 				E4F1E680159F5B13007B0B2F /* NMSSHChannel.h in Headers */,
 				6EB9E8051887F52C003A9BE4 /* NMSFTPFile.h in Headers */,
 				E48DA7BD15D0EB2800721060 /* NMSFTP.h in Headers */,
 				18E4D23A1815F70D00432102 /* NMSSHLogger.h in Headers */,
-				E428160D1596629A00CF680C /* libssh2_sftp.h in Headers */,
-				E428160E1596629A00CF680C /* libssh2.h in Headers */,
-				E428160C1596629A00CF680C /* libssh2_publickey.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,8 +556,8 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
-					"\"$(SDKROOT)/usr/lib/system\"",
+					"$(SDKROOT)/usr/lib/system",
+					"$(SRCROOT)/NMSSH-OSX/Libraries/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
@@ -555,8 +578,8 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
-					"\"$(SDKROOT)/usr/lib/system\"",
+					"$(SDKROOT)/usr/lib/system",
+					"$(SRCROOT)/NMSSH-OSX/Libraries/lib",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = framework;
