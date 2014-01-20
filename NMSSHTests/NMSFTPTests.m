@@ -102,7 +102,8 @@
     }
 
     // Test entry listing
-    NSArray *entries = @[@"a/", @"b/", @"c/", @"d.txt", @"e.txt", @"f.txt"];
+    NSArray *entries = @[[NMSFTPFile fileWithName:@"a/"], [NMSFTPFile fileWithName:@"b/"], [NMSFTPFile fileWithName:@"c/"], [NMSFTPFile fileWithName:@"d.txt"], [NMSFTPFile fileWithName:@"e.txt"], [NMSFTPFile fileWithName:@"f.txt"]];
+    
     STAssertEqualObjects([sftp contentsOfDirectoryAtPath:baseDir], entries,
                          @"Get a list of directory entries");
 

@@ -44,6 +44,28 @@ BOOL success = [session.channel uploadFile:@"~/index.html" to:@"/var/www/9muses.
 [session disconnect];
 ```
 
+### NMSFTP Directory Listing Example
+```objc
+NMSSHSession *session = [[NMSSHSession alloc] initWithHost:@"127.0.0.1:22" andUsername:@"admin"];
+NMSFTP* client = session.sftp;
+[session connect];
+
+if (session.isConnected) {
+        [client.session authenticateByPassword:@"1234"];
+        
+        if (session.isAuthorized){
+            [client connect];
+            NSArray* remoteFileList = [client contentsOfDirectoryAtPath:@"/"];
+						for(NMSFTPFile* file in remoteFileList) {
+        			NSLog("%@",file.filename);
+    				}					
+        }
+	[client disconnect];
+  [session disconnect];
+}
+
+```
+
 ## API Documentation
 
 API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/](http://cocoadocs.org/docsets/NMSSH/).
@@ -69,6 +91,7 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 * [@gnachman](https://github.com/gnachman)
 * [@Shirk](https://github.com/Shirk)
 * [@touta](https://github.com/touta)
+* [Sebastian Hunkeler](https://github.com/lightforce)
 
 ## License
 

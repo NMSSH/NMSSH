@@ -15,6 +15,9 @@
 
 @implementation NMSFTPFile
 
+
+#pragma mark - Initialization
+
 - (instancetype)initWithFilename:(NSString*)filename
 {
     self = [super init];
@@ -23,6 +26,14 @@
     }
     return self;
 }
+
++ (instancetype)fileWithName:(NSString*)filename
+{
+    return [[self alloc] initWithFilename:filename];
+}
+
+
+#pragma mark -
 
 -(void)populateValuesFromSFTPAttributes:(LIBSSH2_SFTP_ATTRIBUTES)fileAttributes
 {
@@ -36,6 +47,9 @@
     self.flags = fileAttributes.flags;
 }
 
+
+#pragma mark - Comparison and Equality
+
 /**
  Ensures that the sorting of the files is according to their filenames.
  
@@ -46,6 +60,19 @@
 {
     return [self.filename localizedCaseInsensitiveCompare:aFile.filename];
 }
+
+/**
+ Defines that two NMSFTPFile objects are equal, if their filenames are equal.
+ @param object The other file that it should be compared with
+ @return YES in case the two objects are considered equal, NO otherwise.
+ */
+-(BOOL)isEqual:(id)object
+{
+    return [self.filename isEqualToString:[object filename]];
+}
+
+
+#pragma mark - Permissions conversion methods
 
 /**
  Convert a mode field into "ls -l" type perms field. By courtesy of Jonathan Leffler

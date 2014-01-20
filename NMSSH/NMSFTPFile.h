@@ -46,6 +46,14 @@
 - (instancetype)initWithFilename:(NSString*)filename;
 
 /**
+ Convenience initializer for creating an NMSFTPFile instance with a defined filename.
+ 
+ @param filename The name of the underlaying file.
+ @return A new NMSFTPFile instance initialized with the corresponding filename.
+ */
++ (instancetype)fileWithName:(NSString*)filename;
+
+/**
  Populates the file properties with the attributes taken from the LIBSSH2_SFTP_ATTRIBUTES object.
  
  @param fileAttributes The LIBSSH2_SFTP_ATTRIBUTES object that contains the attributes that are being extracted.
