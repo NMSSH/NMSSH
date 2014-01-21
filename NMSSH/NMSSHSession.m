@@ -124,6 +124,10 @@
 }
 
 - (NSError *)lastError {
+    if(!self.rawSession) {
+        return [NSError errorWithDomain:@"libssh2" code:LIBSSH2_ERROR_NONE userInfo:@{NSLocalizedDescriptionKey : @"Error retrieving last session error due to absence of an active session."}];
+    }
+    
     char *message;
     int error = libssh2_session_last_error(self.rawSession, &message, NULL, 0);
 
