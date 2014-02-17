@@ -147,6 +147,17 @@
 - (NSData *)contentsAtPath:(NSString *)path;
 
 /**
+ Refer to contentsAtPath:
+
+ This adds the ability to get periodic updates to bytes received.
+ 
+ @param path An existing file path
+ @param progress Method called periodically with number of bytes downloaded and total file size.
+ @returns File contents
+ */
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress;
+
+/**
  Overwrite the contents of a file
 
  If no file exists, one is created.
@@ -156,6 +167,18 @@
  @returns Write success
  */
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path;
+
+/**
+ Refer to writeContents:toFileAtPath:
+ 
+ This adds the ability to get periodic updates to bytes written.
+ 
+ @param contents Bytes to write
+ @param path File path to write bytes at
+ @param progress Method called periodically with number of bytes written.
+ @returns Write success
+ */
+- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
 
 /**
  Overwrite the contents of a file
@@ -169,6 +192,18 @@
 - (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path;
 
 /**
+ Refer to writeFileAtPath:toFileAtPath:
+ 
+ This adds the ability to get periodic updates to bytes written.
+ 
+ @param localPath File path to read bytes at
+ @param path File path to write bytes at
+ @param progress Method called periodically with number of bytes written.
+ @returns Write success
+ */
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
+
+/**
  Overwrite the contents of a file
 
  If no file exists, one is created.
@@ -178,6 +213,18 @@
  @returns Write success
  */
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path;
+
+/**
+ Refer to writeStream:toFileAtPath:
+ 
+ This adds the ability to get periodic updates to bytes written.
+ 
+ @param inputStream Stream to read bytes from
+ @param path File path to write bytes at
+ @param progress Method called periodically with number of bytes written.
+ @returns Write success
+ */
+- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
 
 /**
  Append contents to the end of a file
