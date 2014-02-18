@@ -153,9 +153,10 @@
  
  @param path An existing file path
  @param progress Method called periodically with number of bytes downloaded and total file size.
+        Returns NO to abort. 
  @returns File contents
  */
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress;
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger got, NSUInteger totalBytes))progress;
 
 /**
  Overwrite the contents of a file
@@ -171,14 +172,15 @@
 /**
  Refer to writeContents:toFileAtPath:
  
- This adds the ability to get periodic updates to bytes written.
+ This adds the ability to get periodic updates to bytes sent.
  
  @param contents Bytes to write
  @param path File path to write bytes at
- @param progress Method called periodically with number of bytes written.
+ @param progress Method called periodically with number of bytes sent.
+        Returns NO to abort.
  @returns Write success
  */
-- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
+- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
 
 /**
  Overwrite the contents of a file
@@ -194,14 +196,15 @@
 /**
  Refer to writeFileAtPath:toFileAtPath:
  
- This adds the ability to get periodic updates to bytes written.
+ This adds the ability to get periodic updates to bytes sent.
  
  @param localPath File path to read bytes at
  @param path File path to write bytes at
- @param progress Method called periodically with number of bytes written.
+ @param progress Method called periodically with number of bytes sent.
+        Returns NO to abort.
  @returns Write success
  */
-- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
 
 /**
  Overwrite the contents of a file
@@ -217,14 +220,15 @@
 /**
  Refer to writeStream:toFileAtPath:
  
- This adds the ability to get periodic updates to bytes written.
+ This adds the ability to get periodic updates to bytes sent.
  
  @param inputStream Stream to read bytes from
  @param path File path to write bytes at
- @param progress Method called periodically with number of bytes written.
+ @param progress Method called periodically with number of bytes sent.
+        Returns NO to abort.
  @returns Write success
  */
-- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress;
+- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
 
 /**
  Append contents to the end of a file
