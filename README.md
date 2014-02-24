@@ -56,6 +56,11 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 
 **Note:** Make sure that you have _documented your code_ and that you _follow the code conventions_ before opening a pull request.
 
+## NMSSH is used in
+
+* [iTerm2](https://github.com/gnachman/iTerm2)
+* [DogeWallet](https://github.com/SlayterDev/DogeWallet)
+
 ## Developed by
 
 ### Core team
