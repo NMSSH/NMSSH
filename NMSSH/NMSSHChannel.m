@@ -334,16 +334,28 @@
                 (erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0)) {
 
                    if (rc > 0) {
-                       NSString *response = [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding];
+                       NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
+                       NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                        [self setLastResponse:[response copy]];
-                       if (self.delegate && response) {
+
+                       if (response && self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadData:)]) {
                            [self.delegate channel:self didReadData:self.lastResponse];
+                       }
+
+                       if (self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadRawData:)]) {
+                           [self.delegate channel:self didReadRawData:data];
                        }
                    }
                    else if (erc > 0) {
-                       NSString *response = [[NSString alloc] initWithBytes:buffer length:erc encoding:NSUTF8StringEncoding];
-                       if (self.delegate && response) {
+                       NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
+                       NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+                       if (response && self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadError:)]) {
                            [self.delegate channel:self didReadError:response];
+                       }
+
+                       if (self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadRawError:)]) {
+                           [self.delegate channel:self didReadRawError:data];
                        }
                    }
                    else if (libssh2_channel_eof(self.channel) == 1) {
@@ -411,28 +423,35 @@
     return [self write:command error:error timeout:@0];
 }
 
-- (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout {
+- (BOOL)write:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
+    return [self writeData:[command dataUsingEncoding:NSUTF8StringEncoding] error:error timeout:timeout];
+}
+
+- (BOOL)writeData:(NSData *)data error:(NSError *__autoreleasing *)error {
+    return [self writeData:data error:error timeout:@0];
+}
+
+- (BOOL)writeData:(NSData *)data error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
     if (self.type != NMSSHChannelTypeShell) {
         NMSSHLogError(@"Shell required");
         return NO;
     }
 
-    NMSSHLogVerbose(@"Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
     ssize_t rc;
 
     // Set the timeout
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
 
     // Try writing on shell
-    while ((rc = libssh2_channel_write(self.channel, [command UTF8String], [command lengthOfBytesUsingEncoding:NSUTF8StringEncoding])) == LIBSSH2_ERROR_EAGAIN) {
+    while ((rc = libssh2_channel_write(self.channel, [data bytes], [data length])) == LIBSSH2_ERROR_EAGAIN) {
         // Check if the connection timed out
         if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
             if (error) {
-                NSString *desc = @"Connection timed out";
+                NSString *description = @"Connection timed out";
 
                 *error = [NSError errorWithDomain:@"NMSSH"
                                              code:NMSSHChannelExecutionTimeout
-                                         userInfo:@{ NSLocalizedDescriptionKey : desc }];
+                                         userInfo:@{ NSLocalizedDescriptionKey : description }];
             }
 
             return NO;
@@ -444,6 +463,7 @@
     if (rc < 0) {
         NMSSHLogError(@"Error writing on the shell");
         if (error) {
+            NSString *command = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelWriteError
                                      userInfo:@{ NSLocalizedDescriptionKey : [[self.session lastError] localizedDescription],
