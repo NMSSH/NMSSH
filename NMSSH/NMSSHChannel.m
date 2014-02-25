@@ -122,16 +122,20 @@
     }
 }
 
-- (void)sendEOFandWait {
+- (BOOL)sendEOF {
     int rc;
 
     // Send EOF to host
     rc = libssh2_channel_send_eof(self.channel);
     NMSSHLogVerbose(@"Sent EOF to host (return code = %i)", rc);
 
-    if (rc == 0) {
+    return rc == 0;
+}
+
+- (void)waitEOF {
+    if (libssh2_channel_eof(self.channel) == 0) {
         // Wait for host acknowledge
-        rc = libssh2_channel_wait_eof(self.channel);
+        int rc = libssh2_channel_wait_eof(self.channel);
         NMSSHLogVerbose(@"Received host acknowledge for EOF (return code = %i)", rc);
     }
 }
@@ -397,7 +401,7 @@
         // Set blocking mode
         libssh2_session_set_blocking(self.session.rawSession, 1);
 
-        [self sendEOFandWait];
+        [self sendEOF];
     }
 
     [self closeChannel];
@@ -547,7 +551,9 @@
 
     fclose(local);
 
-    [self sendEOFandWait];
+    if ([self sendEOF]) {
+        [self waitEOF];
+    }
     [self closeChannel];
 
     return !abort;
