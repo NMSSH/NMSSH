@@ -1,11 +1,3 @@
-//
-//  NMAppDelegate.m
-//  PTYExample
-//
-//  Created by Tommaso Madonia on 24/02/14.
-//  Copyright (c) 2014 Nine Muses. All rights reserved.
-//
-
 #import "NMAppDelegate.h"
 
 @implementation NMAppDelegate

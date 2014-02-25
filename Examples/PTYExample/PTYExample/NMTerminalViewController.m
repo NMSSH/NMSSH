@@ -1,11 +1,3 @@
-//
-//  NMTerminalViewController.m
-//  PTYExample
-//
-//  Created by Tommaso Madonia on 24/02/14.
-//  Copyright (c) 2014 Nine Muses. All rights reserved.
-//
-
 #import "NMTerminalViewController.h"
 #import <NMSSH/NMSSH.h>
 
@@ -23,7 +15,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
 
     self.textView.editable = NO;
     self.textView.selectable = NO;
@@ -34,7 +25,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    NSLog(@"%i", self.textView.selectable);
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
                                                  name:UIKeyboardWillShowNotification
@@ -111,7 +102,6 @@
 - (void)performCommand {
     if (self.semaphore) {
         self.password = [self.lastCommand substringToIndex:MAX(0, self.lastCommand.length - 1)];
-        NSLog(@"Password: %@", self.password);
         dispatch_semaphore_signal(self.semaphore);
     }
     else {
