@@ -5,6 +5,8 @@
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
+- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
+- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
 @end
 
 @implementation NMSFTP
@@ -225,17 +227,32 @@
 }
 
 - (NSData *)contentsAtPath:(NSString *)path {
+    return [self contentsAtPath:path progress:nil];
+}
+
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
 
     if (!handle) {
         return nil;
     }
 
+    NMSFTPFile *file = [self infoForFileAtPath:path];
+    if (!file) {
+        return nil;
+    }
+    
     char buffer[kNMSSHBufferSize];
     NSMutableData *data = [[NSMutableData alloc] init];
     ssize_t rc;
+    off_t got = 0;
     while ((rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer))) > 0) {
         [data appendBytes:buffer length:rc];
+        got += rc;
+        if (progress && !progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue])) {
+            libssh2_sftp_close(handle);
+            return nil;
+        }
     }
 
     libssh2_sftp_close(handle);
@@ -248,14 +265,26 @@
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
-    return [self writeStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path];
+    return [self writeContents:contents toFileAtPath:path progress:nil];
+}
+
+- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
+    return [self writeStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path progress:progress];
 }
 
 - (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path {
-    return [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath] toFileAtPath:path];
+    return [self writeFileAtPath:localPath toFileAtPath:path progress:nil];
+}
+
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
+    return [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath] toFileAtPath:path progress:progress];
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
+    return [self writeStream:inputStream toFileAtPath:path progress:nil];
+}
+
+- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
     if ([inputStream streamStatus] == NSStreamStatusNotOpen) {
         [inputStream open];
     }
@@ -274,7 +303,7 @@
         return NO;
     }
 
-    BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
+    BOOL success = [self writeStream:inputStream toSFTPHandle:handle progress:progress];
 
     libssh2_sftp_close(handle);
     [inputStream close];
@@ -324,15 +353,24 @@
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle {
+    return [self writeStream:inputStream toSFTPHandle:handle progress:nil];
+}
+
+- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress {
     uint8_t buffer[kNMSSHBufferSize];
     NSInteger bytesRead = -1;
     long rc = 0;
-
+    NSUInteger total = 0;
     while (rc >= 0 && [inputStream hasBytesAvailable]) {
         bytesRead = [inputStream read:buffer maxLength:kNMSSHBufferSize];
 
         if (bytesRead > 0) {
             rc = libssh2_sftp_write(handle, (const char *)buffer, bytesRead);
+            total += rc;
+            if (progress && !progress(total))
+            {
+                return NO;
+            }
         }
     }
 
