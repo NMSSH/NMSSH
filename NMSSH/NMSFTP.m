@@ -138,7 +138,7 @@
                 if (LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions)) {
                     fileName = [fileName stringByAppendingString:@"/"];
                 }
-                
+
                 NMSFTPFile *file = [[NMSFTPFile alloc] initWithFilename:fileName];
                 [file populateValuesFromSFTPAttributes:fileAttributes];
                 [contents addObject:file];

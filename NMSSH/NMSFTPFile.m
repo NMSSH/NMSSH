@@ -56,9 +56,12 @@
  @param object The other file that it should be compared with
  @return YES in case the two objects are considered equal, NO otherwise.
  */
--(BOOL)isEqual:(id)object
-{
-    return [self.filename isEqualToString:[object filename]];
+- (BOOL)isEqual:(id)object {
+    if (![object isKindOfClass:[NMSFTPFile class]]) {
+        return NO;
+    }
+
+    return [self.filename isEqualToString:((NMSFTPFile *)object).filename];
 }
 
 
@@ -145,6 +148,10 @@
     }
 
     return c;
+}
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p> Filename: %@", NSStringFromClass([self class]), self, self.filename];
 }
 
 @end
