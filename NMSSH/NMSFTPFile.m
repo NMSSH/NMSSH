@@ -154,4 +154,22 @@
     return [NSString stringWithFormat:@"<%@: %p> Filename: %@", NSStringFromClass([self class]), self, self.filename];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+    NMSFTPFile *object = [[[self class] allocWithZone:zone] init];
+
+    if (object) {
+        object.filename = [self.filename copyWithZone:zone];
+        object.modificationDate = [self.modificationDate copyWithZone:zone];
+        object.lastAccess = [self.lastAccess copyWithZone:zone];
+        object.fileSize = [self.fileSize copyWithZone:zone];
+        object.permissions = [self.fileSize copyWithZone:zone];
+        object.isDirectory = self.isDirectory;
+        object.ownerUserID = self.ownerUserID;
+        object.ownerGroupID = self.ownerGroupID;
+        object.flags = self.flags;
+    }
+
+    return object;
+}
+
 @end

@@ -4,7 +4,7 @@
  The NMSFTPFile class provides an interface to store file attributes retrieved 
  from a SFTP host.
  */
-@interface NMSFTPFile : NSObject
+@interface NMSFTPFile : NSObject <NSCopying>
 
 /**
  Property that stores the name of the underlaying file. 
