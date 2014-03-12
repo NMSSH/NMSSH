@@ -69,16 +69,16 @@
 
     [self setChannel:channel];
 
-    int rc = 0;
-
     // Try to set environment variables
     if (self.environmentVariables) {
         for (NSString *key in self.environmentVariables) {
             if ([key isKindOfClass:[NSString class]] && [[self.environmentVariables objectForKey:key] isKindOfClass:[NSString class]]) {
-                rc = libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String]);
+                libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String]);
             }
         }
     }
+
+    int rc = 0;
 
     // If requested, try to allocate a pty
     if (self.requestPty) {
@@ -326,7 +326,7 @@
                                            0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))];
     dispatch_source_set_event_handler(self.source, ^{
         NMSSHLogVerbose(@"Data available on the socket!");
-        ssize_t rc, erc;
+        ssize_t rc, erc=0;
         char buffer[self.bufferSize];
 
         while (self.channel != NULL &&
