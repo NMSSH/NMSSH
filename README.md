@@ -72,6 +72,7 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 
 * [Sebastian Hunkeler (@lightforce)](https://github.com/lightforce)
 * [Endika Gutiérrez (@endSly)](https://github.com/endSly)
+* [Clemens Gruber (@clemensg)](https://github.com/clemensg)
 * [@gnachman](https://github.com/gnachman)
 * [@Shirk](https://github.com/Shirk)
 * [@touta](https://github.com/touta)
