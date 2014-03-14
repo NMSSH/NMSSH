@@ -370,8 +370,6 @@
             total += rc;
             if (progress && !progress(total))
             {
-                // @fixme Do the methods that call this need to delete the
-                // contents of the partially downloaded file?
                 return NO;
             }
         }
