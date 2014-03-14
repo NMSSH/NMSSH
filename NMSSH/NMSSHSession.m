@@ -341,8 +341,10 @@
 
 - (BOOL)authenticateByPassword:(NSString *)password {
 
-    NSParameterAssert(password!=nil);
-    
+    if (!password) {
+        return NO;
+    }
+
     if (![self supportsAuthenticationMethod:@"password"]) {
         return NO;
     }
