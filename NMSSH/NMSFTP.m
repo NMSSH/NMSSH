@@ -239,6 +239,7 @@
 
     NMSFTPFile *file = [self infoForFileAtPath:path];
     if (!file) {
+        NMSSHLogWarn(@"contentsAtPath:progress: failed to get file attributes");
         return nil;
     }
     
@@ -378,6 +379,44 @@
         return NO;
     }
 
+    return YES;
+}
+
+- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress
+{
+    // Open handle for reading.
+    LIBSSH2_SFTP_HANDLE *fromHandle = [self openFileAtPath:fromPath flags:LIBSSH2_FXF_READ mode:0];
+    
+    // Open handle for writing.
+    LIBSSH2_SFTP_HANDLE *toHandle = [self openFileAtPath:toPath
+                                                 flags:LIBSSH2_FXF_WRITE|LIBSSH2_FXF_CREAT|LIBSSH2_FXF_READ
+                                                  mode:LIBSSH2_SFTP_S_IRUSR|LIBSSH2_SFTP_S_IWUSR|LIBSSH2_SFTP_S_IRGRP|LIBSSH2_SFTP_S_IROTH];
+    
+    // Get information about the file to copy.
+    NMSFTPFile *file = [self infoForFileAtPath:fromPath];
+    if (!file) {
+        NMSSHLogWarn(@"contentsAtPath:progress: failed to get file attributes");
+        return NO;
+    }
+    
+    char buffer[kNMSSHBufferSize];
+    NSMutableData *data = [[NSMutableData alloc] init];
+    ssize_t rc;
+    off_t copied = 0;
+    while ((rc = libssh2_sftp_read(fromHandle, buffer, (ssize_t)sizeof(buffer))) > 0) {
+        [data appendBytes:buffer length:rc];
+        libssh2_sftp_write(toHandle, (const char *)buffer, (NSInteger)rc);
+        copied += rc;
+        if (progress && !progress((NSUInteger)copied, (NSUInteger)[file.fileSize integerValue])) {
+            libssh2_sftp_close(fromHandle);
+            libssh2_sftp_close(toHandle);
+            return NO;
+        }
+    }
+    
+    libssh2_sftp_close(fromHandle);
+    libssh2_sftp_close(toHandle);
+    
     return YES;
 }
 

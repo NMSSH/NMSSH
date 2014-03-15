@@ -252,4 +252,12 @@
  */
 - (BOOL)appendStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path;
 
+/**
+ Copy a file remotely.
+ 
+ @param fromPath Path to copy from
+ @param toPath Path to copy to
+ */
+- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger copied, NSUInteger totalBytes))progress;
+
 @end
