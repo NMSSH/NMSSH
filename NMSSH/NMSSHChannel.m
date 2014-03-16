@@ -347,7 +347,7 @@
                        }
                    }
                    else if (erc > 0) {
-                       NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
+                       NSData *data = [[NSData alloc] initWithBytes:buffer length:erc];
                        NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
                        if (response && self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadError:)]) {
