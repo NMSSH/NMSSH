@@ -329,11 +329,21 @@
         ssize_t rc, erc=0;
         char buffer[self.bufferSize];
 
-        while (self.channel != NULL &&
-               ((rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0 ||
-                (erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0)) {
+        while (self.channel != NULL) {
 
-                   if (rc > 0) {
+                   rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer));
+                   erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer));
+
+                   if (!(rc >=0 || erc >= 0)) {
+                       NMSSHLogVerbose(@"Return code of response %ld, error %ld", (long)rc, (long)erc);
+
+                       if (rc == LIBSSH2_ERROR_SOCKET_RECV || erc == LIBSSH2_ERROR_SOCKET_RECV) {
+                           NMSSHLogVerbose(@"Error received, closing channel...");
+                           [self closeShell];
+                       }
+                       return;
+                   }
+                   else if (rc > 0) {
                        NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
                        NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                        [self setLastResponse:[response copy]];
