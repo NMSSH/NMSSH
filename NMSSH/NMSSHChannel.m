@@ -341,7 +341,7 @@
                            NMSSHLogVerbose(@"Error received, closing channel...");
                            [self closeShell];
                        }
-                       return ;
+                       return;
                    }
                    else if (rc > 0) {
                        NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
