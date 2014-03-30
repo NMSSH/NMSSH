@@ -63,4 +63,6 @@
  */
 - (void)sftp:(NMSFTP *)sftp didWriteContentsToFileAtPath:(NSString *)path;
 
+- (void)sftp:(NMSFTP *)sftp didFailWithError:(NSError *)error;
+
 @end

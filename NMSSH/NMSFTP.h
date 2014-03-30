@@ -59,13 +59,21 @@
 /// ----------------------------------------------------------------------------
 
 /**
- Move or rename an item
+ Move or rename an item.
 
  @param sourcePath Item to move
  @param destPath Destination to move to
  @returns Move success
  */
 - (BOOL)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath;
+
+/**
+ Execute method moveItemAtPath:toPath: asynchronously.
+ 
+ @param sourcePath Item to move
+ @param destPath Destination to move to
+ */
+- (void)asyncMoveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath;
 
 /// ----------------------------------------------------------------------------
 /// @name Manipulate directories
