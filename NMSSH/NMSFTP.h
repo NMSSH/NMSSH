@@ -11,6 +11,13 @@
 /** Property that keeps track of connection status to the server */
 @property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
+/**
+ The receiver’s `delegate`.
+ 
+ You can use the `delegate` to receive asynchronous callbacks.
+ */
+@property (nonatomic, weak) id<NMSFTPDelegate> delegate;
+
 ///-----------------------------------------------------------------------------
 /// @name Initializer
 /// ----------------------------------------------------------------------------
