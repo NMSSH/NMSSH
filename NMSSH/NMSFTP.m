@@ -71,20 +71,17 @@ static const char *QueueName = "NMSFTPQueue";
     return libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]) == 0;
 }
 
-- (void)asyncMoveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath {
+- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath completionHandler:(void (^)(BOOL))completionHandler {
     dispatch_queue_t queue = dispatch_queue_create(QueueName, NULL);
     dispatch_async(queue, ^{
         BOOL success = [self moveItemAtPath:sourcePath toPath:destPath];
         // Make delegate callback on the main queue. This allows the delegate
         // to update the UI.
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (success && [_delegate respondsToSelector:@selector(sftp:didMoveItemAtPath:toPath:)]) {
-                [_delegate sftp:self didMoveItemAtPath:sourcePath toPath:destPath];
-            } else if (!success && [_delegate respondsToSelector:@selector(sftp:didFailWithError:)]) {
-                
-                    [_delegate sftp:self didFailWithError:nil /* @todo */];
-            }
-        });
+        if (completionHandler) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(success);
+            });
+        }
     });
 }
 

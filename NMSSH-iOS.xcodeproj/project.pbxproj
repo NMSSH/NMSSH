@@ -22,7 +22,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		07A5492018E7C48A00B90897 /* NMSFTPDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A5491F18E7C48A00B90897 /* NMSFTPDelegate.h */; };
 		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
 		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
 		18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -122,7 +121,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		07A5491F18E7C48A00B90897 /* NMSFTPDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPDelegate.h; sourceTree = "<group>"; };
 		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
@@ -308,7 +306,6 @@
 		18A0967817D6AA64008B76FB /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				07A5491F18E7C48A00B90897 /* NMSFTPDelegate.h */,
 				18A0967917D6AA64008B76FB /* NMSSHChannelDelegate.h */,
 				18A0967A17D6AA64008B76FB /* NMSSHSessionDelegate.h */,
 			);
@@ -483,7 +480,6 @@
 				18A096EF17D6AA7B008B76FB /* ecdh.h in Headers */,
 				18A096F017D6AA7B008B76FB /* ecdsa.h in Headers */,
 				18A096F117D6AA7B008B76FB /* engine.h in Headers */,
-				07A5492018E7C48A00B90897 /* NMSFTPDelegate.h in Headers */,
 				18A096F217D6AA7B008B76FB /* err.h in Headers */,
 				18A096F317D6AA7B008B76FB /* evp.h in Headers */,
 				18A096F417D6AA7B008B76FB /* hmac.h in Headers */,

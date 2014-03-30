@@ -11,13 +11,6 @@
 /** Property that keeps track of connection status to the server */
 @property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
-/**
- The receiver’s `delegate`.
- 
- You can use the `delegate` to receive asynchronous callbacks.
- */
-@property (nonatomic, weak) id<NMSFTPDelegate> delegate;
-
 ///-----------------------------------------------------------------------------
 /// @name Initializer
 /// ----------------------------------------------------------------------------
@@ -73,7 +66,7 @@
  @param sourcePath Item to move
  @param destPath Destination to move to
  */
-- (void)asyncMoveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath;
+- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath completionHandler:(void (^)(BOOL success))completionHandler;
 
 /// ----------------------------------------------------------------------------
 /// @name Manipulate directories

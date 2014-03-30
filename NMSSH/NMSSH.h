@@ -5,7 +5,6 @@
 
 #import "NMSSHSessionDelegate.h"
 #import "NMSSHChannelDelegate.h"
-#import "NMSFTPDelegate.h"
 
 #import "NMSSHSession.h"
 #import "NMSSHChannel.h"
