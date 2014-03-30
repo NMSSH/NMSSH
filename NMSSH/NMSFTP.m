@@ -9,8 +9,7 @@
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
 @end
 
-// Queue name that is shared between all async calls to ensure multithread
-// safety.
+// Queue name that is shared between all async calls to ensure thread safety.
 static const char *QueueName = "NMSFTPQueue";
 
 @implementation NMSFTP
