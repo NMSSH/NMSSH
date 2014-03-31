@@ -66,7 +66,9 @@
  @param sourcePath Item to move
  @param destPath Destination to move to
  */
-- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath completionHandler:(void (^)(BOOL success))completionHandler;
+- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath
+               success:(void (^)(BOOL success))success
+               failure:(void (^)(NSError *error))failure;
 
 /// ----------------------------------------------------------------------------
 /// @name Manipulate directories
@@ -82,6 +84,10 @@
  */
 - (BOOL)directoryExistsAtPath:(NSString *)path;
 
+- (void)directoryExistsAtPath:(NSString *)path
+                      success:(void (^)(BOOL success))success
+                      failure:(void (^)(NSError *error))failure;
+
 /**
  Create a directory at path
 
@@ -89,6 +95,10 @@
  @returns Creation success
  */
 - (BOOL)createDirectoryAtPath:(NSString *)path;
+
+- (void)createDirectoryAtPath:(NSString *)path
+                      success:(void (^)(BOOL success))success
+                      failure:(void (^)(NSError *error))failure;
 
 /**
  Remove directory at path
@@ -98,6 +108,10 @@
  */
 - (BOOL)removeDirectoryAtPath:(NSString *)path;
 
+- (void)removeDirectoryAtPath:(NSString *)path
+                      success:(void (^)(BOOL success))success
+                      failure:(void (^)(NSError *error))failure;
+
 /**
  Get a list of files for a directory path
 
@@ -105,6 +119,10 @@
  @returns List of relative paths
  */
 - (NSArray *)contentsOfDirectoryAtPath:(NSString *)path;
+
+- (void)contentsOfDirectoryAtPath:(NSString *)path
+                          success:(void (^)(NSArray *contents))success
+                          failure:(void (^)(NSError *error))failure;
 
 /// ----------------------------------------------------------------------------
 /// @name Manipulate symlinks and files
@@ -118,6 +136,10 @@
  */
 - (NMSFTPFile *)infoForFileAtPath:(NSString *)path;
 
+- (void)infoForFileAtPath:(NSString *)path
+                  success:(void (^)(NMSFTPFile *file))success
+                  failure:(void (^)(NSError *error))failure;
+
 /**
  Test if a file exists at the specified path.
 
@@ -128,6 +150,10 @@
  */
 - (BOOL)fileExistsAtPath:(NSString *)path;
 
+- (void)fileExistsAtPath:(NSString *)path
+                 success:(void (^)(BOOL exists))success
+                 failure:(void (^)(NSError *error))failure;
+
 /**
  Create a symbolic link
 
@@ -135,8 +161,11 @@
  @param destPath Path the link will be created at
  @returns Creation success
  */
-- (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath
-             withDestinationPath:(NSString *)destPath;
+- (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath withDestinationPath:(NSString *)destPath;
+
+- (void)createSymbolicLinkAtPath:(NSString *)linkPath withDestinationPath:(NSString *)destPath
+                         success:(void (^)(BOOL success))success
+                         failure:(void (^)(NSError *error))failure;
 
 /**
  Remove file at path
@@ -146,6 +175,10 @@
  */
 - (BOOL)removeFileAtPath:(NSString *)path;
 
+- (void)removeFileAtPath:(NSString *)path
+                 success:(void (^)(BOOL success))success
+                 failure:(void (^)(NSError *error))failure;
+
 /**
  Read the contents of a file
 
@@ -153,6 +186,10 @@
  @returns File contents
  */
 - (NSData *)contentsAtPath:(NSString *)path;
+
+- (void)contentsAtPath:(NSString *)path
+               success:(void (^)(NSData *contents))success
+               failure:(void (^)(NSError *error))failure;
 
 /**
  Refer to contentsAtPath:
@@ -164,7 +201,13 @@
         Returns NO to abort. 
  @returns File contents
  */
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger got, NSUInteger totalBytes))progress;
+- (NSData *)contentsAtPath:(NSString *)path
+                  progress:(BOOL (^)(NSUInteger got, NSUInteger totalBytes))progress;
+
+- (void)contentsAtPath:(NSString *)path
+              progress:(BOOL (^)(NSUInteger got, NSUInteger totalBytes))progress
+               success:(void (^)(NSData *contents))success
+               failure:(void (^)(NSError *error))failure;
 
 /**
  Overwrite the contents of a file
@@ -176,6 +219,10 @@
  @returns Write success
  */
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path;
+
+- (void)writeContents:(NSString *)path toFileAtPath:(NSString *)path
+              success:(void (^)(BOOL success))success
+              failure:(void (^)(NSError *error))failure;
 
 /**
  Refer to writeContents:toFileAtPath:
@@ -190,6 +237,11 @@
  */
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
 
+- (void)writeContents:(NSString *)path toFileAtPath:(NSString *)path
+             progress:(BOOL (^)(NSUInteger sent))progress
+              success:(void (^)(BOOL success))success
+              failure:(void (^)(NSError *error))failure;
+
 /**
  Overwrite the contents of a file
 
@@ -200,6 +252,10 @@
  @returns Write success
  */
 - (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path;
+
+- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path
+                success:(void (^)(BOOL success))success
+                failure:(void (^)(NSError *error))failure;
 
 /**
  Refer to writeFileAtPath:toFileAtPath:
@@ -212,7 +268,13 @@
         Returns NO to abort.
  @returns Write success
  */
-- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
+- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path
+               progress:(BOOL (^)(NSUInteger sent))progress;
+
+- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path
+               progress:(BOOL (^)(NSUInteger sent))progress
+                success:(void (^)(BOOL success))success
+                failure:(void (^)(NSError *error))failure;
 
 /**
  Overwrite the contents of a file
@@ -224,6 +286,10 @@
  @returns Write success
  */
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path;
+
+- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path
+                success:(void (^)(BOOL success))success
+                failure:(void (^)(NSError *error))failure;
 
 /**
  Refer to writeStream:toFileAtPath:
@@ -237,6 +303,11 @@
  @returns Write success
  */
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger sent))progress;
+
+- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path
+           progress:(BOOL (^)(NSUInteger sent))progress
+            success:(void (^)(BOOL success))success
+            failure:(void (^)(NSError *error))failure;
 
 /**
  Append contents to the end of a file
@@ -266,6 +337,12 @@
  @param fromPath Path to copy from
  @param toPath Path to copy to
  */
-- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger copied, NSUInteger totalBytes))progress;
+- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath
+                  progress:(BOOL (^)(NSUInteger copied, NSUInteger totalBytes))progress;
+
+- (void)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath
+                  progress:(BOOL (^)(NSUInteger copied, NSUInteger totalBytes))progress
+                   success:(void (^)(BOOL success))success
+                   failure:(void (^)(NSError *error))failure;
 
 @end

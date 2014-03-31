@@ -22,6 +22,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		07A5492818E9D36500B90897 /* NSError+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A5492618E9D36500B90897 /* NSError+Additions.h */; };
+		07A5492918E9D36500B90897 /* NSError+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A5492718E9D36500B90897 /* NSError+Additions.m */; };
 		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
 		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
 		18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -121,6 +123,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07A5492618E9D36500B90897 /* NSError+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSError+Additions.h"; path = "Categories/NSError+Additions.h"; sourceTree = "<group>"; };
+		07A5492718E9D36500B90897 /* NSError+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSError+Additions.m"; path = "Categories/NSError+Additions.m"; sourceTree = "<group>"; };
 		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
@@ -237,6 +241,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07A5492518E9D35500B90897 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				07A5492618E9D36500B90897 /* NSError+Additions.h */,
+				07A5492718E9D36500B90897 /* NSError+Additions.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
 		18A0962217D6A85F008B76FB = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +288,7 @@
 				E46F9E20188AC7010056E5DB /* NMSFTPFile.m */,
 				18A0966F17D6AA51008B76FB /* NMSSHSession.h */,
 				18A0967017D6AA51008B76FB /* NMSSHSession.m */,
+				07A5492518E9D35500B90897 /* Categories */,
 				18A0967D17D6AA7B008B76FB /* Libraries */,
 				18A0967817D6AA64008B76FB /* Protocols */,
 				18A0966317D6AA3D008B76FB /* Config */,
@@ -525,6 +539,7 @@
 				18A0971D17D6AA7B008B76FB /* whrlpool.h in Headers */,
 				18A0971E17D6AA7B008B76FB /* x509.h in Headers */,
 				18A0971F17D6AA7B008B76FB /* x509_vfy.h in Headers */,
+				07A5492818E9D36500B90897 /* NSError+Additions.h in Headers */,
 				18A0972017D6AA7B008B76FB /* x509v3.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -629,6 +644,7 @@
 				18A0967217D6AA51008B76FB /* NMSFTP.m in Sources */,
 				18A0967517D6AA51008B76FB /* NMSSHChannel.m in Sources */,
 				18F1A2D318158D78000635AB /* NMSSHLogger.m in Sources */,
+				07A5492918E9D36500B90897 /* NSError+Additions.m in Sources */,
 				18A0967717D6AA51008B76FB /* NMSSHSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

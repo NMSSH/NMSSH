@@ -1,5 +1,6 @@
 #import "NMSFTP.h"
 #import "NMSSH+Protected.h"
+#import "NSError+Additions.h"
 
 @interface NMSFTP ()
 @property (nonatomic, strong) NMSSHSession *session;
@@ -71,15 +72,19 @@ static const char *QueueName = "NMSFTPQueue";
     return libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]) == 0;
 }
 
-- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath completionHandler:(void (^)(BOOL))completionHandler {
+- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
     dispatch_queue_t queue = dispatch_queue_create(QueueName, NULL);
     dispatch_async(queue, ^{
-        BOOL success = [self moveItemAtPath:sourcePath toPath:destPath];
-        // Make delegate callback on the main queue. This allows the delegate
-        // to update the UI.
-        if (completionHandler) {
+        BOOL ret = [self moveItemAtPath:sourcePath toPath:destPath];
+        // Perform delegate callbacks on main queue to allow delegate to update UI.
+        if (ret && success) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                completionHandler(success);
+                success(ret);
+            });
+        } else if (!ret && failure) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSError *error = [NSError NMSFTPErrorWithCode:libssh2_sftp_last_error(self.sftpSession)];
+                failure(error);
             });
         }
     });
