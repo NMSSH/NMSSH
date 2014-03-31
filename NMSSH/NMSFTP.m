@@ -1,17 +1,19 @@
 #import "NMSFTP.h"
 #import "NMSSH+Protected.h"
-#import "NSError+Additions.h"
 
 @interface NMSFTP ()
+
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
+
+/** Queue used for asynchronous requests. */
+@property (nonatomic, strong) dispatch_queue_t queue;
+
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
-@end
 
-// Queue name that is shared between all async calls to ensure thread safety.
-static const char *QueueName = "NMSFTPQueue";
+@end
 
 @implementation NMSFTP
 
@@ -34,6 +36,8 @@ static const char *QueueName = "NMSFTPQueue";
         if (![session isKindOfClass:[NMSSHSession class]]) {
             @throw @"You have to provide a valid NMSSHSession!";
         }
+        
+        self.queue = dispatch_queue_create("NMSFTPQueue", NULL);
     }
 
     return self;
@@ -73,8 +77,7 @@ static const char *QueueName = "NMSFTPQueue";
 }
 
 - (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_queue_t queue = dispatch_queue_create(QueueName, NULL);
-    dispatch_async(queue, ^{
+    dispatch_async(self.queue, ^{
         BOOL ret = [self moveItemAtPath:sourcePath toPath:destPath];
         // Perform delegate callbacks on main queue to allow delegate to update UI.
         if (ret && success) {
@@ -83,8 +86,7 @@ static const char *QueueName = "NMSFTPQueue";
             });
         } else if (!ret && failure) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSError *error = [NSError NMSFTPErrorWithCode:libssh2_sftp_last_error(self.sftpSession)];
-                failure(error);
+                failure(self.session.lastError);
             });
         }
     });
