@@ -327,7 +327,7 @@
  @param success Method called when the process succeeds
  @param failure Method called when the process fails
  */
-- (void)writeContents:(NSString *)path toFileAtPath:(NSString *)path
+- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path
               success:(void (^)(BOOL success))success
               failure:(void (^)(NSError *error))failure;
 
@@ -356,7 +356,7 @@
  @param success Method called when the process succeeds
  @param failure Method called when the process fails
  */
-- (void)writeContents:(NSString *)path toFileAtPath:(NSString *)path
+- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path
              progress:(BOOL (^)(NSUInteger sent))progress
               success:(void (^)(BOOL success))success
               failure:(void (^)(NSError *error))failure;

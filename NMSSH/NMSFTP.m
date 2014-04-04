@@ -7,8 +7,17 @@
 @property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
 
-/** Queue used for asynchronous requests. */
+/**
+ Queue used for asynchronous requests.
+ 
+ Note: GCD objects are not managed by ARC until iOS 6. Therefore, GCD objects
+ must be managed by us manually if building for iOS 5.
+ */
+#if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong) dispatch_queue_t queue;
+#else
+@property (nonatomic, assign) dispatch_queue_t queue;
+#endif
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
@@ -37,11 +46,19 @@
             @throw @"You have to provide a valid NMSSHSession!";
         }
         
-        self.queue = dispatch_queue_create("NMSFTPQueue", NULL);
+        self.queue = dispatch_queue_create("NMSFTPQueue", DISPATCH_QUEUE_SERIAL);
     }
 
     return self;
 }
+
+#if !(OS_OBJECT_USE_OBJC)
+- (void)dealloc {
+    if (self.queue) {
+        dispatch_release(self.queue);
+    }
+}
+#endif
 
 // -----------------------------------------------------------------------------
 #pragma mark - CONNECTION
@@ -374,6 +391,10 @@
     return [self contentsAtPath:path progress:nil];
 }
 
+- (void)contentsAtPath:(NSString *)path success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
+    // @todo
+}
+
 - (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
 
@@ -409,24 +430,48 @@
     return [data copy];
 }
 
+- (void)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
+    // @todo
+}
+
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
     return [self writeContents:contents toFileAtPath:path progress:nil];
+}
+
+- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
     return [self writeStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path progress:progress];
 }
 
+- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
+}
+
 - (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path {
     return [self writeFileAtPath:localPath toFileAtPath:path progress:nil];
+}
+
+- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
 }
 
 - (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
     return [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath] toFileAtPath:path progress:progress];
 }
 
+- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
+}
+
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
     return [self writeStream:inputStream toFileAtPath:path progress:nil];
+}
+
+- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
@@ -454,6 +499,10 @@
     [inputStream close];
 
     return success;
+}
+
+- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
+    // @todo
 }
 
 - (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
