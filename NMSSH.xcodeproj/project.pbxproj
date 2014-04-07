@@ -34,7 +34,6 @@
 		E4D99AA215DE15A600EB5615 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D99AA115DE15A600EB5615 /* libcrypto.dylib */; };
 		E4D99AA415DE15B300EB5615 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D99AA315DE15B300EB5615 /* libz.dylib */; };
 		E4E96D88158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
-		E4E96D9E158E10FD002E6E0A /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D9D158E10FD002E6E0A /* SenTestingKit.framework */; };
 		E4E96D9F158E10FD002E6E0A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D87158E10FD002E6E0A /* Cocoa.framework */; };
 		E4E96DA2158E10FD002E6E0A /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96D84158E10FD002E6E0A /* NMSSH.framework */; };
 		E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E96DD9158FD65D002E6E0A /* YAML.framework */; };
@@ -110,8 +109,7 @@
 		E4E96D8F158E10FD002E6E0A /* NMSSH-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NMSSH-Info.plist"; sourceTree = "<group>"; };
 		E4E96D93158E10FD002E6E0A /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
 		E4E96D94158E10FD002E6E0A /* NMSSH.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSH.h; sourceTree = "<group>"; };
-		E4E96D9C158E10FD002E6E0A /* NMSSHTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSHTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4E96D9D158E10FD002E6E0A /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		E4E96D9C158E10FD002E6E0A /* NMSSHTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSHTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E96DA5158E10FD002E6E0A /* NMSSHTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NMSSHTests-Info.plist"; sourceTree = "<group>"; };
 		E4E96DD9158FD65D002E6E0A /* YAML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = YAML.framework; sourceTree = "<group>"; };
 		E4E96DDB158FD6B6002E6E0A /* config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = config.yml; sourceTree = "<group>"; };
@@ -141,7 +139,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E96D9E158E10FD002E6E0A /* SenTestingKit.framework in Frameworks */,
 				E4E96D9F158E10FD002E6E0A /* Cocoa.framework in Frameworks */,
 				E4E96DA2158E10FD002E6E0A /* NMSSH.framework in Frameworks */,
 				E4E96DDA158FD65D002E6E0A /* YAML.framework in Frameworks */,
@@ -210,7 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				E4E96D84158E10FD002E6E0A /* NMSSH.framework */,
-				E4E96D9C158E10FD002E6E0A /* NMSSHTests.octest */,
+				E4E96D9C158E10FD002E6E0A /* NMSSHTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -219,7 +216,6 @@
 			isa = PBXGroup;
 			children = (
 				E4E96D87158E10FD002E6E0A /* Cocoa.framework */,
-				E4E96D9D158E10FD002E6E0A /* SenTestingKit.framework */,
 				E4D99AA315DE15B300EB5615 /* libz.dylib */,
 				E4D99AA115DE15A600EB5615 /* libcrypto.dylib */,
 				E4D99A9C15DE149D00EB5615 /* libssl.dylib */,
@@ -383,8 +379,8 @@
 			);
 			name = NMSSHTests;
 			productName = NMSSHTests;
-			productReference = E4E96D9C158E10FD002E6E0A /* NMSSHTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = E4E96D9C158E10FD002E6E0A /* NMSSHTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -392,6 +388,7 @@
 		E4E96D7A158E10FD002E6E0A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = E4E96D7D158E10FD002E6E0A /* Build configuration list for PBXProject "NMSSH" */;
@@ -595,8 +592,8 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/NMSSHTests/Settings/lib\"",
+					"$(inherited)",
 				);
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -607,7 +604,6 @@
 					"\"$(SRCROOT)/NMSSH/libssh2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -616,8 +612,8 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/NMSSHTests/Settings/lib\"",
+					"$(inherited)",
 				);
 				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -628,7 +624,6 @@
 					"\"$(SRCROOT)/NMSSH/libssh2\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

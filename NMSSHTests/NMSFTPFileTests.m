@@ -1,7 +1,7 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 #import "NMSFTPFile.h"
 
-@interface NMSFTPFileTests : SenTestCase
+@interface NMSFTPFileTests : XCTestCase
 
 @end
 
@@ -18,9 +18,9 @@
  Tests whether the filename attribute is correct after initialization.
  */
 - (void)testInitialization {
-    STAssertEqualObjects(_file.filename, @"test.txt", @"Filename attribut has not been set");
+    XCTAssertEqualObjects(_file.filename, @"test.txt", @"Filename attribut has not been set");
     NMSFTPFile *anotherFile = [NMSFTPFile fileWithName:@"test.txt"];
-    STAssertEqualObjects(anotherFile.filename, @"test.txt", @"Filename attribut has not been set");
+    XCTAssertEqualObjects(anotherFile.filename, @"test.txt", @"Filename attribut has not been set");
 }
 
 /**
@@ -30,7 +30,7 @@
     LIBSSH2_SFTP_ATTRIBUTES attributes;
     attributes.permissions = 33188;
     [_file populateValuesFromSFTPAttributes:attributes];
-    STAssertEqualObjects(_file.permissions, @"-rw-r--r--", @"The symbolic permissions notation is not correct.");
+    XCTAssertEqualObjects(_file.permissions, @"-rw-r--r--", @"The symbolic permissions notation is not correct.");
 }
 
 @end

@@ -45,7 +45,7 @@
 // -----------------------------------------------------------------------------
 
 - (void)testConnectWithValidSession {
-    STAssertTrue([sftp isConnected], @"Test that connection worked");
+    XCTAssertTrue([sftp isConnected], @"Test that connection worked");
 }
 
 // -----------------------------------------------------------------------------
@@ -59,16 +59,16 @@
     NSString *destPath = [NSString stringWithFormat:@"%@mvdir_test",
                              [settings objectForKey:@"writable_dir"]];
 
-    STAssertTrue([sftp createDirectoryAtPath:path],
+    XCTAssertTrue([sftp createDirectoryAtPath:path],
                  @"Try to create directory at valid path");
 
-    STAssertTrue([sftp directoryExistsAtPath:path],
+    XCTAssertTrue([sftp directoryExistsAtPath:path],
                   @"Directory exists at path");
 
-    STAssertTrue([sftp moveItemAtPath:path toPath:destPath],
+    XCTAssertTrue([sftp moveItemAtPath:path toPath:destPath],
                  @"Try to move a directory");
 
-    STAssertTrue([sftp removeDirectoryAtPath:destPath],
+    XCTAssertTrue([sftp removeDirectoryAtPath:destPath],
                  @"Try to remove directory");
 }
 
@@ -76,7 +76,7 @@
     NSString *path = [NSString stringWithFormat:@"%@mkdir_test",
                       [settings objectForKey:@"non_writable_dir"]];
 
-    STAssertFalse([sftp createDirectoryAtPath:path],
+    XCTAssertFalse([sftp createDirectoryAtPath:path],
                   @"Try to create directory at invalid path");
 }
 
@@ -109,7 +109,7 @@
                          [NMSFTPFile fileWithName:@"e.txt"],
                          [NMSFTPFile fileWithName:@"f.txt"]];
     
-    STAssertEqualObjects([sftp contentsOfDirectoryAtPath:baseDir], entries,
+    XCTAssertEqualObjects([sftp contentsOfDirectoryAtPath:baseDir], entries,
                          @"Get a list of directory entries");
 
     // Cleanup subdirs
@@ -139,11 +139,11 @@
     // Create symlink
     NSString *linkPath = [NSString stringWithFormat:@"%@symlink_test",
                              [settings objectForKey:@"writable_dir"]];
-    STAssertTrue([sftp createSymbolicLinkAtPath:linkPath
+    XCTAssertTrue([sftp createSymbolicLinkAtPath:linkPath
                             withDestinationPath:path], @"Create symbolic link");
 
     // Remove symlink
-    STAssertTrue([sftp removeFileAtPath:linkPath], @"Remove symlink");
+    XCTAssertTrue([sftp removeFileAtPath:linkPath], @"Remove symlink");
 
     // Cleanup
     [sftp removeDirectoryAtPath:path];
@@ -158,50 +158,50 @@
     NSMutableData *contents = [[@"Hello World" dataUsingEncoding:NSUTF8StringEncoding]
                                mutableCopy];
 
-    STAssertTrue([sftp writeContents:contents toFileAtPath:path],
+    XCTAssertTrue([sftp writeContents:contents toFileAtPath:path],
                  @"Write contents to file");
 
-    STAssertEqualObjects([sftp contentsAtPath:path], contents,
+    XCTAssertEqualObjects([sftp contentsAtPath:path], contents,
                          @"Read contents at path");
 
     NSData *moreContents = [@"\nBye!" dataUsingEncoding:NSUTF8StringEncoding];
-    STAssertTrue([sftp appendContents:moreContents toFileAtPath:path],
+    XCTAssertTrue([sftp appendContents:moreContents toFileAtPath:path],
                  @"Append contents to the end of a file");
 
     [contents appendData:moreContents];
-    STAssertEqualObjects([sftp contentsAtPath:path], contents,
+    XCTAssertEqualObjects([sftp contentsAtPath:path], contents,
                          @"Read appended contents at path");
 
-    STAssertTrue([sftp moveItemAtPath:path toPath:destPath], @"Move a file");
+    XCTAssertTrue([sftp moveItemAtPath:path toPath:destPath], @"Move a file");
 
-    STAssertTrue([sftp fileExistsAtPath:destPath], @"File exists at path");
-    STAssertFalse([sftp fileExistsAtPath:[settings objectForKey:@"writable_dir"]],
+    XCTAssertTrue([sftp fileExistsAtPath:destPath], @"File exists at path");
+    XCTAssertFalse([sftp fileExistsAtPath:[settings objectForKey:@"writable_dir"]],
                   @"Should return false if a directory is provided");
 
-    STAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
+    XCTAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
 }
 
 -(void)testRetrievingFileInfo {
     NSString *destPath = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent: @"file_test.txt"];
     NSString *destDirectoryPath = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent: @"directory_test"];
-    STAssertTrue([sftp writeContents:[@"test" dataUsingEncoding:NSUTF8StringEncoding] toFileAtPath:destPath],@"Write contents to file");
-    STAssertTrue([sftp createDirectoryAtPath:destDirectoryPath], @"Couldn't create directory");
+    XCTAssertTrue([sftp writeContents:[@"test" dataUsingEncoding:NSUTF8StringEncoding] toFileAtPath:destPath],@"Write contents to file");
+    XCTAssertTrue([sftp createDirectoryAtPath:destDirectoryPath], @"Couldn't create directory");
     
     NMSFTPFile *fileInfo = [sftp infoForFileAtPath:destPath];
-    STAssertNotNil(fileInfo, @"Couldn't retrieve file info");
-    STAssertNotNil(fileInfo.filename, @"Couldn't retrieve filename");
-    STAssertNotNil(fileInfo.fileSize, @"Couldn't retrieve file size");
-    STAssertNotNil(fileInfo.permissions, @"Couldn't retrieve permissions");
-    STAssertNotNil(fileInfo.modificationDate, @"Couldn't retrieve modification date");
-    STAssertTrue(fileInfo.ownerGroupID > 0, @"Couldn't retrieve owner group ID");
-    STAssertTrue(fileInfo.ownerUserID > 0, @"Couldn't retrieve owner user ID");
-    STAssertFalse(fileInfo.isDirectory, @"File isn't a driectory");
+    XCTAssertNotNil(fileInfo, @"Couldn't retrieve file info");
+    XCTAssertNotNil(fileInfo.filename, @"Couldn't retrieve filename");
+    XCTAssertNotNil(fileInfo.fileSize, @"Couldn't retrieve file size");
+    XCTAssertNotNil(fileInfo.permissions, @"Couldn't retrieve permissions");
+    XCTAssertNotNil(fileInfo.modificationDate, @"Couldn't retrieve modification date");
+    XCTAssertTrue(fileInfo.ownerGroupID > 0, @"Couldn't retrieve owner group ID");
+    XCTAssertTrue(fileInfo.ownerUserID > 0, @"Couldn't retrieve owner user ID");
+    XCTAssertFalse(fileInfo.isDirectory, @"File isn't a driectory");
     
     NMSFTPFile *directoryInfo = [sftp infoForFileAtPath:destDirectoryPath];
-    STAssertTrue(directoryInfo.isDirectory, @"Target file is a directory");
+    XCTAssertTrue(directoryInfo.isDirectory, @"Target file is a directory");
     
-    STAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
-    STAssertTrue([sftp removeDirectoryAtPath:destDirectoryPath], @"Remove directory");
+    XCTAssertTrue([sftp removeFileAtPath:destPath], @"Remove file");
+    XCTAssertTrue([sftp removeDirectoryAtPath:destDirectoryPath], @"Remove directory");
 }
 
 @end

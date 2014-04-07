@@ -56,7 +56,7 @@
 // -----------------------------------------------------------------------------
 
 - (void)testCreatingChannelWorks {
-    STAssertNoThrow(channel = [[NMSSHChannel alloc] initWithSession:session],
+    XCTAssertNoThrow(channel = [[NMSSHChannel alloc] initWithSession:session],
                     @"Setting up channel does not throw exception");
 }
 
@@ -64,11 +64,11 @@
     channel = [[NMSSHChannel alloc] initWithSession:session];
 
     NSError *error = nil;
-    STAssertNoThrow([channel execute:[settings objectForKey:@"execute_command"]
+    XCTAssertNoThrow([channel execute:[settings objectForKey:@"execute_command"]
                                error:&error],
                     @"Execution should not throw an exception");
 
-    STAssertEqualObjects([channel lastResponse],
+    XCTAssertEqualObjects([channel lastResponse],
                          [settings objectForKey:@"execute_expected_response"],
                          @"Execution returns the expected response");
 }
@@ -80,13 +80,13 @@
 - (void)testUploadingFileToWritableDirWorks {
     channel = [[NMSSHChannel alloc] initWithSession:session];
     NSString *dir = [settings objectForKey:@"writable_dir"];
-    STAssertTrue([dir hasSuffix:@"/"], @"Directory must end with a slash");
+    XCTAssertTrue([dir hasSuffix:@"/"], @"Directory must end with a slash");
 
     BOOL result;
-    STAssertNoThrow(result = [channel uploadFile:localFilePath to:dir],
+    XCTAssertNoThrow(result = [channel uploadFile:localFilePath to:dir],
                     @"Uploading file to writable dir doesn't throw exception");
 
-    STAssertTrue(result, @"Uploading to writable dir should work.");
+    XCTAssertTrue(result, @"Uploading to writable dir should work.");
 }
 
 - (void)testUploadingFileToNonWritableDirFails {
@@ -94,11 +94,11 @@
     NSString *dir = [settings objectForKey:@"non_writable_dir"];
 
     BOOL result;
-    STAssertNoThrow(result = [channel uploadFile:localFilePath to:dir],
+    XCTAssertNoThrow(result = [channel uploadFile:localFilePath to:dir],
                     @"Uploading file to non-writable dir doesn't throw"
                     @"exception");
 
-    STAssertFalse(result, @"Uploading to non-writable dir should not work.");
+    XCTAssertFalse(result, @"Uploading to non-writable dir should not work.");
 }
 
 - (void)testDownloadingExistingFileWorks {
@@ -108,11 +108,11 @@
     NSString *remoteFile = [[settings objectForKey:@"writable_dir"] stringByAppendingPathComponent:@"nmssh-test.txt"];
 
     BOOL result;
-    STAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
+    XCTAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
                     @"Downloading existing file doesn't throw exception");
 
-    STAssertTrue(result, @"Downloading existing file should work.");
-    STAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
+    XCTAssertTrue(result, @"Downloading existing file should work.");
+    XCTAssertTrue([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
                  @"A file has been created");
 }
 
@@ -124,11 +124,11 @@
                             [settings objectForKey:@"non_writable_dir"]];
 
     BOOL result;
-    STAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
+    XCTAssertNoThrow(result = [channel downloadFile:remoteFile to:localFilePath],
                     @"Downloading non-existing file doesn't throw exception");
 
-    STAssertFalse(result, @"Downloading non-existing file should not work.");
-    STAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
+    XCTAssertFalse(result, @"Downloading non-existing file should not work.");
+    XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:localFilePath],
                  @"A file has not been created");
 }
 
