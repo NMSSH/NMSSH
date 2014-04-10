@@ -16,26 +16,11 @@
 		18AE8FBC18BBEDD100AE0FC3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 18AE8FBA18BBEDD100AE0FC3 /* Main.storyboard */; };
 		18AE8FBF18BBEDD100AE0FC3 /* NMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AE8FBE18BBEDD100AE0FC3 /* NMViewController.m */; };
 		18AE8FC118BBEDD100AE0FC3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18AE8FC018BBEDD100AE0FC3 /* Images.xcassets */; };
-		18AE8FC818BBEDD100AE0FC3 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FC718BBEDD100AE0FC3 /* XCTest.framework */; };
-		18AE8FC918BBEDD100AE0FC3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FA818BBEDD000AE0FC3 /* Foundation.framework */; };
-		18AE8FCA18BBEDD100AE0FC3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FAC18BBEDD000AE0FC3 /* UIKit.framework */; };
-		18AE8FD218BBEDD100AE0FC3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 18AE8FD018BBEDD100AE0FC3 /* InfoPlist.strings */; };
-		18AE8FD418BBEDD100AE0FC3 /* PTYExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AE8FD318BBEDD100AE0FC3 /* PTYExampleTests.m */; };
 		18AE8FDE18BBF0A100AE0FC3 /* NMSSH.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FDD18BBF0A100AE0FC3 /* NMSSH.framework */; };
 		18AE8FE018BBF0C100AE0FC3 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FDF18BBF0C100AE0FC3 /* libz.dylib */; };
 		18AE8FE218BBF0C700AE0FC3 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FE118BBF0C700AE0FC3 /* CFNetwork.framework */; };
 		18AE8FE518BBF11B00AE0FC3 /* NMTerminalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18AE8FE418BBF11B00AE0FC3 /* NMTerminalViewController.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		18AE8FCB18BBEDD100AE0FC3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 18AE8F9D18BBEDD000AE0FC3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 18AE8FA418BBEDD000AE0FC3;
-			remoteInfo = PTYExample;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		18AE8FA518BBEDD000AE0FC3 /* PTYExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PTYExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,11 +37,7 @@
 		18AE8FBD18BBEDD100AE0FC3 /* NMViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMViewController.h; sourceTree = "<group>"; };
 		18AE8FBE18BBEDD100AE0FC3 /* NMViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NMViewController.m; sourceTree = "<group>"; };
 		18AE8FC018BBEDD100AE0FC3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		18AE8FC618BBEDD100AE0FC3 /* PTYExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PTYExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18AE8FC718BBEDD100AE0FC3 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		18AE8FCF18BBEDD100AE0FC3 /* PTYExampleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "PTYExampleTests-Info.plist"; sourceTree = "<group>"; };
-		18AE8FD118BBEDD100AE0FC3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		18AE8FD318BBEDD100AE0FC3 /* PTYExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTYExampleTests.m; sourceTree = "<group>"; };
 		18AE8FDD18BBF0A100AE0FC3 /* NMSSH.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NMSSH.framework; path = ../../Products/NMSSH.framework; sourceTree = "<group>"; };
 		18AE8FDF18BBF0C100AE0FC3 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		18AE8FE118BBF0C700AE0FC3 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -78,16 +59,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		18AE8FC318BBEDD100AE0FC3 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18AE8FC818BBEDD100AE0FC3 /* XCTest.framework in Frameworks */,
-				18AE8FCA18BBEDD100AE0FC3 /* UIKit.framework in Frameworks */,
-				18AE8FC918BBEDD100AE0FC3 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -95,7 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				18AE8FAE18BBEDD000AE0FC3 /* PTYExample */,
-				18AE8FCD18BBEDD100AE0FC3 /* PTYExampleTests */,
 				18AE8FA718BBEDD000AE0FC3 /* Frameworks */,
 				18AE8FA618BBEDD000AE0FC3 /* Products */,
 			);
@@ -105,7 +75,6 @@
 			isa = PBXGroup;
 			children = (
 				18AE8FA518BBEDD000AE0FC3 /* PTYExample.app */,
-				18AE8FC618BBEDD100AE0FC3 /* PTYExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -151,24 +120,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		18AE8FCD18BBEDD100AE0FC3 /* PTYExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				18AE8FD318BBEDD100AE0FC3 /* PTYExampleTests.m */,
-				18AE8FCE18BBEDD100AE0FC3 /* Supporting Files */,
-			);
-			path = PTYExampleTests;
-			sourceTree = "<group>";
-		};
-		18AE8FCE18BBEDD100AE0FC3 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				18AE8FCF18BBEDD100AE0FC3 /* PTYExampleTests-Info.plist */,
-				18AE8FD018BBEDD100AE0FC3 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -189,24 +140,6 @@
 			productReference = 18AE8FA518BBEDD000AE0FC3 /* PTYExample.app */;
 			productType = "com.apple.product-type.application";
 		};
-		18AE8FC518BBEDD100AE0FC3 /* PTYExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 18AE8FDA18BBEDD100AE0FC3 /* Build configuration list for PBXNativeTarget "PTYExampleTests" */;
-			buildPhases = (
-				18AE8FC218BBEDD100AE0FC3 /* Sources */,
-				18AE8FC318BBEDD100AE0FC3 /* Frameworks */,
-				18AE8FC418BBEDD100AE0FC3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				18AE8FCC18BBEDD100AE0FC3 /* PBXTargetDependency */,
-			);
-			name = PTYExampleTests;
-			productName = PTYExampleTests;
-			productReference = 18AE8FC618BBEDD100AE0FC3 /* PTYExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -214,13 +147,8 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NM;
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Nine Muses";
-				TargetAttributes = {
-					18AE8FC518BBEDD100AE0FC3 = {
-						TestTargetID = 18AE8FA418BBEDD000AE0FC3;
-					};
-				};
 			};
 			buildConfigurationList = 18AE8FA018BBEDD000AE0FC3 /* Build configuration list for PBXProject "PTYExample" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -236,7 +164,6 @@
 			projectRoot = "";
 			targets = (
 				18AE8FA418BBEDD000AE0FC3 /* PTYExample */,
-				18AE8FC518BBEDD100AE0FC3 /* PTYExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -249,14 +176,6 @@
 				18AE8FC118BBEDD100AE0FC3 /* Images.xcassets in Resources */,
 				18AE8FB318BBEDD000AE0FC3 /* InfoPlist.strings in Resources */,
 				18AE8FBC18BBEDD100AE0FC3 /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		18AE8FC418BBEDD100AE0FC3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18AE8FD218BBEDD100AE0FC3 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,23 +193,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		18AE8FC218BBEDD100AE0FC3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				18AE8FD418BBEDD100AE0FC3 /* PTYExampleTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		18AE8FCC18BBEDD100AE0FC3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 18AE8FA418BBEDD000AE0FC3 /* PTYExample */;
-			targetProxy = 18AE8FCB18BBEDD100AE0FC3 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		18AE8FB118BBEDD000AE0FC3 /* InfoPlist.strings */ = {
@@ -309,14 +212,6 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		18AE8FD018BBEDD100AE0FC3 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				18AE8FD118BBEDD100AE0FC3 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -324,7 +219,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -363,7 +257,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -426,48 +319,6 @@
 			};
 			name = Release;
 		};
-		18AE8FDB18BBEDD100AE0FC3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PTYExample.app/PTYExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PTYExample/PTYExample-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "PTYExampleTests/PTYExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		18AE8FDC18BBEDD100AE0FC3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/PTYExample.app/PTYExample";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "PTYExample/PTYExample-Prefix.pch";
-				INFOPLIST_FILE = "PTYExampleTests/PTYExampleTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -487,14 +338,7 @@
 				18AE8FD918BBEDD100AE0FC3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		18AE8FDA18BBEDD100AE0FC3 /* Build configuration list for PBXNativeTarget "PTYExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				18AE8FDB18BBEDD100AE0FC3 /* Debug */,
-				18AE8FDC18BBEDD100AE0FC3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
