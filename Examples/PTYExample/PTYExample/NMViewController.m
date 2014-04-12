@@ -7,6 +7,14 @@
 
 @implementation NMViewController
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.hostField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"host"];
+    self.usernameField.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"username"];
+    self.authenticationControl.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"auth"];
+}
+
 - (IBAction)authentication:(id)sender {
     self.passwordField.enabled = self.authenticationControl.selectedSegmentIndex == 0;
 }
@@ -27,6 +35,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"loginSegue"]) {
+        [[NSUserDefaults standardUserDefaults] setObject:self.hostField.text forKey:@"host"];
+        [[NSUserDefaults standardUserDefaults] setObject:self.usernameField.text forKey:@"username"];
+        [[NSUserDefaults standardUserDefaults] setObject:@(self.authenticationControl.selectedSegmentIndex) forKey:@"auth"];
+
         NMTerminalViewController *terminalController = [segue destinationViewController];
 
         terminalController.host = self.hostField.text;

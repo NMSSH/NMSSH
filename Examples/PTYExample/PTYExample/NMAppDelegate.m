@@ -4,6 +4,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+    [[NSUserDefaults standardUserDefaults] registerDefaults:@{ @"host": @"",
+                                                               @"username": @"",
+                                                               @"auth": @(0) }];
+
     // Override point for customization after application launch.
     return YES;
 }

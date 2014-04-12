@@ -72,7 +72,6 @@
 
                 self.session.channel.delegate = self;
                 self.session.channel.requestPty = YES;
-                self.session.channel.ptyTerminalType = NMSSHChannelPtyTerminalVT100;
 
                 NSError *error;
                 [self.session.channel startShell:&error];
