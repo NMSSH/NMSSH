@@ -7,6 +7,7 @@
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic) IBOutlet UITextView *textView;
 
+- (IBAction)connect:(id)sender;
 - (IBAction)disconnect:(id)sender;
 
 @end
