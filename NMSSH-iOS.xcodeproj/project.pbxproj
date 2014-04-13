@@ -23,6 +23,8 @@
 
 /* Begin PBXBuildFile section */
 		181AD83C18F6CE1500EBB779 /* opensslconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 181AD83B18F6CE1500EBB779 /* opensslconf.h */; };
+		186A28AC18FA9A04005A5B2D /* NMSSHQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 186A28AA18FA9A04005A5B2D /* NMSSHQueue.h */; };
+		186A28AD18FA9A04005A5B2D /* NMSSHQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 186A28AB18FA9A04005A5B2D /* NMSSHQueue.m */; };
 		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
 		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
 		18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -123,6 +125,8 @@
 
 /* Begin PBXFileReference section */
 		181AD83B18F6CE1500EBB779 /* opensslconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opensslconf.h; sourceTree = "<group>"; };
+		186A28AA18FA9A04005A5B2D /* NMSSHQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHQueue.h; sourceTree = "<group>"; };
+		186A28AB18FA9A04005A5B2D /* NMSSHQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHQueue.m; sourceTree = "<group>"; };
 		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
@@ -277,6 +281,8 @@
 				E46F9E20188AC7010056E5DB /* NMSFTPFile.m */,
 				18A0966F17D6AA51008B76FB /* NMSSHSession.h */,
 				18A0967017D6AA51008B76FB /* NMSSHSession.m */,
+				186A28AA18FA9A04005A5B2D /* NMSSHQueue.h */,
+				186A28AB18FA9A04005A5B2D /* NMSSHQueue.m */,
 				18A0967D17D6AA7B008B76FB /* Libraries */,
 				18A0967817D6AA64008B76FB /* Protocols */,
 				18A0966317D6AA3D008B76FB /* Config */,
@@ -506,6 +512,7 @@
 				18A0970617D6AA7B008B76FB /* pkcs7.h in Headers */,
 				18A0970717D6AA7B008B76FB /* pqueue.h in Headers */,
 				18A0970817D6AA7B008B76FB /* rand.h in Headers */,
+				186A28AC18FA9A04005A5B2D /* NMSSHQueue.h in Headers */,
 				18A0970917D6AA7B008B76FB /* rc2.h in Headers */,
 				18A0970A17D6AA7B008B76FB /* rc4.h in Headers */,
 				18A0970B17D6AA7B008B76FB /* ripemd.h in Headers */,
@@ -630,6 +637,7 @@
 			files = (
 				18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */,
 				E46F9E22188AC7010056E5DB /* NMSFTPFile.m in Sources */,
+				186A28AD18FA9A04005A5B2D /* NMSSHQueue.m in Sources */,
 				18A0967217D6AA51008B76FB /* NMSFTP.m in Sources */,
 				18A0967517D6AA51008B76FB /* NMSSHChannel.m in Sources */,
 				18F1A2D318158D78000635AB /* NMSSHLogger.m in Sources */,

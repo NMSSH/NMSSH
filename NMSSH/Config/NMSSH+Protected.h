@@ -6,6 +6,7 @@
 #import <sys/socket.h>
 #import <arpa/inet.h>
 #import "socket_helper.h"
+#import "NMSSHQueue.h"
 
 #define kNMSSHBufferSize (0x4000)
 
@@ -15,5 +16,9 @@
 #define NMSSHLogError(frmt, ...) [[NMSSHLogger logger] logError:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
 
 #define strlen (unsigned int)strlen
+
+@interface NMSSHSession ()
+@property (nonatomic, strong) NMSSHQueue *queue;
+@end
 
 #endif
