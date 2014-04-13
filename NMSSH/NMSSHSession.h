@@ -65,7 +65,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param username A valid username the server will accept
  @returns NMSSHSession instance
  */
-+ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username;
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Shorthand method for initializing a NMSSHSession object and calling connect,
@@ -76,7 +76,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param username A valid username the server will accept
  @returns NMSSHSession instance
  */
-+ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username;
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Create and setup a new NMSSH instance.
@@ -102,6 +102,8 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// ----------------------------------------------------------------------------
 /// @name Connection settings
 /// ----------------------------------------------------------------------------
+
+@property (nonatomic, readonly) dispatch_queue_t SSHQueue;
 
 /** Full server hostname in the format `@"{hostname}"`. */
 @property (nonatomic, readonly) NSString *host;
@@ -152,7 +154,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 
  @returns Connection status
  */
-- (BOOL)connect;
+- (void)connectWithCompletitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Connect to the server.
@@ -160,12 +162,12 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param timeout The time, in seconds, to wait before giving up.
  @returns Connection status
  */
-- (BOOL)connectWithTimeout:(NSNumber *)timeout;
+- (void)connectWithTimeout:(NSNumber *)timeout completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Close the session
  */
-- (void)disconnect;
+- (void)disconnectWithCompletitionBlock:(void (^)())completitionBlock;
 
 /// ----------------------------------------------------------------------------
 /// @name Authentication
@@ -183,7 +185,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param password Password for connected user
  @returns Authentication success
  */
-- (BOOL)authenticateByPassword:(NSString *)password;
+- (void)authenticateByPassword:(NSString *)password completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Authenticate by private key pair
@@ -195,16 +197,17 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param password Password for encrypted private key
  @returns Authentication success
  */
-- (BOOL)authenticateByPublicKey:(NSString *)publicKey
+- (void)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
-                    andPassword:(NSString *)password;
+                       password:(NSString *)password
+              completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Authenticate by keyboard-interactive using delegate.
 
  @returns Authentication success
  */
-- (BOOL)authenticateByKeyboardInteractive;
+- (void)authenticateByKeyboardInteractiveWithCompletitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Authenticate by keyboard-interactive using block.
@@ -217,14 +220,15 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
      to the given question.
  @returns Authentication success
  */
-- (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock;
+- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock
+                                  completitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Setup and connect to an SSH agent
 
  @returns Authentication success
  */
-- (BOOL)connectToAgent;
+- (void)connectToAgentWithCompletitionBlock:(void(^)(NSError *))completitionBlock;
 
 /**
  Get supported authentication methods

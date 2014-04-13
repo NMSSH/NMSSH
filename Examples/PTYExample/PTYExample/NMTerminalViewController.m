@@ -3,7 +3,6 @@
 
 @interface NMTerminalViewController () <NMSSHSessionDelegate, NMSSHChannelDelegate>
 
-@property (nonatomic, strong) dispatch_queue_t sshQueue;
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) dispatch_once_t onceToken;
 @property (nonatomic, strong) dispatch_semaphore_t semaphore;
@@ -22,8 +21,6 @@
     self.textView.editable = NO;
     self.textView.selectable = NO;
     self.lastCommand = [[NSMutableString alloc] init];
-
-    self.sshQueue = dispatch_queue_create("NMSSH.queue", DISPATCH_QUEUE_SERIAL);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -44,8 +41,7 @@
 }
 
 - (IBAction)connect:(id)sender {
-    dispatch_async(self.sshQueue, ^{
-        self.session = [NMSSHSession connectToHost:self.host withUsername:self.username];
+    self.session = [NMSSHSession connectToHost:self.host withUsername:self.username completitionBlock:^(NSError *error) {
         self.session.delegate = self;
 
         if (!self.session.connected) {
@@ -61,44 +57,62 @@
         });
 
         if (self.keyboardInteractive) {
-            [self.session authenticateByKeyboardInteractive];
+            [self.session authenticateByKeyboardInteractiveWithCompletitionBlock:^(NSError *error) {
+                if (!self.session.authorized) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self appendToTextView:@"Authentication error\n"];
+                        self.textView.editable = NO;
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.textView.editable = YES;
+                    });
+
+                    self.session.channel.delegate = self;
+                    self.session.channel.requestPty = YES;
+                    self.session.channel.ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
+
+                    [self.session.channel startShell:nil failure:^(NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self appendToTextView:error.localizedDescription];
+                            self.textView.editable = NO;
+                        });
+                    }];
+                }
+            }];
         }
         else {
-            [self.session authenticateByPassword:self.password];
+            [self.session authenticateByPassword:self.password completitionBlock:^(NSError *error) {
+                if (!self.session.authorized) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self appendToTextView:@"Authentication error\n"];
+                        self.textView.editable = NO;
+                    });
+                }
+                else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.textView.editable = YES;
+                    });
+
+                    self.session.channel.delegate = self;
+                    self.session.channel.requestPty = YES;
+
+                    [self.session.channel startShell:nil failure:^(NSError *error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self appendToTextView:error.localizedDescription];
+                            self.textView.editable = NO;
+                        });
+                    }];
+                }
+            }];
         }
-
-        if (!self.session.authorized) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self appendToTextView:@"Authentication error\n"];
-                self.textView.editable = NO;
-            });
-        }
-        else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.textView.editable = YES;
-            });
-
-            self.session.channel.delegate = self;
-            self.session.channel.requestPty = YES;
-
-            NSError *error;
-            [self.session.channel startShell:&error];
-
-            if (error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self appendToTextView:error.localizedDescription];
-                    self.textView.editable = NO;
-                });
-            }
-        }
-    });
-
+    }];
 }
 
 - (IBAction)disconnect:(id)sender {
-    dispatch_async(self.sshQueue, ^{
-        [self.session disconnect];
-    });
+    [self.session disconnectWithCompletitionBlock:nil];
+
 }
 
 - (void)appendToTextView:(NSString *)text {
@@ -113,9 +127,11 @@
     }
     else {
         NSString *command = [self.lastCommand copy];
-        dispatch_async(self.sshQueue, ^{
-            [[self.session channel] write:command error:nil timeout:@10];
-        });
+        [self.session.channel write:command timeout:@10 success:nil failure:^(NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self appendToTextView:[NSString stringWithFormat:@"[ERROR] %@", error]];
+            });
+        }];
     }
 
     [self.lastCommand setString:@""];
@@ -185,7 +201,7 @@
     }
 
     [self.lastCommand appendString:text];
-    
+
     if ([text isEqualToString:@"\n"]) {
         [self performCommand];
     }

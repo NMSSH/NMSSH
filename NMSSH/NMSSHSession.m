@@ -22,19 +22,19 @@
 #pragma mark - INITIALIZE A NEW SSH SESSION
 // -----------------------------------------------------------------------------
 
-+ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username {
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                           port:port
                                                    andUsername:username];
-    [session connect];
+    [session connectWithCompletitionBlock:completitionBlock];
 
     return session;
 }
 
-+ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username {
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                    andUsername:username];
-    [session connect];
+    [session connectWithCompletitionBlock:completitionBlock];
 
     return session;
 }
@@ -46,6 +46,7 @@
         [self setUsername:username];
         [self setConnected:NO];
         [self setFingerprintHash:NMSSHSessionHashMD5];
+        [self setQueue:[[NMSSHQueue alloc] init]];
     }
 
     return self;
@@ -71,6 +72,10 @@
 // -----------------------------------------------------------------------------
 #pragma mark - CONNECTION SETTINGS
 // -----------------------------------------------------------------------------
+
+- (dispatch_queue_t)SSHQueue {
+    return self.queue.SSHQueue;
+}
 
 - (NSArray *)hostIPAddresses {
     NSArray *hostComponents = [_host componentsSeparatedByString:@":"];
@@ -149,11 +154,20 @@
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
 
-- (BOOL)connect {
-    return [self connectWithTimeout:[NSNumber numberWithLong:10]];
+- (void)connectWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
+    return [self connectWithTimeout:@(10) completitionBlock:completitionBlock];
 }
 
-- (BOOL)connectWithTimeout:(NSNumber *)timeout {
+- (void)connectWithTimeout:(NSNumber *)timeout completitionBlock:(void (^)(NSError *))completitionBlock {
+    [self.queue scheduleBlock:^{
+        NSError *error;
+        [self connectWithTimeout:@(10) error:&error];
+
+        RUN_BLOCK(completitionBlock, error);
+    } synchronously:NO];
+}
+
+- (BOOL)connectWithTimeout:(NSNumber *)timeout error:(NSError *__autoreleasing *)error {
     if (self.isConnected) {
         [self disconnect];
     }
@@ -171,21 +185,27 @@
     });
 
     if (!initialized) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     // Try to create the socket
     _socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL);
     if (!_socket) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
         NMSSHLogError(@"Error creating the socket");
+
         return NO;
     }
 
     // Set NOSIGPIPE
     int set = 1;
     if (setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
         NMSSHLogError(@"Error setting socket option");
         [self disconnect];
+
         return NO;
     }
 
@@ -193,10 +213,10 @@
     NSUInteger index = -1;
     NSInteger port = [self.port integerValue];
     NSArray *addresses = [self hostIPAddresses];
-    CFSocketError error = 1;
+    CFSocketError socketError = 1;
     struct sockaddr_storage *address = NULL;
 
-    while (addresses && ++index < [addresses count] && error) {
+    while (addresses && ++index < [addresses count] && socketError) {
         NSData *addressData = addresses[index];
         NSString *ipAddress;
 
@@ -230,17 +250,18 @@
             continue;
         }
 
-        error = CFSocketConnectToAddress(_socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
+        socketError = CFSocketConnectToAddress(_socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
 
-        if (error) {
-            NMSSHLogVerbose(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
+        if (socketError) {
+            NMSSHLogVerbose(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, socketError);
         }
         else {
             NMSSHLogInfo(@"Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
         }
     }
 
-    if (error) {
+    if (socketError) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
         NMSSHLogError(@"Failure establishing socket connection");
         [self disconnect];
 
@@ -252,6 +273,7 @@
 
     // Set a callback for disconnection
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
+    libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_RECV, &socket_read_callback);
 
     // Set blocking mode
     libssh2_session_set_blocking(self.session, 1);
@@ -263,6 +285,7 @@
 
     // Start the session
     if (libssh2_session_handshake(self.session, CFSocketGetNative(_socket))) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
         NMSSHLogError(@"Failure establishing SSH session");
         [self disconnect];
 
@@ -277,6 +300,7 @@
 
     if (self.delegate && [self.delegate respondsToSelector:@selector(session:shouldConnectToHostWithFingerprint:)] &&
         ![self.delegate session:self shouldConnectToHostWithFingerprint:fingerprint]) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
         NMSSHLogWarn(@"Fingerprint refused, aborting connection...");
         [self disconnect];
 
@@ -291,9 +315,18 @@
     return self.isConnected;
 }
 
+- (void)disconnectWithCompletitionBlock:(void (^)())completitionBlock {
+    [self.queue scheduleUniqueBlock:^{
+        [self disconnect];
+
+        RUN_BLOCK(completitionBlock);
+    } withSignature:@"disconnect"
+      synchronously:NO];
+}
+
 - (void)disconnect {
     if (_channel) {
-        [_channel closeShell];
+        [_channel performSelector:@selector(closeShell)];
         [self setChannel:nil];
     }
 
@@ -339,20 +372,35 @@
     return NO;
 }
 
-- (BOOL)authenticateByPassword:(NSString *)password {
+- (void)authenticateByPassword:(NSString *)password completitionBlock:(void (^)(NSError *))completitionBlock {
+    [self.queue scheduleBlock:^{
+        NSError *error;
+        [self authenticateByPassword:password error:&error];
+
+        RUN_BLOCK(completitionBlock, error);
+    } synchronously:NO];
+}
+
+- (BOOL)authenticateByPassword:(NSString *)password error:(NSError *__autoreleasing *)error {
 
     if (!password) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     if (![self supportsAuthenticationMethod:@"password"]) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     // Try to authenticate by password
-    int error = libssh2_userauth_password(self.session, [self.username UTF8String], [password UTF8String]);
-    if (error) {
-        NMSSHLogError(@"Password authentication failed with reason %i", error);
+    int errorCode = libssh2_userauth_password(self.session, [self.username UTF8String], [password UTF8String]);
+    if (errorCode) {
+        NMSSHLogError(@"Password authentication failed with reason %i", errorCode);
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -361,10 +409,25 @@
     return self.isAuthorized;
 }
 
+- (void)authenticateByPublicKey:(NSString *)publicKey
+                     privateKey:(NSString *)privateKey
+                       password:(NSString *)password
+              completitionBlock:(void (^)(NSError *))completitionBlock {
+    [self.queue scheduleBlock:^{
+        NSError *error;
+        [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
+
+        RUN_BLOCK(completitionBlock, error);
+    } synchronously:NO];
+}
+
 - (BOOL)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
-                    andPassword:(NSString *)password {
+                       password:(NSString *)password
+                          error:(NSError *__autoreleasing *)error {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -377,14 +440,16 @@
     const char *privKey = [[privateKey stringByExpandingTildeInPath] UTF8String] ?: NULL;
 
     // Try to authenticate with key pair and password
-    int error = libssh2_userauth_publickey_fromfile(self.session,
-                                                    [self.username UTF8String],
-                                                    pubKey,
-                                                    privKey,
-                                                    [password UTF8String]);
+    int errorCode = libssh2_userauth_publickey_fromfile(self.session,
+                                                        [self.username UTF8String],
+                                                        pubKey,
+                                                        privKey,
+                                                        [password UTF8String]);
 
-    if (error) {
-        NMSSHLogError(@"Public key authentication failed with reason %i", error);
+    if (errorCode) {
+        NMSSHLogError(@"Public key authentication failed with reason %i", errorCode);
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -393,12 +458,23 @@
     return self.isAuthorized;
 }
 
-- (BOOL)authenticateByKeyboardInteractive {
-    return [self authenticateByKeyboardInteractiveUsingBlock:nil];
+- (void)authenticateByKeyboardInteractiveWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
+    [self authenticateByKeyboardInteractiveUsingBlock:nil completitionBlock:completitionBlock];
 }
 
-- (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock {
+- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *))authenticationBlock completitionBlock:(void (^)(NSError *))completitionBlock {
+    [self.queue scheduleBlock:^{
+        NSError *error;
+        [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
+
+        RUN_BLOCK(completitionBlock, error);
+    } synchronously:NO];
+}
+
+- (BOOL)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock error:(NSError *__autoreleasing *)error {
     if (![self supportsAuthenticationMethod:@"keyboard-interactive"]) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -408,6 +484,8 @@
 
     if (rc != 0) {
         NMSSHLogError(@"Keyboard-interactive authentication failed with reason %i", rc);
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -416,8 +494,19 @@
     return self.isAuthorized;
 }
 
-- (BOOL)connectToAgent {
+- (void)connectToAgentWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
+    [self.queue scheduleBlock:^{
+        NSError *error;
+        [self connectToAgent:&error];
+
+        RUN_BLOCK(completitionBlock, error);
+    } synchronously:NO];
+}
+
+- (BOOL)connectToAgent:(NSError *__autoreleasing *)error {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
@@ -425,32 +514,40 @@
     [self setAgent:libssh2_agent_init(self.session)];
     if (!self.agent) {
         NMSSHLogError(@"Could not start a new agent");
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     // Try connecting to the agent
     if (libssh2_agent_connect(self.agent)) {
         NMSSHLogError(@"Failed connection to agent");
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     // Try to fetch available SSH identities
     if (libssh2_agent_list_identities(self.agent)) {
         NMSSHLogError(@"Failed to request agent identities");
+        *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
         return NO;
     }
 
     // Search for the correct identity and try to authenticate
     struct libssh2_agent_publickey *identity, *prev_identity = NULL;
     while (1) {
-        int error = libssh2_agent_get_identity(self.agent, &identity, prev_identity);
-        if (error) {
+        int errorCode = libssh2_agent_get_identity(self.agent, &identity, prev_identity);
+        if (errorCode) {
             NMSSHLogError(@"Failed to find a valid identity for the agent");
+            *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
+
             return NO;
         }
 
-        error = libssh2_agent_userauth(self.agent, [self.username UTF8String], identity);
-        if (!error) {
+        errorCode = libssh2_agent_userauth(self.agent, [self.username UTF8String], identity);
+        if (!errorCode) {
             return self.isAuthorized;
         }
 
@@ -770,6 +867,29 @@ void disconnect_callback(LIBSSH2_SESSION *session, int reason, const char *messa
     }
 
     [self disconnect];
+}
+
+ssize_t socket_read_callback(libssh2_socket_t sock, void *buffer, size_t length, int flags, void **abstract) {
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+
+    ssize_t rc = recv(sock, buffer, length, flags);
+
+    if (rc < 0) {
+        if (errno == ENOTCONN) {
+            [self disconnectWithCompletitionBlock:^ {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(session:didDisconnectWithError:)]) {
+                    [self.delegate session:self didDisconnectWithError:nil];
+                }
+            }];
+            return -errno;
+        } else if (errno == ENOENT) {
+            return -EAGAIN;
+        } else {
+            return -errno;
+        }
+    }
+
+    return rc;
 }
 
 // -----------------------------------------------------------------------------
