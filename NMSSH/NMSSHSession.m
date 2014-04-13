@@ -162,7 +162,8 @@
     [self.queue scheduleBlock:^{
         NSError *error;
         [self connectWithTimeout:@(10) error:&error];
-        completitionBlock(error);
+
+        RUN_BLOCK(completitionBlock, error);
     } synchronously:NO];
 }
 
@@ -317,7 +318,8 @@
 - (void)disconnectWithCompletitionBlock:(void (^)())completitionBlock {
     [self.queue scheduleUniqueBlock:^{
         [self disconnect];
-        completitionBlock();
+
+        RUN_BLOCK(completitionBlock);
     } withSignature:@"disconnect"
       synchronously:NO];
 }
@@ -374,7 +376,8 @@
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByPassword:password error:&error];
-        completitionBlock(error);
+
+        RUN_BLOCK(completitionBlock, error);
     } synchronously:NO];
 }
 
@@ -413,7 +416,8 @@
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
-        completitionBlock(error);
+
+        RUN_BLOCK(completitionBlock, error);
     } synchronously:NO];
 }
 
@@ -462,7 +466,8 @@
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
-        completitionBlock(error);
+
+        RUN_BLOCK(completitionBlock, error);
     } synchronously:NO];
 }
 
@@ -493,7 +498,8 @@
     [self.queue scheduleBlock:^{
         NSError *error;
         [self connectToAgent:&error];
-        completitionBlock(error);
+
+        RUN_BLOCK(completitionBlock, error);
     } synchronously:NO];
 }
 

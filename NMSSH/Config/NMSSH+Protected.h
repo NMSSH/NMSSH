@@ -17,6 +17,8 @@
 
 #define strlen (unsigned int)strlen
 
+#define RUN_BLOCK(block, ...) block ? block(__VA_ARGS__) : nil
+
 @interface NMSSHSession ()
 @property (nonatomic, strong) NMSSHQueue *queue;
 @end

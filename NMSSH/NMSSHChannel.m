@@ -179,10 +179,10 @@
         NSString *response = [self execute:command error:&error timeout:timeout];
 
         if (!error) {
-            success(response);
+            RUN_BLOCK(success, response);
         }
         else {
-            failure(response, error);
+            RUN_BLOCK(failure, response, error);
         }
     } synchronously:NO];
 }
@@ -324,10 +324,10 @@
         BOOL completed = [self startShell:&error];
 
         if (completed) {
-            success();
+            RUN_BLOCK(success);
         }
         else {
-            failure(error);
+            RUN_BLOCK(failure, error);
         }
     } synchronously:NO];
 }
@@ -428,7 +428,8 @@
 - (void)closeShellWithCompletitionBlock:(void (^)())completitionBlock {
     [self.session.queue scheduleBlock:^{
         [self closeShell];
-        completitionBlock();
+
+        RUN_BLOCK(completitionBlock);
     } synchronously:NO];
 }
 
@@ -468,10 +469,10 @@
         BOOL completed = [self writeData:data error:&error timeout:timeout];
 
         if (completed) {
-            success();
+            RUN_BLOCK(success);
         }
         else {
-            failure(error);
+            RUN_BLOCK(failure, error);
         }
     } synchronously:NO];
 }
@@ -525,10 +526,10 @@
         BOOL completed = [self requestSizeWidth:width height:height error:&error];
 
         if (completed) {
-            success();
+            RUN_BLOCK(success);
         }
         else {
-            failure(error);
+            RUN_BLOCK(failure, error);
         }
     } synchronously:NO];
 }
@@ -553,10 +554,10 @@
         BOOL completed = [self uploadFile:localPath to:remotePath error:&error progress:progress];
 
         if (completed) {
-            success();
+            RUN_BLOCK(success);
         }
         else {
-            failure(error);
+            RUN_BLOCK(failure, error);
         }
     } synchronously:NO];
 }
@@ -660,10 +661,10 @@
         BOOL completed = [self downloadFile:remotePath to:localPath error:&error progress:progress];
 
         if (completed) {
-            success();
+            RUN_BLOCK(success);
         }
         else {
-            failure(error);
+            RUN_BLOCK(failure, error);
         }
     } synchronously:NO];
 }
