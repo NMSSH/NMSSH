@@ -19,6 +19,7 @@
 @property (nonatomic, assign) dispatch_queue_t queue;
 #endif
 
+- (NSData *)_contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
 
@@ -392,16 +393,17 @@
 }
 
 - (void)contentsAtPath:(NSString *)path success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
-    // @todo
+    [self contentsAtPath:path progress:nil success:success failure:failure];
 }
 
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
+- (NSData *)_contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
-
+    
     if (!handle) {
+        // @fixme Set lastError?
         return nil;
     }
-
+    
     NMSFTPFile *file = [self infoForFileAtPath:path];
     if (!file) {
         NMSSHLogWarn(@"contentsAtPath:progress: failed to get file attributes");
@@ -415,23 +417,50 @@
     while ((rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer))) > 0) {
         [data appendBytes:buffer length:rc];
         got += rc;
-        if (progress && !progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue])) {
+        __block BOOL cont = YES; // `cont` is short for continue
+        // Not processing asynchronously.
+        if (!success && !failure && progress) {
+            cont = progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
+        // Execute the `progress` method on the main queue.
+        } else if ((success || failure) && progress) {
+            // Notice `dispatch_sync` NOT `async`. Wait for the UI to update and
+            // return a result before continuing.
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                cont = progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
+            });
+        }
+        if (!cont) {
             libssh2_sftp_close(handle);
             return nil;
         }
     }
-
+    
     libssh2_sftp_close(handle);
-
+    
     if (rc < 0) {
         return nil;
     }
-
+    
     return [data copy];
 }
 
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
+    return [self _contentsAtPath:path progress:progress success:nil failure:nil];
+}
+
 - (void)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
-    // @todo
+    dispatch_async(self.queue, ^{
+        NSData *data = [self _contentsAtPath:path progress:progress success:success failure:failure];
+        if (data && success) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                success(data);
+            });
+        } else if (!data && failure) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                failure(self.session.lastError);
+            });
+        }
+    });
 }
 
 - (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
