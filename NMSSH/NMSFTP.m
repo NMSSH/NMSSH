@@ -19,7 +19,7 @@
 @property (nonatomic, assign) dispatch_queue_t queue;
 #endif
 
-- (NSData *)_contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure;
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress async:(BOOL)async;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
 
@@ -396,7 +396,7 @@
     [self contentsAtPath:path progress:nil success:success failure:failure];
 }
 
-- (NSData *)_contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress async:(BOOL)async {
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
     
     if (!handle) {
@@ -419,10 +419,10 @@
         got += rc;
         __block BOOL cont = YES; // `cont` is short for continue
         // Not processing asynchronously.
-        if (!success && !failure && progress) {
+        if (!async && progress) {
             cont = progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
         // Execute the `progress` method on the main queue.
-        } else if ((success || failure) && progress) {
+        } else if (async && progress) {
             // Notice `dispatch_sync` NOT `async`. Wait for the UI to update and
             // return a result before continuing.
             dispatch_sync(dispatch_get_main_queue(), ^{
@@ -445,12 +445,12 @@
 }
 
 - (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
-    return [self _contentsAtPath:path progress:progress success:nil failure:nil];
+    return [self contentsAtPath:path progress:progress async:NO];
 }
 
 - (void)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
     dispatch_async(self.queue, ^{
-        NSData *data = [self _contentsAtPath:path progress:progress success:success failure:failure];
+        NSData *data = [self contentsAtPath:path progress:progress async:YES];
         if (data && success) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 success(data);
