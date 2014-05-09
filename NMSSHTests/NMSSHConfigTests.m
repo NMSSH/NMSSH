@@ -526,4 +526,33 @@
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
 
+/**
+ Test two rules where the first negates and the second matches.
+ */
+- (void)testTwoRulesWhereFirstNegatesAndSecondMatches {
+    NSString *contents =
+        @"Host !*x* a*\n"
+        @"    Hostname hostname1\n"
+        @"Host *z\n"
+        @"    Hostname hostname2\n";
+    NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
+    NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"axy"];
+    XCTAssertNil(hostConfig, @"Match should have failed but didn't");
+
+    hostConfig = [config hostConfigForHost:@"abc"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"axz"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"xz"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"z"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"b"];
+    XCTAssertNil(hostConfig, @"Match should have failed but didn't");
+}
+
 @end
