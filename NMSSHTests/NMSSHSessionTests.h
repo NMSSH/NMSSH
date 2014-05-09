@@ -1,4 +1,4 @@
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface NMSSHSessionTests : SenTestCase
+@interface NMSSHSessionTests : XCTestCase
 @end

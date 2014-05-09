@@ -1,25 +1,30 @@
-Pod::Spec.new do |s|
-  s.name         = "NMSSH"
-  s.version      = "1.2.1"
-  s.summary      = "NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2."
-  s.homepage     = "https://github.com/Lejdborg/NMSSH"
-  s.license      = 'MIT'
-  s.author       = { "Christoffer Lejdborg" => "hello@9muses.se", "Tommaso Madonia" => "frugghi@gmail.com", "@Shirk" => "", "Endika Gutiérrez" => "me@endika.net" }
-
-  s.source       = { :git => "https://github.com/Lejdborg/NMSSH.git", :tag => s.version.to_s }
-  s.source_files = 'NMSSH', 'NMSSH/**/*.{h,m}' 
-  s.requires_arc = true
-  s.ios.deployment_target = '5.0'
-  s.osx.deployment_target = '10.7'
-
-  s.libraries      = 'z', 'ssl', 'ssh2', 'crypto'
-
-  s.ios.source_files = 'NMSSH-iOS', 'NMSSH-iOS/**/*.h'
-  s.ios.preserve_paths = 'NMSSH-iOS'
-
-  s.xcconfig = {
+Pod::Spec.new do |spec|
+  spec.name         = "NMSSH"
+  spec.version      = "2.1.0"
+  spec.summary      = "NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2."
+  spec.homepage     = "https://github.com/Lejdborg/NMSSH"
+  spec.license      = 'MIT'
+  spec.authors      = { "Christoffer Lejdborg" => "hello@9muses.se", "Tommaso Madonia" => "frugghi@gmail.com" }
+  
+  spec.source       = { :git => "https://github.com/Lejdborg/NMSSH.git", :tag => spec.version.to_s }
+  
+  spec.requires_arc = true
+  
+  spec.source_files = 'NMSSH', 'NMSSH/**/*.{h,m}'
+  spec.libraries    = 'z'
+  
+  spec.ios.deployment_target  = '5.0'
+  spec.ios.framework          = 'CFNetwork'
+  spec.ios.vendored_libraries = 'NMSSH-iOS/Libraries/lib/libssh2.a', 'NMSSH-iOS/Libraries/lib/libssl.a', 'NMSSH-iOS/Libraries/lib/libcrypto.a'
+  spec.ios.source_files       = 'NMSSH-iOS', 'NMSSH-iOS/**/*.h' 
+  
+  spec.osx.deployment_target  = '10.7'
+  spec.osx.libraries          = 'ssl', 'crypto'
+  spec.osx.vendored_libraries = 'NMSSH-OSX/Libraries/lib/libssh2.a'
+  spec.osx.source_files       = 'NMSSH-OSX', 'NMSSH-OSX/**/*.h' 
+  
+  spec.xcconfig = {
     "OTHER_LDFLAGS" => "-ObjC",
-    "LIBRARY_SEARCH_PATHS" => '"$(PODS_ROOT)/NMSSH/NMSSH-iOS/Libraries/lib"'
   }
 
 end

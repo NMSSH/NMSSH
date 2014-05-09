@@ -1,5 +1,5 @@
 #import "NMSSHChannel.h"
-#import "socket_helper.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSSHChannel ()
 @property (nonatomic, strong) NMSSHSession *session;
@@ -69,16 +69,16 @@
 
     [self setChannel:channel];
 
-    int rc = 0;
-
     // Try to set environment variables
     if (self.environmentVariables) {
         for (NSString *key in self.environmentVariables) {
             if ([key isKindOfClass:[NSString class]] && [[self.environmentVariables objectForKey:key] isKindOfClass:[NSString class]]) {
-                rc = libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String]);
+                libssh2_channel_setenv(self.channel, [key UTF8String], [[self.environmentVariables objectForKey:key] UTF8String]);
             }
         }
     }
+
+    int rc = 0;
 
     // If requested, try to allocate a pty
     if (self.requestPty) {
@@ -122,16 +122,20 @@
     }
 }
 
-- (void)sendEOFandWait {
+- (BOOL)sendEOF {
     int rc;
 
     // Send EOF to host
     rc = libssh2_channel_send_eof(self.channel);
     NMSSHLogVerbose(@"Sent EOF to host (return code = %i)", rc);
 
-    if (rc == 0) {
+    return rc == 0;
+}
+
+- (void)waitEOF {
+    if (libssh2_channel_eof(self.channel) == 0) {
         // Wait for host acknowledge
-        rc = libssh2_channel_wait_eof(self.channel);
+        int rc = libssh2_channel_wait_eof(self.channel);
         NMSSHLogVerbose(@"Received host acknowledge for EOF (return code = %i)", rc);
     }
 }
@@ -190,6 +194,8 @@
     if (rc != 0) {
         if (error) {
             [userInfo setObject:[[self.session lastError] localizedDescription] forKey:NSLocalizedDescriptionKey];
+            [userInfo setObject:[NSString stringWithFormat:@"%zi", rc] forKey:NSLocalizedFailureReasonErrorKey];
+
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
                                      userInfo:userInfo];
@@ -320,32 +326,54 @@
                                            0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))];
     dispatch_source_set_event_handler(self.source, ^{
         NMSSHLogVerbose(@"Data available on the socket!");
-        ssize_t rc, erc;
+        ssize_t rc, erc=0;
         char buffer[self.bufferSize];
 
-        while (self.channel != NULL &&
-               ((rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0 ||
-                (erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer))) >= 0)) {
+        while (self.channel != NULL) {
 
-                   if (rc > 0) {
-                       NSString *response = [[NSString alloc] initWithBytes:buffer length:rc encoding:NSUTF8StringEncoding];
-                       [self setLastResponse:[response copy]];
-                       if (self.delegate && response) {
-                           [self.delegate channel:self didReadData:self.lastResponse];
-                       }
-                   }
-                   else if (erc > 0) {
-                       NSString *response = [[NSString alloc] initWithBytes:buffer length:erc encoding:NSUTF8StringEncoding];
-                       if (self.delegate && response) {
-                           [self.delegate channel:self didReadError:response];
-                       }
-                   }
-                   else if (libssh2_channel_eof(self.channel) == 1) {
-                       NMSSHLogVerbose(@"Host EOF received, closing channel...");
-                       [self closeShell];
-                       return;
-                   }
-               }
+            rc = libssh2_channel_read(self.channel, buffer, (ssize_t)sizeof(buffer));
+            erc = libssh2_channel_read_stderr(self.channel, buffer, (ssize_t)sizeof(buffer));
+
+            if (!(rc >=0 || erc >= 0)) {
+                NMSSHLogVerbose(@"Return code of response %ld, error %ld", (long)rc, (long)erc);
+
+                if (rc == LIBSSH2_ERROR_SOCKET_RECV || erc == LIBSSH2_ERROR_SOCKET_RECV) {
+                    NMSSHLogVerbose(@"Error received, closing channel...");
+                    [self closeShell];
+                }
+                return;
+            }
+            else if (rc > 0) {
+                NSData *data = [[NSData alloc] initWithBytes:buffer length:rc];
+                NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                [self setLastResponse:[response copy]];
+
+                if (response && self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadData:)]) {
+                    [self.delegate channel:self didReadData:self.lastResponse];
+                }
+
+                if (self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadRawData:)]) {
+                    [self.delegate channel:self didReadRawData:data];
+                }
+            }
+            else if (erc > 0) {
+                NSData *data = [[NSData alloc] initWithBytes:buffer length:erc];
+                NSString *response = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+                if (response && self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadError:)]) {
+                    [self.delegate channel:self didReadError:response];
+                }
+
+                if (self.delegate && [self.delegate respondsToSelector:@selector(channel:didReadRawError:)]) {
+                    [self.delegate channel:self didReadRawError:data];
+                }
+            }
+            else if (libssh2_channel_eof(self.channel) == 1) {
+                NMSSHLogVerbose(@"Host EOF received, closing channel...");
+                [self closeShell];
+                return;
+            }
+        }
     });
 
     dispatch_source_set_cancel_handler(self.source, ^{
@@ -395,7 +423,7 @@
         // Set blocking mode
         libssh2_session_set_blocking(self.session.rawSession, 1);
 
-        [self sendEOFandWait];
+        [self sendEOF];
     }
 
     [self closeChannel];
@@ -405,28 +433,35 @@
     return [self write:command error:error timeout:@0];
 }
 
-- (BOOL)write:(NSString *)command error:(NSError **)error timeout:(NSNumber *)timeout {
+- (BOOL)write:(NSString *)command error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
+    return [self writeData:[command dataUsingEncoding:NSUTF8StringEncoding] error:error timeout:timeout];
+}
+
+- (BOOL)writeData:(NSData *)data error:(NSError *__autoreleasing *)error {
+    return [self writeData:data error:error timeout:@0];
+}
+
+- (BOOL)writeData:(NSData *)data error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
     if (self.type != NMSSHChannelTypeShell) {
         NMSSHLogError(@"Shell required");
         return NO;
     }
 
-    NMSSHLogVerbose(@"Writing '%@' on shell", [command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]);
     ssize_t rc;
 
     // Set the timeout
     CFAbsoluteTime time = CFAbsoluteTimeGetCurrent() + [timeout doubleValue];
 
     // Try writing on shell
-    while ((rc = libssh2_channel_write(self.channel, [command UTF8String], [command lengthOfBytesUsingEncoding:NSUTF8StringEncoding])) == LIBSSH2_ERROR_EAGAIN) {
+    while ((rc = libssh2_channel_write(self.channel, [data bytes], [data length])) == LIBSSH2_ERROR_EAGAIN) {
         // Check if the connection timed out
         if ([timeout longValue] > 0 && time < CFAbsoluteTimeGetCurrent()) {
             if (error) {
-                NSString *desc = @"Connection timed out";
+                NSString *description = @"Connection timed out";
 
                 *error = [NSError errorWithDomain:@"NMSSH"
                                              code:NMSSHChannelExecutionTimeout
-                                         userInfo:@{ NSLocalizedDescriptionKey : desc }];
+                                         userInfo:@{ NSLocalizedDescriptionKey : description }];
             }
 
             return NO;
@@ -438,6 +473,7 @@
     if (rc < 0) {
         NMSSHLogError(@"Error writing on the shell");
         if (error) {
+            NSString *command = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelWriteError
                                      userInfo:@{ NSLocalizedDescriptionKey : [[self.session lastError] localizedDescription],
@@ -545,7 +581,9 @@
 
     fclose(local);
 
-    [self sendEOFandWait];
+    if ([self sendEOF]) {
+        [self waitEOF];
+    }
     [self closeChannel];
 
     return !abort;
@@ -618,7 +656,7 @@
                 return NO;
             }
             got += rc;
-            if (progress && !progress(got, (NSUInteger)fileinfo.st_size)) {
+            if (progress && !progress((NSUInteger)got, (NSUInteger)fileinfo.st_size)) {
                 close(localFile);
                 [self closeChannel];
                 return NO;

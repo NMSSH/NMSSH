@@ -1,10 +1,10 @@
 #import "NMSSHSession.h"
+#import "NMSSH+Protected.h"
 
 @interface NMSSHSession ()
 @property (nonatomic, assign) LIBSSH2_AGENT *agent;
 
 @property (nonatomic, assign, getter = rawSession) LIBSSH2_SESSION *session;
-@property (nonatomic, readwrite) CFSocketRef socket;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
 @property (nonatomic, strong) NSString *host;
 @property (nonatomic, strong) NSString *username;
@@ -123,6 +123,10 @@
 }
 
 - (NSError *)lastError {
+    if(!self.rawSession) {
+        return [NSError errorWithDomain:@"libssh2" code:LIBSSH2_ERROR_NONE userInfo:@{NSLocalizedDescriptionKey : @"Error retrieving last session error due to absence of an active session."}];
+    }
+    
     char *message;
     int error = libssh2_session_last_error(self.rawSession, &message, NULL, 0);
 
@@ -171,15 +175,15 @@
     }
 
     // Try to create the socket
-    [self setSocket:CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL)];
-    if (!self.socket) {
+    _socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL);
+    if (!_socket) {
         NMSSHLogError(@"Error creating the socket");
         return NO;
     }
 
     // Set NOSIGPIPE
     int set = 1;
-    if (setsockopt(CFSocketGetNative(self.socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
+    if (setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
         NMSSHLogError(@"Error setting socket option");
         [self disconnect];
         return NO;
@@ -226,7 +230,7 @@
             continue;
         }
 
-        error = CFSocketConnectToAddress(self.socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
+        error = CFSocketConnectToAddress(_socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
 
         if (error) {
             NMSSHLogVerbose(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, error);
@@ -258,7 +262,7 @@
     }
 
     // Start the session
-    if (libssh2_session_handshake(self.session, CFSocketGetNative(self.socket))) {
+    if (libssh2_session_handshake(self.session, CFSocketGetNative(_socket))) {
         NMSSHLogError(@"Failure establishing SSH session");
         [self disconnect];
 
@@ -312,10 +316,10 @@
         [self setSession:NULL];
     }
 
-    if (self.socket) {
-        CFSocketInvalidate(self.socket);
-        CFRelease(self.socket);
-        [self setSocket:NULL];
+    if (_socket) {
+        CFSocketInvalidate(_socket);
+        CFRelease(_socket);
+        _socket = NULL;
     }
 
     libssh2_exit();
@@ -336,6 +340,11 @@
 }
 
 - (BOOL)authenticateByPassword:(NSString *)password {
+
+    if (!password) {
+        return NO;
+    }
+
     if (![self supportsAuthenticationMethod:@"password"]) {
         return NO;
     }

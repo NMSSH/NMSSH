@@ -44,11 +44,11 @@
     NSString *username = [validPasswordProtectedServer
                                objectForKey:@"user"];
 
-    STAssertNoThrow(session = [NMSSHSession connectToHost:host
+    XCTAssertNoThrow(session = [NMSSHSession connectToHost:host
                                              withUsername:username],
                     @"Connecting to a valid server does not throw exception");
 
-    STAssertTrue([session isConnected],
+    XCTAssertTrue([session isConnected],
                  @"Connection to valid server should work");
 }
 
@@ -56,11 +56,11 @@
     NSString *host = [invalidServer objectForKey:@"host"];
     NSString *username = [invalidServer objectForKey:@"user"];
 
-    STAssertNoThrow(session = [NMSSHSession connectToHost:host
+    XCTAssertNoThrow(session = [NMSSHSession connectToHost:host
                                              withUsername:username],
                     @"Connecting to a invalid server does not throw exception");
 
-    STAssertFalse([session isConnected],
+    XCTAssertFalse([session isConnected],
                  @"Connection to invalid server should not work");
 }
 
@@ -77,11 +77,11 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPassword:password],
+    XCTAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with valid password doesn't throw"
                     @"exception");
 
-    STAssertTrue([session isAuthorized],
+    XCTAssertTrue([session isAuthorized],
                  @"Authentication with valid password should work");
 }
 
@@ -93,11 +93,11 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPassword:password],
+    XCTAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with invalid password doesn't throw"
                     @"exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                  @"Authentication with invalid password should not work");
 }
 
@@ -108,11 +108,11 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPassword:password],
+    XCTAssertNoThrow([session authenticateByPassword:password],
                     @"Authentication with invalid username/password doesn't"
                     @"throw exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                   @"Authentication with invalid username/password should not"
                   @"work");
 }
@@ -127,13 +127,13 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPublicKey:publicKey
+    XCTAssertNoThrow([session authenticateByPublicKey:publicKey
                                           privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:password],
                     @"Authentication with valid public key doesn't throw"
                     @"exception");
 
-    STAssertTrue([session isAuthorized],
+    XCTAssertTrue([session isAuthorized],
                   @"Authentication with valid public key should work");
 }
 
@@ -145,13 +145,13 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPublicKey:publicKey
+    XCTAssertNoThrow([session authenticateByPublicKey:publicKey
                                           privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:nil],
                     @"Public key authentication with invalid password doesn't"
                     @"throw exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                  @"Public key authentication with invalid password should not"
                  @"work");
 }
@@ -165,13 +165,13 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPublicKey:publicKey
+    XCTAssertNoThrow([session authenticateByPublicKey:publicKey
                                           privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:nil],
                     @"Authentication with invalid public key doesn't throw"
                     @"exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                  @"Authentication with invalid public key should not work");
 }
 
@@ -185,13 +185,13 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session authenticateByPublicKey:publicKey
+    XCTAssertNoThrow([session authenticateByPublicKey:publicKey
                                           privateKey:[publicKey stringByDeletingPathExtension]
                                          andPassword:password],
                     @"Public key authentication with invalid user doesn't"
                     @"throw exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                   @"Public key authentication with invalid user should not work");
 }
 
@@ -201,10 +201,10 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session connectToAgent],
+    XCTAssertNoThrow([session connectToAgent],
                     @"Valid connection to agent doesn't throw exception");
 
-    STAssertTrue([session isAuthorized],
+    XCTAssertTrue([session isAuthorized],
                  @"Agent authentication with valid username should work");
 }
 
@@ -214,10 +214,10 @@
 
     session = [NMSSHSession connectToHost:host withUsername:username];
 
-    STAssertNoThrow([session connectToAgent],
+    XCTAssertNoThrow([session connectToAgent],
                     @"Invalid connection to agent doesn't throw exception");
 
-    STAssertFalse([session isAuthorized],
+    XCTAssertFalse([session isAuthorized],
                   @"Agent authentication with invalid username should not"
                   @"work");
 }
