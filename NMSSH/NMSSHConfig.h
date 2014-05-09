@@ -1,5 +1,9 @@
 #import "NMSSH.h"
 
+/// -----------------------------------------------------------------------------
+/// @name NMSSHHostConfig
+/// -----------------------------------------------------------------------------
+
 /**
  NMSSHHostConfig describes a single host's configuration.
  */
@@ -10,9 +14,10 @@
 @property(nonatomic, readonly) NSArray *hostPatterns;
 
 /**
- Specifies the real host name to log into. If the hostname contains the character sequence `%h',
- then the client should replace this with the user-specified host name (this is useful for
- manipulating unqualified names). This may be an IP address.
+ Specifies the real host name to log into. If the hostname contains the
+ character sequence `%h', then the client should replace this with the
+ user-specified host name (this is useful for manipulating unqualified names).
+ This may be an IP address.
  */
 @property(nonatomic, readonly) NSString *hostname;
 
@@ -22,9 +27,10 @@
 @property(nonatomic, readonly) NSInteger port;
 
 /**
- Specifies alist of file names from which the user's DSA, ECDSA or RSA authentication identity are
- read. It is empty by default. Tildes will be expanded to the user's home directory. The client
- should perform the following substitutions on each file name:
+ Specifies alist of file names from which the user's DSA, ECDSA or RSA
+ authentication identity are read. It is empty by default. Tildes will be
+ expanded to the user's home directory. The client should perform the following
+ substitutions on each file name:
    "%d" should be replaced with the local user home directory
    "%u" should be replaced with the local user name
    "%l" should be replaced with the local host name
@@ -35,8 +41,13 @@
 @property(nonatomic, readonly) NSArray *identityFiles;
 @end
 
+/// -----------------------------------------------------------------------------
+/// @name NMSSHConfig
+/// -----------------------------------------------------------------------------
+
 /**
- NMSSHConfig parses ssh config files and returns matching entries for a given host name.
+ NMSSHConfig parses ssh config files and returns matching entries for a given
+ host name.
  */
 @interface NMSSHConfig : NSObject
 
@@ -63,7 +74,8 @@
  Searches the config for an entry matching {host}.
 
  @param host A host name to search for.
- @returns An NMSSHHostConfig object whose patterns match host or nil if none is found.
+ @returns An NMSSHHostConfig object whose patterns match host or nil if none is
+     found.
  */
 - (NMSSHHostConfig *)hostConfigForHost:(NSString *)host;
 

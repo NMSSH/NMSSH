@@ -6,6 +6,10 @@ typedef enum {
     NMSSHConfigMatchNone
 } NMSSHConfigMatch;
 
+// -----------------------------------------------------------------------------
+#pragma mark - NMSSHHostConfig
+// -----------------------------------------------------------------------------
+
 @interface NMSSHHostConfig ()
 @property(nonatomic, strong) NSArray *hostPatterns;
 @property(nonatomic, strong) NSString *hostname;
@@ -17,15 +21,19 @@ typedef enum {
 
 - (id)init {
     self = [super init];
-    if (self) {
+    if (self != nil) {
         [self setPort:22];
-        [self setHostPatterns:@[]];
-        [self setIdentityFiles:@[]];
+        [self setHostPatterns:@[ ]];
+        [self setIdentityFiles:@[ ]];
     }
     return self;
 }
 
 @end
+
+// -----------------------------------------------------------------------------
+#pragma mark NMSSHConfig
+// -----------------------------------------------------------------------------
 
 @interface NMSSHConfig ()
 @property(nonatomic, strong) NSArray *hostConfigs;
@@ -45,21 +53,25 @@ typedef enum {
 }
 
 - (instancetype)initWithString:(NSString *)contents {
-    if (!contents) {
+    if (contents == nil) {
         return nil;
     }
     self = [super init];
-    if (self) {
+    if (self != nil) {
         [self setHostConfigs:[self arrayFromString:contents]];
-        if (!_hostConfigs) {
+        if (_hostConfigs == nil) {
             return nil;
         }
     }
     return self;
 }
 
+// -----------------------------------------------------------------------------
+#pragma mark - PARSING
+// -----------------------------------------------------------------------------
+
 - (NSArray *)arrayFromString:(NSString *)contents {
-    if (!contents) {
+    if (contents == nil) {
         return nil;
     }
     contents = [contents stringByReplacingOccurrencesOfString:@"\r\n"
@@ -94,7 +106,7 @@ typedef enum {
         while (hostRange.location != NSNotFound) {
             if (hostRange.length > 0) {
                 NSString *hostPattern = [arguments substringWithRange:hostRange];
-                config.hostPatterns = [config.hostPatterns arrayByAddingObject:hostPattern];
+                [config setHostPatterns:[config.hostPatterns arrayByAddingObject:hostPattern]];
             }
 
             arguments = next;
@@ -103,16 +115,18 @@ typedef enum {
         if ([config.hostPatterns count] > 0) {
             [array addObject:config];
         }
-    } else if ([keyword localizedCaseInsensitiveCompare:@"hostname"] == NSOrderedSame &&
-               [array count]) {
+    }
+    else if ([keyword localizedCaseInsensitiveCompare:@"hostname"] == NSOrderedSame &&
+             [array count]) {
         NMSSHHostConfig *config = [array lastObject];
         NSRange valueRange = [self rangeOfFirstTokenInString:arguments suffix:NULL];
         if (valueRange.location != NSNotFound &&
             valueRange.length > 0) {
-            config.hostname = [arguments substringWithRange:valueRange];
+            [config setHostname:[arguments substringWithRange:valueRange]];
         }
-    } else if ([keyword localizedCaseInsensitiveCompare:@"port"] == NSOrderedSame
-               && [array count]) {
+    }
+    else if ([keyword localizedCaseInsensitiveCompare:@"port"] == NSOrderedSame
+             && [array count]) {
         NMSSHHostConfig *config = [array lastObject];
         NSRange valueRange = [self rangeOfFirstTokenInString:arguments suffix:NULL];
         if (valueRange.location != NSNotFound &&
@@ -120,18 +134,19 @@ typedef enum {
             NSString *portString = [arguments substringWithRange:valueRange];
             NSInteger port = [portString intValue];
             if (port >= 0) {
-                config.port = (port & 0xffff);
+                [config setPort:(port & 0xffff)];
             }
         }
-    } else if ([keyword localizedCaseInsensitiveCompare:@"identityfile"] == NSOrderedSame &&
-               [array count]) {
+    }
+    else if ([keyword localizedCaseInsensitiveCompare:@"identityfile"] == NSOrderedSame &&
+             [array count]) {
         NMSSHHostConfig *config = [array lastObject];
         NSRange valueRange = [self rangeOfFirstTokenInString:arguments suffix:NULL];
         if (valueRange.location != NSNotFound &&
             valueRange.length > 0) {
             NSString *identityFile =
                 [[arguments substringWithRange:valueRange] stringByExpandingTildeInPath];
-            config.identityFiles = [config.identityFiles arrayByAddingObject:identityFile];
+            [config setIdentityFiles:[config.identityFiles arrayByAddingObject:identityFile]];
         }
     }
 }
@@ -156,7 +171,8 @@ typedef enum {
                                               range:possiblyQuotedRange];
     if (rangeOfCloseQuote.location == NSNotFound) {
         return NSMakeRange(NSNotFound, 0);
-    } else {
+    }
+    else {
         return NSMakeRange(start, rangeOfCloseQuote.location - start);
     }
 }
@@ -169,7 +185,8 @@ typedef enum {
                                                        range:tailRange];
     if (terminatingBlank.location == NSNotFound) {
         return tailRange;
-    } else {
+    }
+    else {
         return NSMakeRange(location, NSMaxRange(terminatingBlank) - location - 1);
     }
 }
@@ -187,19 +204,24 @@ typedef enum {
     if ([line characterAtIndex:rangeOfFirstNonBlank.location] == '"') {
         NSRange range = [self rangeOfQuotedSubstringInString:line
                                              startingAtIndex:rangeOfFirstNonBlank.location];
-        if (suffixPtr && range.location != NSNotFound) {
+        if (suffixPtr != NULL && range.location != NSNotFound) {
             *suffixPtr = [line substringFromIndex:NSMaxRange(range) + 1];
         }
         return range;
-    } else {
+    }
+    else {
         NSRange range =
             [self rangeInString:line fromLocationUntilBlankOrEnd:rangeOfFirstNonBlank.location];
-        if (suffixPtr) {
+        if (suffixPtr != NULL) {
             *suffixPtr = [line substringFromIndex:NSMaxRange(range)];
         }
         return range;
     }
 }
+
+// -----------------------------------------------------------------------------
+#pragma mark - MATCHING
+// -----------------------------------------------------------------------------
 
 - (NMSSHHostConfig *)hostConfigForHost:(NSString *)host {
     for (NMSSHHostConfig *config in _hostConfigs) {
@@ -242,7 +264,8 @@ typedef enum {
         if ([self host:host matchesSubpattern:pattern]) {
             if (negated) {
                 return NMSSHConfigMatchNegative;
-            } else {
+            }
+            else {
                 match = NMSSHConfigMatchPositive;
             }
         }
@@ -251,7 +274,7 @@ typedef enum {
 }
 
 - (BOOL)host:(NSString *)host matchesSubpattern:(NSString *)subPattern {
-    if (!host || !subPattern) {
+    if (host == nil || subPattern == nil) {
         return NO;
     }
     NSUInteger patternIndex = 0;

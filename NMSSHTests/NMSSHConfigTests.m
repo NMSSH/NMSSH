@@ -255,7 +255,9 @@
     XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file2" ], @"Identity files don't match");
 }
 
-#pragma mark - Test matching
+// -----------------------------------------------------------------------------
+#pragma mark - TEST MATCHING
+// -----------------------------------------------------------------------------
 
 /**
  Test matching a simple pattern
