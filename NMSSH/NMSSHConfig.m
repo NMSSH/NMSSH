@@ -65,7 +65,7 @@ typedef enum {
         [self parseLine:line intoArray:array];
     }
 
-    return array;
+    return [array copy];
 }
 
 - (void)parseLine:(NSString *)line intoArray:(NSMutableArray *)array {
