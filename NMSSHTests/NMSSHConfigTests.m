@@ -15,14 +15,6 @@
 
 @implementation NMSSHConfigTests
 
-- (void)setUp {
-    [super setUp];
-}
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-}
-
 /**
  Tests that an empty config file is ok
  */
@@ -45,7 +37,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
@@ -70,7 +62,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
@@ -95,7 +87,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
@@ -116,7 +108,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
@@ -136,7 +128,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
@@ -153,7 +145,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     NSArray *expected = @[ @"pattern1", @"pattern2" ];
     XCTAssertEqualObjects(hostConfig.hostPatterns, expected, @"Patterns don't match");
@@ -168,7 +160,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     NSArray *expected = @[ @"pattern1", @"a quoted pattern", @"pattern2", @"foo bar", @"baz" ];
     XCTAssertEqualObjects(hostConfig.hostPatterns, expected, @"Patterns don't match");
@@ -183,7 +175,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     NSArray *expected = @[ @"pattern1" ];
     XCTAssertEqualObjects(hostConfig.hostPatterns, expected, @"Patterns don't match");
@@ -202,7 +194,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     NSArray *expected = @[ @"id_file1", @"id_file2" ];
     XCTAssertEqualObjects(hostConfig.identityFiles, expected, @"Identity files don't match");
@@ -218,7 +210,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 1, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     NSArray *expected = @[ @"pattern", @"quoted pattern", @"   " ];
     XCTAssertEqualObjects(hostConfig.hostPatterns, expected, @"Patterns don't match");
@@ -241,18 +233,20 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NSArray *hostConfigs = config.hostConfigs;
     XCTAssertEqual([hostConfigs count], 2, @"Wrong number of configs read");
-    
+
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern1" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Hostnames don't match");
     XCTAssertEqual(hostConfig.port, 1, @"Port doesn't match");
-    XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file1" ], @"Identity files don't match");
+    XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file1" ],
+                          @"Identity files don't match");
 
     hostConfig = hostConfigs[1];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern2" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Hostnames don't match");
     XCTAssertEqual(hostConfig.port, 2, @"Port doesn't match");
-    XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file2" ], @"Identity files don't match");
+    XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file2" ],
+                          @"Identity files don't match");
 }
 
 // -----------------------------------------------------------------------------
@@ -293,10 +287,10 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"pattern1"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"pattern2"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"pattern3"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
@@ -347,10 +341,10 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"abcdef"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"a"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@""];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
@@ -365,10 +359,10 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"abcxyz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"abc123xyz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"abc"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 
@@ -395,7 +389,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"xyz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"123xyz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
 
@@ -419,7 +413,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"a12b34c"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"abc"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
 
@@ -440,7 +434,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"abcz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"abz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
 
@@ -449,7 +443,7 @@
 
     hostConfig = [config hostConfigForHost:@"a"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
-    
+
     hostConfig = [config hostConfigForHost:@""];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
@@ -464,7 +458,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"abcz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"abz"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
 
@@ -473,7 +467,7 @@
 
     hostConfig = [config hostConfigForHost:@"a"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
-    
+
     hostConfig = [config hostConfigForHost:@""];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
@@ -488,10 +482,10 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"pattern1"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"pattern2"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
-    
+
     hostConfig = [config hostConfigForHost:@"pattern3"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
 
@@ -509,7 +503,7 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"pattern1"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
-    
+
     hostConfig = [config hostConfigForHost:@"pattern2"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
 }
@@ -524,9 +518,38 @@
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
     NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"axy"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
-    
+
     hostConfig = [config hostConfigForHost:@"abc"];
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"b"];
+    XCTAssertNil(hostConfig, @"Match should have failed but didn't");
+}
+
+/**
+ Test two rules where the first negates and the second matches.
+ */
+- (void)testTwoRulesWhereFirstNegatesAndSecondMatches {
+    NSString *contents =
+        @"Host !*x* a*\n"
+        @"    Hostname hostname1\n"
+        @"Host *z\n"
+        @"    Hostname hostname2\n";
+    NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
+    NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"axy"];
+    XCTAssertNil(hostConfig, @"Match should have failed but didn't");
+
+    hostConfig = [config hostConfigForHost:@"abc"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"axz"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"xz"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
+
+    hostConfig = [config hostConfigForHost:@"z"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname2", @"Match failed");
 
     hostConfig = [config hostConfigForHost:@"b"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");

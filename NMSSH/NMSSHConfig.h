@@ -64,7 +64,7 @@
 
 /**
  Initializes an NMSSHConfig from a config file's contents in a string.
- 
+
  @param contents A config file's contents.
  @returns An NMSSHConfig object or nil if the contents were malformed.
  */

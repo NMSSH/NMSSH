@@ -233,10 +233,14 @@ typedef enum {
                     break;
 
                 case NMSSHConfigMatchNegative:
-                    return nil;
+                    match = NMSSHConfigMatchNegative;
+                    break;
 
                 case NMSSHConfigMatchNone:
                     break;
+            }
+            if (match == NMSSHConfigMatchNegative) {
+                break;
             }
         }
         if (match == NMSSHConfigMatchPositive) {
