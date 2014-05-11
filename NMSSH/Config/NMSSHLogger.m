@@ -23,27 +23,20 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 // -----------------------------------------------------------------------------
 
 + (NMSSHLogger *)logger {
-    static NMSSHLogger *logger;
+    static NMSSHLogger *logger = nil;
 
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         logger = [[NMSSHLogger alloc] init];
+        [logger setEnabled:YES];
+        [logger setLogLevel:NMSSHLogLevelVerbose];
+        [logger setLogBlock:^(NMSSHLogLevel level, NSString *format) {
+            NSLog(@"%@", format);
+        }];
+        [logger setLoggerQueue:dispatch_queue_create("NMSSH.loggerQueue", DISPATCH_QUEUE_SERIAL)];
     });
 
     return logger;
-}
-
-- (instancetype)init {
-    if ((self = [super init])) {
-        [self setEnabled:YES];
-        [self setLogLevel:NMSSHLogLevelVerbose];
-        [self setLogBlock:^(NMSSHLogLevel level, NSString *format) {
-            NSLog(@"%@", format);
-        }];
-        [self setLoggerQueue:dispatch_queue_create("NMSSH.loggerQueue", DISPATCH_QUEUE_SERIAL)];
-    }
-
-    return self;
 }
 
 #if !(OS_OBJECT_USE_OBJC)
@@ -57,7 +50,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 // -----------------------------------------------------------------------------
 
 - (void)log:(NSString *)format level:(NMSSHLogLevel)level flag:(NMSSHLogFlag)flag {
-    if (flag & self.logLevel && self.enabled) {
+    if (flag & self.logLevel && self.enabled && self.logBlock) {
         dispatch_async(self.loggerQueue, ^{
             self.logBlock(level, [NSString stringWithFormat:@"NMSSH: %@", format]);
         });
