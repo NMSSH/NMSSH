@@ -114,7 +114,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  The {host} is used to perform a lookup in NMSSHConfig objects in the
  {configs} array, which may alias the hostname and provide a port number or user
  name. All information relevant to {host} in {configs} will be combined into
- a single NMSSHHostConfig and saved in {self.synthesizedConfig}. A config-
+ a single NMSSHHostConfig and saved in {self.hostConfig}. A config-
  provided value will override {host}, {defaultUsername} or {defaultPort}. If no
  match is found then {host} is used as the host name.
 
