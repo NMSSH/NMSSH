@@ -1,4 +1,6 @@
 #import "NMSSHSessionTests.h"
+#import "NMSSHConfig.h"
+#import "NMSSHHostConfig.h"
 #import "ConfigHelper.h"
 
 #import <NMSSH/NMSSH.h>
@@ -220,6 +222,113 @@
     XCTAssertFalse([session isAuthorized],
                   @"Agent authentication with invalid username should not"
                   @"work");
+}
+
+// -----------------------------------------------------------------------------
+// CONFIG TESTS
+// -----------------------------------------------------------------------------
+
+// Tests synthesis that uses some defaults, some global, and some local values,
+// and merges identity files.
+- (void)testConfigSynthesisFromChain {
+    NMSSHConfig *globalConfig = [[NMSSHConfig alloc] initWithString:
+                                    @"Host host\n"
+                                    @"    Hostname globalHostname\n"
+                                    @"    Port 9999\n"
+                                    @"    IdentityFile idFile1\n"
+                                    @"    IdentityFile idFile2"];
+    NMSSHConfig *userConfig = [[NMSSHConfig alloc] initWithString:
+                                  @"Host host\n"
+                                  @"    Hostname localHostname\n"
+                                  @"    IdentityFile idFile2\n"
+                                  @"    IdentityFile idFile3"];
+    NSArray *configChain = @[ userConfig, globalConfig ];
+    session = [[NMSSHSession alloc] initWithHost:@"host"
+                                         configs:configChain
+                                 withDefaultPort:22
+                                 defaultUsername:@"defaultUsername"];
+    
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"localHostname",
+                          @"Hostname not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.port, @9999,
+                          @"Port not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.user, @"defaultUsername",
+                          @"User not properly synthesized");
+    NSArray *expected = @[ @"idFile2", @"idFile3", @"idFile1" ];
+    XCTAssertEqualObjects(session.hostConfig.identityFiles, expected,
+                          @"Identity files not properly synthesized");
+}
+
+// Tests that all default values can appear in the synthesized config.
+- (void)testConfigSynthesisInheritsDefaults {
+    NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:
+                              @"Host nonMatchingHost\n"
+                              @"    Hostname badHostname\n"
+                              @"    Port 9999\n"
+                              @"    User badUser\n"
+                              @"    IdentityFile badIdFile\n"];
+    NSArray *configChain = @[ config ];
+    session = [[NMSSHSession alloc] initWithHost:@"goodHost"
+                                         configs:configChain
+                                 withDefaultPort:22
+                                 defaultUsername:@"goodUsername"];
+    
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"goodHost",
+                          @"Hostname not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.port, @22,
+                          @"Port not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.user, @"goodUsername",
+                          @"User not properly synthesized");
+    NSArray *expected = @[ ];
+    XCTAssertEqualObjects(session.hostConfig.identityFiles, expected,
+                          @"Identity files not properly synthesized");
+}
+
+// Tests that all values respect the priority hierarchy of the config chain.
+- (void)testConfigSynthesisRespectsPriority {
+    NMSSHConfig *globalConfig = [[NMSSHConfig alloc] initWithString:
+                                    @"Host host\n"
+                                    @"    Hostname globalHostname\n"
+                                    @"    Port 9999\n"
+                                    @"    User globalUser"];
+    NMSSHConfig *userConfig = [[NMSSHConfig alloc] initWithString:
+                                  @"Host host\n"
+                                  @"    Hostname localHostname\n"
+                                  @"    Port 8888\n"
+                                  @"    User localUser"];
+    NSArray *configChain = @[ userConfig, globalConfig ];
+    session = [[NMSSHSession alloc] initWithHost:@"host"
+                                         configs:configChain
+                                 withDefaultPort:22
+                                 defaultUsername:@"defaultUsername"];
+    
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"localHostname",
+                          @"Hostname not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.port, @8888,
+                          @"Port not properly synthesized");
+    XCTAssertEqualObjects(session.hostConfig.user, @"localUser",
+                          @"User not properly synthesized");
+}
+
+// Tests that values from the config are used in creating the session.
+- (void)testConfigIsUsed {
+    NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:
+                           @"Host host\n"
+                           @"    Hostname configHostname\n"
+                           @"    Port 9999\n"
+                           @"    User configUser\n"];
+    NSArray *configChain = @[ config ];
+    session = [[NMSSHSession alloc] initWithHost:@"host"
+                                         configs:configChain
+                                 withDefaultPort:22
+                                 defaultUsername:@"defaultUsername"];
+    
+    XCTAssertEqualObjects(session.host, @"configHostname",
+                          @"Hostname from config not used");
+    XCTAssertEqualObjects(session.port, @9999,
+                          @"Port from config not used");
+    XCTAssertEqualObjects(session.username, @"configUser",
+                          @"User from config not used");
 }
 
 @end

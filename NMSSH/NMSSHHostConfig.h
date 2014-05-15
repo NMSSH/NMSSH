@@ -19,6 +19,11 @@
 @property(nonatomic, strong) NSString *hostname;
 
 /**
+ Specifies the user name to log in as.
+ */
+@property(nonatomic, strong) NSString *user;
+
+/**
  Specifies the port number to connect on the remote host.
  */
 @property(nonatomic, strong) NSNumber *port;
@@ -36,5 +41,11 @@
  If multiple identities are provided, the client should try them in order.
  */
 @property(nonatomic, strong) NSArray *identityFiles;
+
+/**
+ Values for {other} are copied to {self} if not already set. Arrays are
+ appended from {other} without adding duplicates.
+ */
+- (void)mergeFrom:(NMSSHHostConfig *)other;
 
 @end

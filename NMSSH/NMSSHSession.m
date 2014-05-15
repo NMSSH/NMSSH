@@ -1,5 +1,7 @@
 #import "NMSSHSession.h"
 #import "NMSSH+Protected.h"
+#import "NMSSHConfig.h"
+#import "NMSSHHostConfig.h"
 
 @interface NMSSHSession ()
 @property (nonatomic, assign) LIBSSH2_AGENT *agent;
@@ -14,6 +16,7 @@
 @property (nonatomic, strong) NMSSHChannel *channel;
 @property (nonatomic, strong) NMSFTP *sftp;
 @property (nonatomic, strong) NSNumber *port;
+@property (nonatomic, strong) NMSSHHostConfig *hostConfig;
 @end
 
 @implementation NMSSHSession
@@ -46,6 +49,37 @@
         [self setUsername:username];
         [self setConnected:NO];
         [self setFingerprintHash:NMSSHSessionHashMD5];
+    }
+
+    return self;
+}
+
+- (instancetype)initWithHost:(NSString *)host
+                     configs:(NSArray *)configs
+             withDefaultPort:(NSInteger)defaultPort
+             defaultUsername:(NSString *)defaultUsername {
+    // Merge matching entries from configs together.
+    NMSSHHostConfig *hostConfig = [[NMSSHHostConfig alloc] init];
+    for (NMSSHConfig *config in configs) {
+        NMSSHHostConfig *matchingHostConfig = [config hostConfigForHost:host];
+        if (matchingHostConfig) {
+            [hostConfig mergeFrom:matchingHostConfig];
+        }
+    }
+
+    // Merge in defaults.
+    NMSSHHostConfig *defaultHostConfig = [[NMSSHHostConfig alloc] init];
+    [defaultHostConfig setHostname:host];
+    [defaultHostConfig setPort:@(defaultPort)];
+    [defaultHostConfig setUser:defaultUsername];
+    [hostConfig mergeFrom:defaultHostConfig];
+
+    // Initialize with resulting config.
+    self = [self initWithHost:hostConfig.hostname
+                         port:[hostConfig.port integerValue]
+                  andUsername:hostConfig.user];
+    if (self) {
+        [self setHostConfig:hostConfig];
     }
 
     return self;

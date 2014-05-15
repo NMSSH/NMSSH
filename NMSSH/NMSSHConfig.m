@@ -93,6 +93,9 @@ typedef enum {
     else if ([keyword localizedCaseInsensitiveCompare:@"hostname"] == NSOrderedSame) {
         [self parseHostNameWithArguments:arguments intoArray:array];
     }
+    else if ([keyword localizedCaseInsensitiveCompare:@"user"] == NSOrderedSame) {
+        [self parseUserWithArguments:arguments intoArray:array];
+    }
     else if ([keyword localizedCaseInsensitiveCompare:@"port"] == NSOrderedSame) {
         [self parsePortWithArguments:arguments intoArray:array];
     }
@@ -132,6 +135,20 @@ typedef enum {
     if (valueRange.location != NSNotFound &&
         valueRange.length > 0) {
         [config setHostname:[arguments substringWithRange:valueRange]];
+    }
+}
+
+- (void)parseUserWithArguments:(NSString *)arguments
+                     intoArray:(NSMutableArray *)array {
+    if ([array count] == 0) {
+        return;
+    }
+    NMSSHHostConfig *config = [array lastObject];
+    NSRange valueRange = [self rangeOfFirstTokenInString:arguments suffix:NULL];
+
+    if (valueRange.location != NSNotFound &&
+        valueRange.length > 0) {
+        [config setUser:[arguments substringWithRange:valueRange]];
     }
 }
 
@@ -246,6 +263,9 @@ typedef enum {
 // -----------------------------------------------------------------------------
 
 - (NMSSHHostConfig *)hostConfigForHost:(NSString *)host {
+    NMSSHHostConfig *combinedConfig = [[NMSSHHostConfig alloc] init];
+    BOOL foundAny = NO;
+
     for (NMSSHHostConfig *config in _hostConfigs) {
         NMSSHConfigMatch match = NMSSHConfigMatchNone;
 
@@ -269,11 +289,12 @@ typedef enum {
         }
 
         if (match == NMSSHConfigMatchPositive) {
-            return config;
+            [combinedConfig mergeFrom:config];
+            foundAny = YES;
         }
     }
 
-    return nil;
+    return foundAny ? combinedConfig : nil;
 }
 
 // A pattern list is a comma-delimited sequence of subpatterns. A subpattern is a string with

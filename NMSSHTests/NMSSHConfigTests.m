@@ -33,6 +33,7 @@
     NSString *contents =
         @"Host pattern\n"
         @"    Hostname hostname\n"
+        @"    User user\n"
         @"    Port 1234\n"
         @"    IdentityFile id_file\n";
     NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
@@ -42,6 +43,7 @@
     NMSSHHostConfig *hostConfig = hostConfigs[0];
     XCTAssertEqualObjects(hostConfig.hostPatterns, @[ @"pattern" ], @"Patterns don't match");
     XCTAssertEqualObjects(hostConfig.hostname, @"hostname", @"Hostnames don't match");
+    XCTAssertEqualObjects(hostConfig.user, @"user", @"Users don't match");
     XCTAssertEqualObjects(hostConfig.port, @1234, @"Port doesn't match");
     XCTAssertEqualObjects(hostConfig.identityFiles, @[ @"id_file" ], @"Identity files don't match");
 }
@@ -579,6 +581,32 @@
 
     hostConfig = [config hostConfigForHost:@"b"];
     XCTAssertNil(hostConfig, @"Match should have failed but didn't");
+}
+
+/**
+ Test two rules that both match. They should be merged.
+ */
+- (void)testMergeTwoMatchingRules {
+    NSString *contents =
+        @"Host *\n"
+        @"    Hostname hostname1\n"
+        @"    Port 1\n"
+        @"    IdentityFile id_file1\n"
+        @"Host *\n"
+        @"    Hostname hostname2\n"
+        @"    Port 2\n"
+        @"    User user\n"
+        @"    IdentityFile id_file2\n";
+
+    NMSSHConfig *config = [[NMSSHConfig alloc] initWithString:contents];
+
+    NMSSHHostConfig *hostConfig = [config hostConfigForHost:@"hostname"];
+    XCTAssertEqualObjects(hostConfig.hostname, @"hostname1", @"Hostnames don't match");
+    XCTAssertEqualObjects(hostConfig.port, @1, @"Port doesn't match");
+    XCTAssertEqualObjects(hostConfig.user, @"user", @"Users doesn't match");
+    NSArray *expected = @[ @"id_file1", @"id_file2" ];
+    XCTAssertEqualObjects(hostConfig.identityFiles, expected,
+                          @"Identity files don't match");
 }
 
 @end
