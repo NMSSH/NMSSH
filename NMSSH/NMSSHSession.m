@@ -62,7 +62,7 @@
     NMSSHHostConfig *hostConfig = [[NMSSHHostConfig alloc] init];
     for (NMSSHConfig *config in configs) {
         NMSSHHostConfig *matchingHostConfig = [config hostConfigForHost:host];
-        if (hostConfig) {
+        if (matchingHostConfig) {
             [hostConfig mergeFrom:matchingHostConfig];
         }
     }
