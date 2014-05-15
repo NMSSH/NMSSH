@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  all configs in the chain by priority, plus client-provided defaults. This is
  only set if NMSSHSession was initialized with a config chain.
  */
-@property (nonatomic, readonly) NMSSHHostConfig *synthesizedConfig;
+@property (nonatomic, readonly) NMSSHHostConfig *hostConfig;
 
 /// ----------------------------------------------------------------------------
 /// @name Initialize a new SSH session

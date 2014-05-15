@@ -248,14 +248,14 @@
                                  withDefaultPort:22
                                  defaultUsername:@"defaultUsername"];
     
-    XCTAssertEqualObjects(session.synthesizedConfig.hostname, @"localHostname",
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"localHostname",
                           @"Hostname not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.port, @9999,
+    XCTAssertEqualObjects(session.hostConfig.port, @9999,
                           @"Port not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.user, @"defaultUsername",
+    XCTAssertEqualObjects(session.hostConfig.user, @"defaultUsername",
                           @"User not properly synthesized");
     NSArray *expected = @[ @"idFile2", @"idFile3", @"idFile1" ];
-    XCTAssertEqualObjects(session.synthesizedConfig.identityFiles, expected,
+    XCTAssertEqualObjects(session.hostConfig.identityFiles, expected,
                           @"Identity files not properly synthesized");
 }
 
@@ -273,14 +273,14 @@
                                  withDefaultPort:22
                                  defaultUsername:@"goodUsername"];
     
-    XCTAssertEqualObjects(session.synthesizedConfig.hostname, @"goodHost",
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"goodHost",
                           @"Hostname not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.port, @22,
+    XCTAssertEqualObjects(session.hostConfig.port, @22,
                           @"Port not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.user, @"goodUsername",
+    XCTAssertEqualObjects(session.hostConfig.user, @"goodUsername",
                           @"User not properly synthesized");
     NSArray *expected = @[ ];
-    XCTAssertEqualObjects(session.synthesizedConfig.identityFiles, expected,
+    XCTAssertEqualObjects(session.hostConfig.identityFiles, expected,
                           @"Identity files not properly synthesized");
 }
 
@@ -302,11 +302,11 @@
                                  withDefaultPort:22
                                  defaultUsername:@"defaultUsername"];
     
-    XCTAssertEqualObjects(session.synthesizedConfig.hostname, @"localHostname",
+    XCTAssertEqualObjects(session.hostConfig.hostname, @"localHostname",
                           @"Hostname not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.port, @8888,
+    XCTAssertEqualObjects(session.hostConfig.port, @8888,
                           @"Port not properly synthesized");
-    XCTAssertEqualObjects(session.synthesizedConfig.user, @"localUser",
+    XCTAssertEqualObjects(session.hostConfig.user, @"localUser",
                           @"User not properly synthesized");
 }
 

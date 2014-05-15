@@ -16,7 +16,7 @@
 @property (nonatomic, strong) NMSSHChannel *channel;
 @property (nonatomic, strong) NMSFTP *sftp;
 @property (nonatomic, strong) NSNumber *port;
-@property (nonatomic, strong) NMSSHHostConfig *synthesizedConfig;
+@property (nonatomic, strong) NMSSHHostConfig *hostConfig;
 @end
 
 @implementation NMSSHSession
@@ -59,27 +59,27 @@
              withDefaultPort:(NSInteger)defaultPort
              defaultUsername:(NSString *)defaultUsername {
     // Merge matching entries from configs together.
-    NMSSHHostConfig *synthesizedConfig = [[NMSSHHostConfig alloc] init];
+    NMSSHHostConfig *hostConfig = [[NMSSHHostConfig alloc] init];
     for (NMSSHConfig *config in configs) {
-        NMSSHHostConfig *hostConfig = [config hostConfigForHost:host];
+        NMSSHHostConfig *matchingHostConfig = [config hostConfigForHost:host];
         if (hostConfig) {
-            [synthesizedConfig mergeFrom:hostConfig];
+            [hostConfig mergeFrom:matchingHostConfig];
         }
     }
 
     // Merge in defaults.
     NMSSHHostConfig *defaultHostConfig = [[NMSSHHostConfig alloc] init];
-    defaultHostConfig.hostname = host;
-    defaultHostConfig.port = @(defaultPort);
-    defaultHostConfig.user = defaultUsername;
-    [synthesizedConfig mergeFrom:defaultHostConfig];
+    [defaultHostConfig setHostname:host];
+    [defaultHostConfig setPort:@(defaultPort)];
+    [defaultHostConfig setUser:defaultUsername];
+    [hostConfig mergeFrom:defaultHostConfig];
 
     // Initialize with resulting config.
-    self = [self initWithHost:synthesizedConfig.hostname
-                         port:[synthesizedConfig.port integerValue]
-                  andUsername:synthesizedConfig.user];
+    self = [self initWithHost:hostConfig.hostname
+                         port:[hostConfig.port integerValue]
+                  andUsername:hostConfig.user];
     if (self) {
-        [self setSynthesizedConfig:synthesizedConfig];
+        [self setHostConfig:hostConfig];
     }
 
     return self;
