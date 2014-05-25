@@ -207,28 +207,14 @@
     if (!initialized) {
         return NO;
     }
-
-    // Try to create the socket
-    _socket = CFSocketCreate(kCFAllocatorDefault, PF_INET, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL);
-    if (!_socket) {
-        NMSSHLogError(@"Error creating the socket");
-        return NO;
-    }
-
-    // Set NOSIGPIPE
-    int set = 1;
-    if (setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
-        NMSSHLogError(@"Error setting socket option");
-        [self disconnect];
-        return NO;
-    }
-
     // Try to establish a connection to the server
     NSUInteger index = -1;
     NSInteger port = [self.port integerValue];
     NSArray *addresses = [self hostIPAddresses];
     CFSocketError error = 1;
     struct sockaddr_storage *address = NULL;
+
+    SInt32 addressFamily;
 
     while (addresses && ++index < [addresses count] && error) {
         NSData *addressData = addresses[index];
@@ -246,6 +232,7 @@
             char str[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &(address4.sin_addr), str, INET_ADDRSTRLEN);
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
+            addressFamily = AF_INET;
         } // IPv6
         else if([addressData length] == sizeof(struct sockaddr_in6)) {
             struct sockaddr_in6 address6;
@@ -258,12 +245,30 @@
             char str[INET6_ADDRSTRLEN];
             inet_ntop(AF_INET6, &(address6.sin6_addr), str, INET6_ADDRSTRLEN);
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
+            addressFamily = AF_INET6;
+            
         }
         else {
             NMSSHLogVerbose(@"Unknown address, it's not IPv4 or IPv6!");
             continue;
         }
-
+        
+        // Try to create the socket
+        _socket = CFSocketCreate(kCFAllocatorDefault, addressFamily, SOCK_STREAM, IPPROTO_IP, kCFSocketNoCallBack, NULL, NULL);
+        if (!_socket) {
+            NMSSHLogError(@"Error creating the socket");
+            return NO;
+        }
+        
+        // Set NOSIGPIPE
+        int set = 1;
+        if (setsockopt(CFSocketGetNative(_socket), SOL_SOCKET, SO_NOSIGPIPE, (void *)&set, sizeof(set)) != 0) {
+            NMSSHLogError(@"Error setting socket option");
+            [self disconnect];
+            return NO;
+        }
+        
+        
         error = CFSocketConnectToAddress(_socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
 
         if (error) {
@@ -324,6 +329,7 @@
 
     return self.isConnected;
 }
+
 
 - (void)disconnect {
     if (_channel) {
