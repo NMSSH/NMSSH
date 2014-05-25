@@ -271,9 +271,10 @@
     // Create a session instance
     [self setSession:libssh2_session_init_ex(NULL, NULL, NULL, (__bridge void *)(self))];
 
-    // Set a callback for disconnection
+    // Set libssh2 callbacks
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_DISCONNECT, &disconnect_callback);
     libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_RECV, &socket_read_callback);
+    libssh2_session_callback_set(self.session, LIBSSH2_CALLBACK_SEND, &socket_write_callback);
 
     // Set blocking mode
     libssh2_session_set_blocking(self.session, 1);
@@ -887,6 +888,26 @@ ssize_t socket_read_callback(libssh2_socket_t sock, void *buffer, size_t length,
         } else {
             return -errno;
         }
+    }
+
+    return rc;
+}
+
+ssize_t socket_write_callback(libssh2_socket_t sock, const void *buffer, size_t length, int flags, void **abstract) {
+    NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
+
+    ssize_t rc = send(sock, buffer, length, flags);
+
+    if (errno == ENOTCONN) {
+        [self disconnect:^ {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(session:didDisconnectWithError:)]) {
+                [self.delegate session:self didDisconnectWithError:nil];
+            }
+        }];
+    }
+
+    if (rc < 0 ) {
+        return -errno;
     }
 
     return rc;
