@@ -132,7 +132,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
 /**
  Close a remote shell on an active channel.
  */
-- (void)closeShellWithCompletitionBlock:(void (^)())completitionBlock;
+- (void)closeShell:(void (^)())complete;
 
 /**
  Write a command on the remote shell.

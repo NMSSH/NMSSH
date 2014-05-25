@@ -425,11 +425,11 @@
     return YES;
 }
 
-- (void)closeShellWithCompletitionBlock:(void (^)())completitionBlock {
+- (void)closeShell:(void (^)())complete {
     [self.session.queue scheduleBlock:^{
         [self closeShell];
 
-        RUN_BLOCK(completitionBlock);
+        RUN_BLOCK(complete);
     } synchronously:NO];
 }
 

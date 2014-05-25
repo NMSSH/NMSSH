@@ -22,19 +22,19 @@
 #pragma mark - INITIALIZE A NEW SSH SESSION
 // -----------------------------------------------------------------------------
 
-+ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock {
++ (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username complete:(void(^)(NSError *))complete {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                           port:port
                                                    andUsername:username];
-    [session connectWithCompletitionBlock:completitionBlock];
+    [session connect:complete];
 
     return session;
 }
 
-+ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username completitionBlock:(void(^)(NSError *))completitionBlock {
++ (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username complete:(void(^)(NSError *))complete {
     NMSSHSession *session = [[NMSSHSession alloc] initWithHost:host
                                                    andUsername:username];
-    [session connectWithCompletitionBlock:completitionBlock];
+    [session connect:complete];
 
     return session;
 }
@@ -154,16 +154,16 @@
 #pragma mark - OPEN/CLOSE A CONNECTION TO THE SERVER
 // -----------------------------------------------------------------------------
 
-- (void)connectWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
-    return [self connectWithTimeout:@(10) completitionBlock:completitionBlock];
+- (void)connect:(void (^)(NSError *))complete {
+    return [self connectWithTimeout:@(10) complete:complete];
 }
 
-- (void)connectWithTimeout:(NSNumber *)timeout completitionBlock:(void (^)(NSError *))completitionBlock {
+- (void)connectWithTimeout:(NSNumber *)timeout complete:(void (^)(NSError *))complete {
     [self.queue scheduleBlock:^{
         NSError *error;
         [self connectWithTimeout:@(10) error:&error];
 
-        RUN_BLOCK(completitionBlock, error);
+        RUN_BLOCK(complete, error);
     } synchronously:NO];
 }
 
@@ -315,11 +315,11 @@
     return self.isConnected;
 }
 
-- (void)disconnectWithCompletitionBlock:(void (^)())completitionBlock {
+- (void)disconnect:(void (^)())complete {
     [self.queue scheduleUniqueBlock:^{
         [self disconnect];
 
-        RUN_BLOCK(completitionBlock);
+        RUN_BLOCK(complete);
     } withSignature:@"disconnect"
       synchronously:NO];
 }
@@ -372,12 +372,12 @@
     return NO;
 }
 
-- (void)authenticateByPassword:(NSString *)password completitionBlock:(void (^)(NSError *))completitionBlock {
+- (void)authenticateByPassword:(NSString *)password complete:(void (^)(NSError *))complete {
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByPassword:password error:&error];
 
-        RUN_BLOCK(completitionBlock, error);
+        RUN_BLOCK(complete, error);
     } synchronously:NO];
 }
 
@@ -412,12 +412,12 @@
 - (void)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
                        password:(NSString *)password
-              completitionBlock:(void (^)(NSError *))completitionBlock {
+                       complete:(void (^)(NSError *))complete {
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
 
-        RUN_BLOCK(completitionBlock, error);
+        RUN_BLOCK(complete, error);
     } synchronously:NO];
 }
 
@@ -458,16 +458,16 @@
     return self.isAuthorized;
 }
 
-- (void)authenticateByKeyboardInteractiveWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
-    [self authenticateByKeyboardInteractiveUsingBlock:nil completitionBlock:completitionBlock];
+- (void)authenticateByKeyboardInteractive:(void (^)(NSError *))complete {
+    [self authenticateByKeyboardInteractiveUsingBlock:nil complete:complete];
 }
 
-- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *))authenticationBlock completitionBlock:(void (^)(NSError *))completitionBlock {
+- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *))authenticationBlock complete:(void (^)(NSError *))complete {
     [self.queue scheduleBlock:^{
         NSError *error;
         [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
 
-        RUN_BLOCK(completitionBlock, error);
+        RUN_BLOCK(complete, error);
     } synchronously:NO];
 }
 
@@ -494,16 +494,16 @@
     return self.isAuthorized;
 }
 
-- (void)connectToAgentWithCompletitionBlock:(void (^)(NSError *))completitionBlock {
+- (void)connectToAgent:(void (^)(NSError *))complete {
     [self.queue scheduleBlock:^{
         NSError *error;
-        [self connectToAgent:&error];
+        [self connectToAgentWithError:&error];
 
-        RUN_BLOCK(completitionBlock, error);
+        RUN_BLOCK(complete, error);
     } synchronously:NO];
 }
 
-- (BOOL)connectToAgent:(NSError *__autoreleasing *)error {
+- (BOOL)connectToAgentWithError:(NSError *__autoreleasing *)error {
     if (![self supportsAuthenticationMethod:@"publickey"]) {
         *error = [NSError errorWithDomain:@"NMSSH" code:1 userInfo:nil];
 
@@ -876,7 +876,7 @@ ssize_t socket_read_callback(libssh2_socket_t sock, void *buffer, size_t length,
 
     if (rc < 0) {
         if (errno == ENOTCONN) {
-            [self disconnectWithCompletitionBlock:^ {
+            [self disconnect:^ {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(session:didDisconnectWithError:)]) {
                     [self.delegate session:self didDisconnectWithError:nil];
                 }
