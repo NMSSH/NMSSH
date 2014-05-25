@@ -1,5 +1,19 @@
 #import "NMSSH.h"
 
+FOUNDATION_EXPORT NSString *const NMSSHLibssh2ErrorDomain;
+FOUNDATION_EXPORT NSString *const NMSSHSessionErrorDomain;
+
+typedef NS_ENUM(NSInteger, NMSSHSessionError) {
+    NMSSHSessionLibssh2InitError,
+    NMSSHSessionSocketError,
+    NMSSHSessionHandshakeError,
+    NMSSHSessionFigerprintError,
+    NMSSHSessionAgentError,
+    NMSSHSessionAuthenticationError,
+    NMSSHSessionAuthenticationMethodNotSupported,
+    NMSSHSessionInvalidParam
+};
+
 typedef NS_ENUM(NSInteger, NMSSHSessionHash) {
     NMSSHSessionHashMD5,
     NMSSHSessionHashSHA1
