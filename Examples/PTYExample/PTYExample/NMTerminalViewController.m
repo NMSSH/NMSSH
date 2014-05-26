@@ -41,7 +41,7 @@
 }
 
 - (IBAction)connect:(id)sender {
-    self.session = [NMSSHSession connectToHost:self.host withUsername:self.username completitionBlock:^(NSError *error) {
+    self.session = [NMSSHSession connectToHost:self.host withUsername:self.username complete:^(NSError *error) {
         self.session.delegate = self;
 
         if (!self.session.connected) {
@@ -57,7 +57,7 @@
         });
 
         if (self.keyboardInteractive) {
-            [self.session authenticateByKeyboardInteractiveWithCompletitionBlock:^(NSError *error) {
+            [self.session authenticateByKeyboardInteractive:^(NSError *error) {
                 if (!self.session.authorized) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self appendToTextView:@"Authentication error\n"];
@@ -83,7 +83,7 @@
             }];
         }
         else {
-            [self.session authenticateByPassword:self.password completitionBlock:^(NSError *error) {
+            [self.session authenticateByPassword:self.password complete:^(NSError *error) {
                 if (!self.session.authorized) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self appendToTextView:@"Authentication error\n"];
@@ -111,7 +111,7 @@
 }
 
 - (IBAction)disconnect:(id)sender {
-    [self.session disconnectWithCompletitionBlock:nil];
+    [self.session disconnect:nil];
 
 }
 
