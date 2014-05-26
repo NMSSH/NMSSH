@@ -1,12 +1,15 @@
 #import "NMSSH.h"
 
+FOUNDATION_EXPORT NSString *const NMSSHChannelErrorDomain;
+
 typedef NS_ENUM(NSInteger, NMSSHChannelError) {
     NMSSHChannelExecutionError,
     NMSSHChannelExecutionResponseError,
-    NMSSHChannelRequestPtyError,
+    NMSSHChannelPtyError,
+    NMSSHChannelSCPError,
     NMSSHChannelExecutionTimeout,
     NMSSHChannelAllocationError,
-    NMSSHChannelRequestShellError,
+    NMSSHChannelShellError,
     NMSSHChannelWriteError,
     NMSSHChannelReadError
 };
