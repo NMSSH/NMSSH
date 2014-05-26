@@ -182,10 +182,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         NSString *response = [self execute:command error:&error timeout:timeout];
 
         if (!error) {
-            RUN_BLOCK(success, response);
+            RUN_BLOCK_ON_MAIN_THREAD(success, response);
         }
         else {
-            RUN_BLOCK(failure, response, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, response, error);
         }
     } synchronously:NO];
 }
@@ -327,10 +327,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         BOOL completed = [self startShell:&error];
 
         if (completed) {
-            RUN_BLOCK(success);
+            RUN_BLOCK_ON_MAIN_THREAD(success);
         }
         else {
-            RUN_BLOCK(failure, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
         }
     } synchronously:NO];
 }
@@ -432,7 +432,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
     [self.session.queue scheduleBlock:^{
         [self closeShell];
 
-        RUN_BLOCK(complete);
+        RUN_BLOCK_ON_MAIN_THREAD(complete);
     } synchronously:NO];
 }
 
@@ -472,10 +472,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         BOOL completed = [self writeData:data error:&error timeout:timeout];
 
         if (completed) {
-            RUN_BLOCK(success);
+            RUN_BLOCK_ON_MAIN_THREAD(success);
         }
         else {
-            RUN_BLOCK(failure, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
         }
     } synchronously:NO];
 }
@@ -529,10 +529,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         BOOL completed = [self requestSizeWidth:width height:height error:&error];
 
         if (completed) {
-            RUN_BLOCK(success);
+            RUN_BLOCK_ON_MAIN_THREAD(success);
         }
         else {
-            RUN_BLOCK(failure, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
         }
     } synchronously:NO];
 }
@@ -562,10 +562,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         BOOL completed = [self uploadFile:localPath to:remotePath error:&error progress:progress];
 
         if (completed) {
-            RUN_BLOCK(success);
+            RUN_BLOCK_ON_MAIN_THREAD(success);
         }
         else {
-            RUN_BLOCK(failure, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
         }
     } synchronously:NO];
 }
@@ -684,10 +684,10 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         BOOL completed = [self downloadFile:remotePath to:localPath error:&error progress:progress];
 
         if (completed) {
-            RUN_BLOCK(success);
+            RUN_BLOCK_ON_MAIN_THREAD(success);
         }
         else {
-            RUN_BLOCK(failure, error);
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
         }
     } synchronously:NO];
 }

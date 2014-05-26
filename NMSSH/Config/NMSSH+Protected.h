@@ -17,7 +17,7 @@
 
 #define strlen (unsigned int)strlen
 
-#define RUN_BLOCK(block, ...) block ? block(__VA_ARGS__) : nil
+#define RUN_BLOCK_ON_MAIN_THREAD(block, ...) block ? dispatch_async(dispatch_get_main_queue(), ^{block(__VA_ARGS__);}) : nil
 
 @interface NMSSHSession ()
 @property (nonatomic, strong) NMSSHQueue *queue;

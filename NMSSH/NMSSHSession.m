@@ -168,7 +168,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         NSError *error;
         [self connectWithTimeout:@(10) error:&error];
 
-        RUN_BLOCK(complete, error);
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
     } synchronously:NO];
 }
 
@@ -355,7 +355,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     [self.queue scheduleUniqueBlock:^{
         [self disconnect];
 
-        RUN_BLOCK(complete);
+        RUN_BLOCK_ON_MAIN_THREAD(complete);
     } withSignature:@"disconnect"
       synchronously:NO];
 }
@@ -413,7 +413,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         NSError *error;
         [self authenticateByPassword:password error:&error];
 
-        RUN_BLOCK(complete, error);
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
     } synchronously:NO];
 }
 
@@ -466,7 +466,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         NSError *error;
         [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
 
-        RUN_BLOCK(complete, error);
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
     } synchronously:NO];
 }
 
@@ -525,7 +525,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         NSError *error;
         [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
 
-        RUN_BLOCK(complete, error);
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
     } synchronously:NO];
 }
 
@@ -566,7 +566,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         NSError *error;
         [self connectToAgentWithError:&error];
 
-        RUN_BLOCK(complete, error);
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
     } synchronously:NO];
 }
 
