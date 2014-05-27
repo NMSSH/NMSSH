@@ -904,6 +904,10 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     return result == 0;
 }
 
+// -----------------------------------------------------------------------------
+#pragma mark - CALLBACKS
+// -----------------------------------------------------------------------------
+
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
     NMSSHLogDebug(@"Server request '%@'", request);
 
