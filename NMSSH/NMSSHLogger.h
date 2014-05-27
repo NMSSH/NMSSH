@@ -38,7 +38,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
  */
 @property (nonatomic, copy) void (^logBlock)(NMSSHLogLevel level, NSString *format);
 
-/** The maximum log level */
+/** The maximum log level, default value is NMSSHLogLevelInfo */
 @property (nonatomic, assign) NMSSHLogLevel logLevel;
 
 /** Enable or disable the logging feature */
@@ -49,7 +49,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
 /// ----------------------------------------------------------------------------
 
 /**
- Log with verbose level
+ Log with debug level
 
  @param format Log message
  */

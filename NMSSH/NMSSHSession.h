@@ -77,6 +77,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
              `@":{port}"`; for IPv6 addresses with a port, use
              `@"[{host}]:{port}"`.
  @param username A valid username the server will accept
+ @param complete A block to be executed when connection is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns NMSSHSession instance
  */
 + (instancetype)connectToHost:(NSString *)host withUsername:(NSString *)username complete:(void(^)(NSError *))complete;
@@ -88,6 +89,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param host The server hostname
  @param port The port number
  @param username A valid username the server will accept
+ @param complete A block to be executed when connection is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns NMSSHSession instance
  */
 + (instancetype)connectToHost:(NSString *)host port:(NSInteger)port withUsername:(NSString *)username complete:(void(^)(NSError *))complete;
@@ -117,6 +119,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /// @name Connection settings
 /// ----------------------------------------------------------------------------
 
+/** The queue where all operations will be executed. */
 @property (nonatomic, readonly) dispatch_queue_t SSHQueue;
 
 /** Full server hostname in the format `@"{hostname}"`. */
@@ -166,6 +169,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /**
  Connect to the server using the default timeout (10 seconds)
 
+ @param complete A block to be executed when connection is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Connection status
  */
 - (void)connect:(void(^)(NSError *))complete;
@@ -174,12 +178,15 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  Connect to the server.
 
  @param timeout The time, in seconds, to wait before giving up.
+ @param complete A block to be executed when connection is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Connection status
  */
 - (void)connectWithTimeout:(NSNumber *)timeout complete:(void(^)(NSError *))complete;
 
 /**
  Close the session
+ 
+ @param complete A block to be executed when disconnection is completed. This block has no return value and takes no arguments.
  */
 - (void)disconnect:(void (^)())complete;
 
@@ -197,6 +204,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  Authenticate by password
 
  @param password Password for connected user
+ @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Authentication success
  */
 - (void)authenticateByPassword:(NSString *)password complete:(void(^)(NSError *))complete;
@@ -209,6 +217,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param publicKey Filepath to public key
  @param privateKey Filepath to private key
  @param password Password for encrypted private key
+ @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Authentication success
  */
 - (void)authenticateByPublicKey:(NSString *)publicKey
@@ -219,6 +228,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /**
  Authenticate by keyboard-interactive using delegate.
 
+ @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Authentication success
  */
 - (void)authenticateByKeyboardInteractive:(void(^)(NSError *))complete;
@@ -226,12 +236,8 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /**
  Authenticate by keyboard-interactive using block.
 
- @param authenticationBlock The block to apply to server requests.
-     The block takes one argument:
-
-     _request_ - Question from server<br>
-     The block returns a NSString object that represents a valid response
-     to the given question.
+ @param authenticationBlock The block to apply to server requests. The block returnes the response to the request and takes a single argument: the request from the server.
+ @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Authentication success
  */
 - (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock
@@ -240,6 +246,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
 /**
  Setup and connect to an SSH agent
 
+ @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
  @returns Authentication success
  */
 - (void)connectToAgent:(void(^)(NSError *))complete;

@@ -454,11 +454,11 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
     [self closeChannel];
 }
 
-- (void)write:(NSString *)command success:(void (^)())success failure:(void (^)(NSError *))failure {
-    [self write:command timeout:@0 success:success failure:failure];
+- (void)writeCommand:(NSString *)command success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self writeCommand:command timeout:@0 success:success failure:failure];
 }
 
-- (void)write:(NSString *)command timeout:(NSNumber *)timeout success:(void (^)())success failure:(void (^)(NSError *))failure {
+- (void)writeCommand:(NSString *)command timeout:(NSNumber *)timeout success:(void (^)())success failure:(void (^)(NSError *))failure {
     [self writeData:[command dataUsingEncoding:NSUTF8StringEncoding] timeout:timeout success:success failure:failure];
 }
 
