@@ -7,7 +7,7 @@ typedef NS_ENUM(NSInteger, NMSSHSessionError) {
     NMSSHSessionLibssh2InitError,
     NMSSHSessionSocketError,
     NMSSHSessionHandshakeError,
-    NMSSHSessionFigerprintError,
+    NMSSHSessionFingerprintError,
     NMSSHSessionAgentError,
     NMSSHSessionAuthenticationError,
     NMSSHSessionAuthenticationMethodNotSupported,

@@ -333,7 +333,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
 
         if (error) {
             *error = [NSError errorWithDomain:NMSSHSessionErrorDomain
-                                         code:NMSSHSessionFigerprintError
+                                         code:NMSSHSessionFingerprintError
                                      userInfo:@{NSLocalizedDescriptionKey: @"Fingerprint refused."}];
         }
 
