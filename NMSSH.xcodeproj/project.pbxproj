@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1865199D1934A0810087499D /* NMSSHQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 1865199B1934A0810087499D /* NMSSHQueue.h */; };
+		1865199E1934A0810087499D /* NMSSHQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 1865199C1934A0810087499D /* NMSSHQueue.m */; };
 		18B4FE85188C87F3004E05FF /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */; };
 		18B4FE8E188CB2BB004E05FF /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE89188CB2BB004E05FF /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18B4FE8F188CB2BB004E05FF /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */; };
@@ -77,6 +79,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1865199B1934A0810087499D /* NMSSHQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHQueue.h; sourceTree = "<group>"; };
+		1865199C1934A0810087499D /* NMSSHQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHQueue.m; sourceTree = "<group>"; };
 		18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH+Protected.h"; sourceTree = "<group>"; };
 		18B4FE89188CB2BB004E05FF /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
 		18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
@@ -241,6 +245,8 @@
 				18B4FE86188CB2BB004E05FF /* Libraries */,
 				E49AA6DA17228C25007101A4 /* Protocols */,
 				E4E96D8E158E10FD002E6E0A /* Supporting Files */,
+				E4F1CBB217206D730025EBFC /* NMSSHLogger.h */,
+				18E4D2381815F6F600432102 /* NMSSHLogger.m */,
 				E4E96D94158E10FD002E6E0A /* NMSSH.h */,
 				E4F1E67E159F5B13007B0B2F /* NMSSHChannel.h */,
 				E4F1E67F159F5B13007B0B2F /* NMSSHChannel.m */,
@@ -310,8 +316,8 @@
 			isa = PBXGroup;
 			children = (
 				18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */,
-				E4F1CBB217206D730025EBFC /* NMSSHLogger.h */,
-				18E4D2381815F6F600432102 /* NMSSHLogger.m */,
+				1865199B1934A0810087499D /* NMSSHQueue.h */,
+				1865199C1934A0810087499D /* NMSSHQueue.m */,
 				E4F1CBB5172073AC0025EBFC /* socket_helper.h */,
 				E4F1CBB3172073A00025EBFC /* socket_helper.m */,
 			);
@@ -326,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18B4FE8F188CB2BB004E05FF /* libssh2_publickey.h in Headers */,
+				1865199D1934A0810087499D /* NMSSHQueue.h in Headers */,
 				E42815FE15962B7600CF680C /* NMSSH.h in Headers */,
 				18B4FE85188C87F3004E05FF /* NMSSH+Protected.h in Headers */,
 				E42815C21593D95200CF680C /* NMSSHSession.h in Headers */,
@@ -450,6 +457,7 @@
 			files = (
 				E42815C31593D95200CF680C /* NMSSHSession.m in Sources */,
 				6EB9E8061887F52C003A9BE4 /* NMSFTPFile.m in Sources */,
+				1865199E1934A0810087499D /* NMSSHQueue.m in Sources */,
 				E4F1E681159F5B13007B0B2F /* NMSSHChannel.m in Sources */,
 				E48DA7BE15D0EB2800721060 /* NMSFTP.m in Sources */,
 				18E4D2391815F6F600432102 /* NMSSHLogger.m in Sources */,

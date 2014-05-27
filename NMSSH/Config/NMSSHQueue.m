@@ -1,8 +1,13 @@
 #import "NMSSHQueue.h"
 
 @interface NMSSHQueue ()
+#if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong, readwrite) dispatch_queue_t SSHQueue;
 @property (nonatomic, strong) dispatch_queue_t signatureQueue;
+#else
+@property (nonatomic, assign, readwrite) dispatch_queue_t SSHQueue;
+@property (nonatomic, assign) dispatch_queue_t signatureQueue;
+#endif
 @property (nonatomic, strong) NSMutableArray *signatureBlocks;
 @end
 
@@ -22,6 +27,13 @@ static const void *const kNMSSHQueueIdentifier = &kNMSSHQueueIdentifier;
 
     return self;
 }
+
+#if !OS_OBJECT_USE_OBJC
+- (void)dealloc {
+    dispatch_release(_SSHQueue);
+    dispatch_release(_signatureQueue);
+}
+#endif
 
 - (BOOL)isCurrentQueue {
     return dispatch_queue_get_specific(self.SSHQueue, kNMSSHQueueIdentifier) != NULL;

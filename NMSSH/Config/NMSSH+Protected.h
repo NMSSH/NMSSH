@@ -23,4 +23,8 @@
 @property (nonatomic, strong) NMSSHQueue *queue;
 @end
 
+@interface NMSSHChannel ()
+- (void)closeShell;
+@end
+
 #endif
