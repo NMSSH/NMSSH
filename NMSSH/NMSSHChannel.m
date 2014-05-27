@@ -130,7 +130,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
 
     // Send EOF to host
     rc = libssh2_channel_send_eof(self.channel);
-    NMSSHLogVerbose(@"Sent EOF to host (return code = %i)", rc);
+    NMSSHLogDebug(@"Sent EOF to host (return code = %i)", rc);
 
     return rc == 0;
 }
@@ -139,7 +139,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
     if (libssh2_channel_eof(self.channel) == 0) {
         // Wait for host acknowledge
         int rc = libssh2_channel_wait_eof(self.channel);
-        NMSSHLogVerbose(@"Received host acknowledge for EOF (return code = %i)", rc);
+        NMSSHLogDebug(@"Received host acknowledge for EOF (return code = %i)", rc);
     }
 }
 
@@ -355,7 +355,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
     [self setLastResponse:nil];
     [self setSource:dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, CFSocketGetNative([self.session socket]), 0, self.session.SSHQueue)];
     dispatch_source_set_event_handler(self.source, ^{
-        NMSSHLogVerbose(@"Data available on the socket!");
+        NMSSHLogDebug(@"Data available on the socket!");
         ssize_t rc=0, erc=0;
         char buffer[self.bufferSize];
 
@@ -386,7 +386,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
                 }
             }
             else if (libssh2_channel_eof(self.channel) == 1) {
-                NMSSHLogVerbose(@"Host EOF received, closing channel...");
+                NMSSHLogInfo(@"Host EOF received, closing channel...");
                 [self closeShell];
                 return;
             }
@@ -394,7 +394,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
     });
 
     dispatch_source_set_cancel_handler(self.source, ^{
-        NMSSHLogVerbose(@"Shell source cancelled");
+        NMSSHLogDebug(@"Shell source cancelled");
 
         if (self.delegate && [self.delegate respondsToSelector:@selector(channelShellDidClose:)]) {
             [self.delegate channelShellDidClose:self];
@@ -422,7 +422,7 @@ NSString *const NMSSHChannelErrorDomain = @"NMSSHChannel";
         return NO;
     }
 
-    NMSSHLogVerbose(@"Shell allocated");
+    NMSSHLogDebug(@"Shell allocated");
     [self setType:NMSSHChannelTypeShell];
 
     return YES;

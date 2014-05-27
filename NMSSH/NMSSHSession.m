@@ -98,7 +98,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     NSArray *addresses = nil;
 
     if (host) {
-        NMSSHLogVerbose(@"Start %@ resolution", address);
+        NMSSHLogInfo(@"Start %@ resolution", address);
 
         if (CFHostStartInfoResolution(host, kCFHostAddresses, &error)) {
             addresses = (__bridge NSArray *)(CFHostGetAddressing(host, NULL));
@@ -186,7 +186,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
             initialized = NO;
         }
 
-        NMSSHLogVerbose(@"libssh2 (v%s) initialized", libssh2_version(0));
+        NMSSHLogDebug(@"libssh2 (v%s) initialized", libssh2_version(0));
     });
 
     if (!initialized) {
@@ -265,14 +265,14 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
             ipAddress = [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
         }
         else {
-            NMSSHLogVerbose(@"Unknown address, it's not IPv4 or IPv6!");
+            NMSSHLogDebug(@"Unknown address, it's not IPv4 or IPv6!");
             continue;
         }
 
         socketError = CFSocketConnectToAddress(_socket, (__bridge CFDataRef)[NSData dataWithBytes:address length:address->ss_len], [timeout doubleValue]);
 
         if (socketError) {
-            NMSSHLogVerbose(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, socketError);
+            NMSSHLogWarn(@"Socket connection to %@ on port %ld failed with reason %li, trying next address...", ipAddress, (long)port, socketError);
         }
         else {
             NMSSHLogInfo(@"Socket connection to %@ on port %ld succesful", ipAddress, (long)port);
@@ -322,7 +322,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         return NO;
     }
 
-    NMSSHLogVerbose(@"Remote host banner is %@", [self remoteBanner]);
+    NMSSHLogDebug(@"Remote host banner is %@", [self remoteBanner]);
 
     // Get the fingerprint of the host
     NSString *fingerprint = [self fingerprint:self.fingerprintHash];
@@ -343,7 +343,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         return NO;
     }
 
-    NMSSHLogVerbose(@"SSH session started");
+    NMSSHLogDebug(@"SSH session started");
 
     // We managed to successfully setup a connection
     [self setConnected:YES];
@@ -392,7 +392,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     }
 
     libssh2_exit();
-    NMSSHLogVerbose(@"Disconnected");
+    NMSSHLogDebug(@"Disconnected");
     [self setConnected:NO];
 }
 
@@ -453,7 +453,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         return NO;
     }
 
-    NMSSHLogVerbose(@"Password authentication succeeded.");
+    NMSSHLogDebug(@"Password authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -511,7 +511,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         return NO;
     }
 
-    NMSSHLogVerbose(@"Public key authentication succeeded.");
+    NMSSHLogDebug(@"Public key authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -556,7 +556,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
         return NO;
     }
 
-    NMSSHLogVerbose(@"Keyboard-interactive authentication succeeded.");
+    NMSSHLogDebug(@"Keyboard-interactive authentication succeeded.");
 
     return self.isAuthorized;
 }
@@ -657,7 +657,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     }
 
     NSString *authList = [NSString stringWithCString:userauthlist encoding:NSUTF8StringEncoding];
-    NMSSHLogVerbose(@"User auth list: %@", authList);
+    NMSSHLogDebug(@"User auth list: %@", authList);
 
     return [authList componentsSeparatedByString:@","];
 }
@@ -905,7 +905,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
 }
 
 - (NSString *)keyboardInteractiveRequest:(NSString *)request {
-    NMSSHLogVerbose(@"Server request '%@'", request);
+    NMSSHLogDebug(@"Server request '%@'", request);
 
     if (self.kbAuthenticationBlock) {
         return self.kbAuthenticationBlock(request);
@@ -966,6 +966,8 @@ ssize_t socket_read_callback(libssh2_socket_t sock, void *buffer, size_t length,
 
     ssize_t rc = recv(sock, buffer, length, flags);
 
+    NMSSHLogDebug(@"Raw recv: %ld", rc);
+
     if (rc < 0) {
         if (errno == ENOTCONN) {
             [self disconnect:^ {
@@ -988,6 +990,8 @@ ssize_t socket_write_callback(libssh2_socket_t sock, const void *buffer, size_t 
     NMSSHSession *self = (__bridge NMSSHSession *)*abstract;
 
     ssize_t rc = send(sock, buffer, length, flags);
+
+    NMSSHLogDebug(@"Raw send: %ld", rc);
 
     if (errno == ENOTCONN) {
         [self disconnect:^ {

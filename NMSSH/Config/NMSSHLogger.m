@@ -36,7 +36,11 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 - (instancetype)init {
     if ((self = [super init])) {
         [self setEnabled:YES];
-        [self setLogLevel:NMSSHLogLevelVerbose];
+#ifdef NMSSHDEBUG
+        [self setLogLevel:NMSSHLogLevelDebug];
+#else
+        [self setLogLevel:NMSSHLogLevelInfo];
+#endif
         [self setLogBlock:^(NMSSHLogLevel level, NSString *format) {
             NSLog(@"%@", format);
         }];
@@ -59,13 +63,17 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 - (void)log:(NSString *)format level:(NMSSHLogLevel)level flag:(NMSSHLogFlag)flag {
     if (flag & self.logLevel && self.enabled) {
         dispatch_async(self.loggerQueue, ^{
+#ifdef NMSSHDEBUG
+            self.logBlock(level, [NSString stringWithFormat:@"%s - NMSSH: %@", dispatch_queue_get_label(dispatch_get_current_queue()), format]);
+#else
             self.logBlock(level, [NSString stringWithFormat:@"NMSSH: %@", format]);
+#endif
         });
     }
 }
 
-- (void)logVerbose:(NSString *)format {
-    [self log:format level:NMSSHLogLevelVerbose flag:NMSSHLogFlagVerbose];
+- (void)logDebug:(NSString *)format {
+    [self log:format level:NMSSHLogLevelDebug flag:NMSSHLogFlagVerbose];
 }
 
 - (void)logInfo:(NSString *)format{

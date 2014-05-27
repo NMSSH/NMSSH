@@ -10,7 +10,7 @@
 
 #define kNMSSHBufferSize (0x4000)
 
-#define NMSSHLogVerbose(frmt, ...) [[NMSSHLogger logger] logVerbose:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
+#define NMSSHLogDebug(frmt, ...) [[NMSSHLogger logger] logDebug:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
 #define NMSSHLogInfo(frmt, ...) [[NMSSHLogger logger] logInfo:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
 #define NMSSHLogWarn(frmt, ...) [[NMSSHLogger logger] logWarn:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]
 #define NMSSHLogError(frmt, ...) [[NMSSHLogger logger] logError:[NSString stringWithFormat:frmt, ##__VA_ARGS__]]

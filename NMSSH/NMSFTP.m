@@ -343,7 +343,7 @@
     }
 
     libssh2_sftp_seek64(handle, attributes.filesize);
-    NMSSHLogVerbose(@"Seek to position %ld", (long)attributes.filesize);
+    NMSSHLogDebug(@"Seek to position %ld", (long)attributes.filesize);
 
     BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
 

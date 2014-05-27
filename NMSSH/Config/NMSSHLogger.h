@@ -1,5 +1,5 @@
 typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
-    NMSSHLogLevelVerbose = (1 << 0 | 1 << 1 | 1 << 2 | 1 << 3),
+    NMSSHLogLevelDebug   = (1 << 0 | 1 << 1 | 1 << 2 | 1 << 3),
     NMSSHLogLevelInfo    = (1 << 1 | 1 << 2 | 1 << 3),
     NMSSHLogLevelWarn    = (1 << 2 | 1 << 3),
     NMSSHLogLevelError   = (1 << 3)
@@ -53,7 +53,7 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
 
  @param format Log message
  */
-- (void)logVerbose:(NSString *)format;
+- (void)logDebug:(NSString *)format;
 
 /**
  Log with info level
