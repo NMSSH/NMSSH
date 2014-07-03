@@ -57,55 +57,50 @@
         });
 
         if (self.keyboardInteractive) {
-            [self.session authenticateByKeyboardInteractive:^(NSError *error) {
-                if (!self.session.authorized) {
+            [self.session authenticateByKeyboardInteractive:^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.textView.editable = YES;
+                });
+
+                self.session.channel.delegate = self;
+                self.session.channel.requestPty = YES;
+                self.session.channel.ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
+
+                [self.session.channel startShell:nil failure:^(NSError *error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self appendToTextView:@"Authentication error\n"];
+                        [self appendToTextView:error.localizedDescription];
                         self.textView.editable = NO;
                     });
-                }
-                else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.textView.editable = YES;
-                    });
-
-                    self.session.channel.delegate = self;
-                    self.session.channel.requestPty = YES;
-                    self.session.channel.ptyTerminalType = NMSSHChannelPtyTerminalVanilla;
-
-                    [self.session.channel startShell:nil failure:^(NSError *error) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self appendToTextView:error.localizedDescription];
-                            self.textView.editable = NO;
-                        });
-                    }];
-                }
+                }];
+            } failure:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self appendToTextView:@"Authentication error\n"];
+                    self.textView.editable = NO;
+                });
             }];
         }
         else {
-            [self.session authenticateByPassword:self.password complete:^(NSError *error) {
-                if (!self.session.authorized) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self appendToTextView:@"Authentication error\n"];
-                        self.textView.editable = NO;
-                    });
-                }
-                else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.textView.editable = YES;
-                    });
+            [self.session authenticateByPassword:self.password
+             success:^{
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     self.textView.editable = YES;
+                 });
 
-                    self.session.channel.delegate = self;
-                    self.session.channel.requestPty = YES;
+                 self.session.channel.delegate = self;
+                 self.session.channel.requestPty = YES;
 
-                    [self.session.channel startShell:nil failure:^(NSError *error) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self appendToTextView:error.localizedDescription];
-                            self.textView.editable = NO;
-                        });
-                    }];
-                }
-            }];
+                 [self.session.channel startShell:nil failure:^(NSError *error) {
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self appendToTextView:error.localizedDescription];
+                         self.textView.editable = NO;
+                     });
+                 }];
+             } failure:^(NSError *error) {
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self appendToTextView:@"Authentication error\n"];
+                     self.textView.editable = NO;
+                 });
+             }];
         }
     }];
 }
@@ -127,7 +122,7 @@
     }
     else {
         NSString *command = [self.lastCommand copy];
-        [self.session.channel write:command timeout:@10 success:nil failure:^(NSError *error) {
+        [self.session.channel writeCommand:command timeout:@10 success:nil failure:^(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self appendToTextView:[NSString stringWithFormat:@"[ERROR] %@", error]];
             });

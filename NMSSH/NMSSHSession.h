@@ -204,10 +204,13 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  Authenticate by password
 
  @param password Password for connected user
- @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
+ @param success A block to be executed when authentication is completed successfully. This block has no return value and takes no arguments.
+ @param failure A block to be executed when authentication is completed unsuccessfully. This block has no return value and takes one argument: the error that occurred.
  @returns Authentication success
  */
-- (void)authenticateByPassword:(NSString *)password complete:(void(^)(NSError *))complete;
+- (void)authenticateByPassword:(NSString *)password
+                       success:(void (^)())success
+                       failure:(void (^)(NSError *error))failure;
 
 /**
  Authenticate by private key pair
@@ -217,39 +220,46 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param publicKey Filepath to public key
  @param privateKey Filepath to private key
  @param password Password for encrypted private key
- @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
+ @param success A block to be executed when authentication is completed successfully. This block has no return value and takes no arguments.
+ @param failure A block to be executed when authentication is completed unsuccessfully. This block has no return value and takes one argument: the error that occurred.
  @returns Authentication success
  */
 - (void)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
                        password:(NSString *)password
-                       complete:(void(^)(NSError *))complete;
+                        success:(void (^)())success
+                        failure:(void (^)(NSError *error))failure;
 
 /**
  Authenticate by keyboard-interactive using delegate.
 
- @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
+ @param success A block to be executed when authentication is completed successfully. This block has no return value and takes no arguments.
+ @param failure A block to be executed when authentication is completed unsuccessfully. This block has no return value and takes one argument: the error that occurred.
  @returns Authentication success
  */
-- (void)authenticateByKeyboardInteractive:(void(^)(NSError *))complete;
+- (void)authenticateByKeyboardInteractive:(void (^)())success
+                                  failure:(void (^)(NSError *error))failure;
 
 /**
  Authenticate by keyboard-interactive using block.
 
  @param authenticationBlock The block to apply to server requests. The block returnes the response to the request and takes a single argument: the request from the server.
- @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
+ @param success A block to be executed when authentication is completed successfully. This block has no return value and takes no arguments.
+ @param failure A block to be executed when authentication is completed unsuccessfully. This block has no return value and takes one argument: the error that occurred.
  @returns Authentication success
  */
 - (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *request))authenticationBlock
-                                           complete:(void(^)(NSError *))complete;
+                                            success:(void (^)())success
+                                            failure:(void (^)(NSError *error))failure;
 
 /**
  Setup and connect to an SSH agent
 
- @param complete A block to be executed when authentication is completed. This block has no return value and takes a single argument: the error that occurred, if any.
+ @param success A block to be executed when authentication is completed successfully. This block has no return value and takes no arguments.
+ @param failure A block to be executed when authentication is completed unsuccessfully. This block has no return value and takes one argument: the error that occurred.
  @returns Authentication success
  */
-- (void)connectToAgent:(void(^)(NSError *))complete;
+- (void)connectToAgent:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 /**
  Get supported authentication methods

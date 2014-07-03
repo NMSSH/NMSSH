@@ -408,12 +408,16 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     return NO;
 }
 
-- (void)authenticateByPassword:(NSString *)password complete:(void (^)(NSError *))complete {
+- (void)authenticateByPassword:(NSString *)password success:(void (^)())success failure:(void (^)(NSError *error))failure {
     [self.queue scheduleBlock:^{
         NSError *error;
-        [self authenticateByPassword:password error:&error];
+        BOOL authenticated = [self authenticateByPassword:password error:&error];
 
-        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
+        if (authenticated) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
+        }
     } synchronously:NO];
 }
 
@@ -461,12 +465,17 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
 - (void)authenticateByPublicKey:(NSString *)publicKey
                      privateKey:(NSString *)privateKey
                        password:(NSString *)password
-                       complete:(void (^)(NSError *))complete {
+                        success:(void (^)())success
+                        failure:(void (^)(NSError *error))failure  {
     [self.queue scheduleBlock:^{
         NSError *error;
-        [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
+        BOOL authenticated = [self authenticateByPublicKey:publicKey privateKey:privateKey password:password error:&error];
 
-        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
+        if (authenticated) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
+        }
     } synchronously:NO];
 }
 
@@ -516,16 +525,22 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     return self.isAuthorized;
 }
 
-- (void)authenticateByKeyboardInteractive:(void (^)(NSError *))complete {
-    [self authenticateByKeyboardInteractiveUsingBlock:nil complete:complete];
+- (void)authenticateByKeyboardInteractive:(void (^)())success failure:(void (^)(NSError *error))failure {
+    [self authenticateByKeyboardInteractiveUsingBlock:nil success:success failure:failure];
 }
 
-- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *))authenticationBlock complete:(void (^)(NSError *))complete {
+- (void)authenticateByKeyboardInteractiveUsingBlock:(NSString *(^)(NSString *))authenticationBlock
+                                            success:(void (^)())success
+                                            failure:(void (^)(NSError *error))failure {
     [self.queue scheduleBlock:^{
         NSError *error;
-        [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
+        BOOL authenticated = [self authenticateByKeyboardInteractiveUsingBlock:authenticationBlock error:&error];
 
-        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
+        if (authenticated) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
+        }
     } synchronously:NO];
 }
 
@@ -561,12 +576,16 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
     return self.isAuthorized;
 }
 
-- (void)connectToAgent:(void (^)(NSError *))complete {
+- (void)connectToAgent:(void (^)())success failure:(void (^)(NSError *error))failure {
     [self.queue scheduleBlock:^{
         NSError *error;
-        [self connectToAgentWithError:&error];
+        BOOL authenticated =[self connectToAgentWithError:&error];
 
-        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
+        if (authenticated) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, error);
+        }
     } synchronously:NO];
 }
 
