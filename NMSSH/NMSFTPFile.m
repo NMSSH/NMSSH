@@ -162,7 +162,7 @@
         object.modificationDate = [self.modificationDate copyWithZone:zone];
         object.lastAccess = [self.lastAccess copyWithZone:zone];
         object.fileSize = [self.fileSize copyWithZone:zone];
-        object.permissions = [self.fileSize copyWithZone:zone];
+        object.permissions = [self.permissions copyWithZone:zone];
         object.isDirectory = self.isDirectory;
         object.ownerUserID = self.ownerUserID;
         object.ownerGroupID = self.ownerGroupID;
