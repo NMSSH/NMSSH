@@ -39,6 +39,11 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
     return logger;
 }
 
++(instancetype)sharedInstance
+{
+    return NMSSHLogger.logger;
+}
+
 #if !(OS_OBJECT_USE_OBJC)
 - (void)dealloc {
     dispatch_release(self.loggerQueue);
