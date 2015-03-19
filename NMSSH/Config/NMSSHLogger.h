@@ -21,11 +21,6 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogLevel) {
  */
 + (NMSSHLogger *)logger;
 
-/**
-For Swift: so we can access it as a method(Swift does not allow static properties)
-*/
-+(instancetype)sharedInstance;
-
 /// ----------------------------------------------------------------------------
 /// @name Logger settings
 /// ----------------------------------------------------------------------------
