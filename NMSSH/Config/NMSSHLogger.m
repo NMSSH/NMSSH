@@ -9,6 +9,12 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
 };
 
 @interface NMSSHLogger ()
+
+/**
+ The shared logger instance, now private
+ */
++ (NMSSHLogger *)logger;
+
 #if OS_OBJECT_USE_OBJC
 @property (nonatomic, strong) dispatch_queue_t loggerQueue;
 #else
@@ -37,6 +43,11 @@ typedef NS_OPTIONS(NSUInteger, NMSSHLogFlag) {
     });
 
     return logger;
+}
+
++ (instancetype) sharedLogger
+{
+    return NMSSHLogger.logger;
 }
 
 #if !(OS_OBJECT_USE_OBJC)
