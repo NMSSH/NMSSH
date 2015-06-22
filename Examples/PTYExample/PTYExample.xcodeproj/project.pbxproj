@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		183E6A341B38510500727F97 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 183E6A331B38510500727F97 /* Launch Screen.xib */; };
 		18AE8FA918BBEDD000AE0FC3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FA818BBEDD000AE0FC3 /* Foundation.framework */; };
 		18AE8FAB18BBEDD000AE0FC3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FAA18BBEDD000AE0FC3 /* CoreGraphics.framework */; };
 		18AE8FAD18BBEDD000AE0FC3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18AE8FAC18BBEDD000AE0FC3 /* UIKit.framework */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		183E6A331B38510500727F97 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		18AE8FA518BBEDD000AE0FC3 /* PTYExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PTYExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18AE8FA818BBEDD000AE0FC3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18AE8FAA18BBEDD000AE0FC3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -98,6 +100,7 @@
 			children = (
 				18AE8FB718BBEDD100AE0FC3 /* NMAppDelegate.h */,
 				18AE8FB818BBEDD100AE0FC3 /* NMAppDelegate.m */,
+				183E6A331B38510500727F97 /* Launch Screen.xib */,
 				18AE8FBA18BBEDD100AE0FC3 /* Main.storyboard */,
 				18AE8FBD18BBEDD100AE0FC3 /* NMViewController.h */,
 				18AE8FBE18BBEDD100AE0FC3 /* NMViewController.m */,
@@ -174,6 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				18AE8FC118BBEDD100AE0FC3 /* Images.xcassets in Resources */,
+				183E6A341B38510500727F97 /* Launch Screen.xib in Resources */,
 				18AE8FB318BBEDD000AE0FC3 /* InfoPlist.strings in Resources */,
 				18AE8FBC18BBEDD100AE0FC3 /* Main.storyboard in Resources */,
 			);
