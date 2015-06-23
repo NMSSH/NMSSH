@@ -11,6 +11,12 @@
 /** Property that keeps track of connection status to the server */
 @property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
+/** Property that set/get read buffer size */
+@property (nonatomic, readonly) NSUInteger bufferSize;
+
+/** setter method for bufferSize */
+- (void)setBufferSize:(NSUInteger)newValue;
+
 ///-----------------------------------------------------------------------------
 /// @name Initializer
 /// ----------------------------------------------------------------------------
