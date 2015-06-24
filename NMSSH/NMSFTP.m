@@ -5,7 +5,6 @@
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
-@property (nonatomic, readwrite, setter = setBufferSize:) NSUInteger bufferSize;
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
@@ -247,7 +246,7 @@
         return nil;
     }
     
-    char buffer[[self bufferSize]];
+    char buffer[self.bufferSize];
     NSMutableData *data = [[NSMutableData alloc] init];
     ssize_t rc;
     off_t got = 0;
@@ -362,13 +361,13 @@
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress {
-    uint8_t buffer[[self bufferSize]];
+    uint8_t buffer[self.bufferSize];
     NSInteger bytesRead = -1;
     long rc = 0;
     NSUInteger total = 0;
     
     while (rc >= 0 && [inputStream hasBytesAvailable]) {
-        bytesRead = [inputStream read:buffer maxLength:[self bufferSize]];
+        bytesRead = [inputStream read:buffer maxLength:self.bufferSize];
         if (bytesRead > 0) {
             uint8_t *ptr = buffer;
             do {
@@ -412,7 +411,7 @@
         return NO;
     }
     
-    char buffer[[self bufferSize]];
+    char buffer[self.bufferSize];
     ssize_t bytesRead;
     off_t copied = 0;
     long rc = 0;

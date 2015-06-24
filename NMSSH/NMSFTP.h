@@ -12,10 +12,7 @@
 @property (nonatomic, readonly, getter = isConnected) BOOL connected;
 
 /** Property that set/get read buffer size */
-@property (nonatomic, readonly) NSUInteger bufferSize;
-
-/** setter method for bufferSize */
-- (void)setBufferSize:(NSUInteger)newValue;
+@property (nonatomic) NSUInteger bufferSize;
 
 ///-----------------------------------------------------------------------------
 /// @name Initializer
