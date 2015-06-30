@@ -15,6 +15,24 @@
     self.authenticationControl.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:@"auth"];
 }
 
+- (IBAction)hostend:(id)sender {
+    [self.hostField resignFirstResponder];
+}
+
+- (IBAction)usernameend:(id)sender {
+    [self.usernameField resignFirstResponder];
+}
+
+- (IBAction)passwordend:(id)sender {
+    [self.passwordField resignFirstResponder];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.hostField resignFirstResponder];
+    [self.usernameField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
+}
+
 - (IBAction)authentication:(id)sender {
     self.passwordField.enabled = self.authenticationControl.selectedSegmentIndex == 0;
 }
