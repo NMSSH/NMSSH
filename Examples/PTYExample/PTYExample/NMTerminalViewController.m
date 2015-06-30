@@ -95,6 +95,10 @@
 
 }
 
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.textView resignFirstResponder];
+}
+
 - (IBAction)disconnect:(id)sender {
     dispatch_async(self.sshQueue, ^{
         [self.session disconnect];
