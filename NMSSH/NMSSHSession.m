@@ -368,7 +368,7 @@ NSString *const NMSSHSessionErrorDomain = @"NMSSHSession";
 
     if (_sftp) {
         if ([_sftp isConnected]) {
-            [_sftp disconnect];
+            [_sftp performSelector:@selector(disconnect)];
         }
         [self setSftp:nil];
     }

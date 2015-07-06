@@ -19,10 +19,6 @@
 @property (nonatomic, assign) dispatch_queue_t queue;
 #endif
 
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress async:(BOOL)async;
-- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
-- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
-
 @end
 
 @implementation NMSFTP
@@ -31,9 +27,9 @@
 #pragma mark - INITIALIZER
 // -----------------------------------------------------------------------------
 
-+ (instancetype)connectWithSession:(NMSSHSession *)session {
++ (instancetype)connectWithSession:(NMSSHSession *)session complete:(void(^)(NSError *))complete {
     NMSFTP *sftp = [[NMSFTP alloc] initWithSession:session];
-    [sftp connect];
+    [sftp connect:complete];
 
     return sftp;
 }
@@ -65,7 +61,16 @@
 #pragma mark - CONNECTION
 // -----------------------------------------------------------------------------
 
-- (BOOL)connect {
+- (void)connect:(void(^)(NSError *))complete {
+    [self.session.queue scheduleBlock:^{
+        NSError *error;
+        [self connectWithError:&error];
+
+        RUN_BLOCK_ON_MAIN_THREAD(complete, error);
+    } synchronously:NO];
+}
+
+- (BOOL)connectWithError:(NSError *__autoreleasing *)error {
     // Set blocking mode
     libssh2_session_set_blocking(self.session.rawSession, 1);
 
@@ -81,6 +86,15 @@
     return self.isConnected;
 }
 
+- (void)disconnect:(void (^)())complete {
+    [self.session.queue scheduleUniqueBlock:^{
+        [self disconnect];
+
+        RUN_BLOCK_ON_MAIN_THREAD(complete);
+    } withSignature:@"sftp-disconnect"
+      synchronously:NO];
+}
+
 - (void)disconnect {
     libssh2_sftp_shutdown(self.sftpSession);
     [self setConnected:NO];
@@ -94,20 +108,16 @@
     return libssh2_sftp_rename(self.sftpSession, [sourcePath UTF8String], [destPath UTF8String]) == 0;
 }
 
-- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self moveItemAtPath:sourcePath toPath:destPath];
-        // Perform delegate callbacks on main queue to allow delegate to update UI.
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)moveItemAtPath:(NSString *)sourcePath toPath:(NSString *)destPath success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self moveItemAtPath:sourcePath toPath:destPath];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 // -----------------------------------------------------------------------------
@@ -143,19 +153,16 @@
     return rc == 0 && LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
 }
 
-- (void)directoryExistsAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self directoryExistsAtPath:path];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)directoryExistsAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self directoryExistsAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (BOOL)createDirectoryAtPath:(NSString *)path {
@@ -167,38 +174,32 @@
     return rc == 0;
 }
 
-- (void)createDirectoryAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self createDirectoryAtPath:path];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)createDirectoryAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self createDirectoryAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (BOOL)removeDirectoryAtPath:(NSString *)path {
     return libssh2_sftp_rmdir(self.sftpSession, [path UTF8String]) == 0;
 }
 
-- (void)removeDirectoryAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self removeDirectoryAtPath:path];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)removeDirectoryAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self removeDirectoryAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (NSArray *)contentsOfDirectoryAtPath:(NSString *)path {
@@ -249,18 +250,15 @@
 }
 
 - (void)contentsOfDirectoryAtPath:(NSString *)path success:(void (^)(NSArray *))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
+    [self.session.queue scheduleBlock:^{
         NSArray *contents = [self contentsOfDirectoryAtPath:path];
-        if (contents && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(contents);
-            });
-        } else if (!contents && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+
+        if (contents) {
+            RUN_BLOCK_ON_MAIN_THREAD(success, contents);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 // -----------------------------------------------------------------------------
@@ -289,18 +287,15 @@
 }
 
 - (void)infoForFileAtPath:(NSString *)path success:(void (^)(NMSFTPFile *))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
+    [self.session.queue scheduleBlock:^{
         NMSFTPFile *file = [self infoForFileAtPath:path];
-        if (file && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(file);
-            });
-        } else if (!file && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+
+        if (file) {
+            RUN_BLOCK_ON_MAIN_THREAD(success, file);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (LIBSSH2_SFTP_HANDLE *)openFileAtPath:(NSString *)path flags:(unsigned long)flags mode:(long)mode {
@@ -332,19 +327,17 @@
     return rc == 0 && !LIBSSH2_SFTP_S_ISDIR(fileAttributes.permissions);
 }
 
-- (void)fileExistsAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self fileExistsAtPath:path];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+// FIXME: - If the file does not exist result is false... we should call success? or failure?
+- (void)fileExistsAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self fileExistsAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (BOOL)createSymbolicLinkAtPath:(NSString *)linkPath
@@ -354,62 +347,47 @@
     return rc == 0;
 }
 
-- (void)createSymbolicLinkAtPath:(NSString *)linkPath withDestinationPath:(NSString *)destPath success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self createSymbolicLinkAtPath:linkPath withDestinationPath:destPath];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)createSymbolicLinkAtPath:(NSString *)linkPath withDestinationPath:(NSString *)destPath success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self createSymbolicLinkAtPath:linkPath withDestinationPath:destPath];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
 - (BOOL)removeFileAtPath:(NSString *)path {
     return libssh2_sftp_unlink(self.sftpSession, [path UTF8String]) == 0;
 }
 
-- (void)removeFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        BOOL ret = [self removeFileAtPath:path];
-        if (ret && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(ret);
-            });
-        } else if (!ret && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+- (void)removeFileAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self removeFileAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
+    } synchronously:NO];
 }
 
-- (NSData *)contentsAtPath:(NSString *)path {
-    return [self contentsAtPath:path progress:nil];
-}
-
-- (void)contentsAtPath:(NSString *)path success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
-    [self contentsAtPath:path progress:nil success:success failure:failure];
-}
-
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress async:(BOOL)async {
+- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
-    
+
     if (!handle) {
-        // @fixme Set lastError?
         return nil;
     }
-    
+
     NMSFTPFile *file = [self infoForFileAtPath:path];
     if (!file) {
         NMSSHLogWarn(@"contentsAtPath:progress: failed to get file attributes");
         return nil;
     }
-    
+
     char buffer[kNMSSHBufferSize];
     NSMutableData *data = [[NSMutableData alloc] init];
     ssize_t rc;
@@ -417,90 +395,39 @@
     while ((rc = libssh2_sftp_read(handle, buffer, (ssize_t)sizeof(buffer))) > 0) {
         [data appendBytes:buffer length:rc];
         got += rc;
-        __block BOOL cont = YES; // `cont` is short for continue
-        // Not processing asynchronously.
-        if (!async && progress) {
-            cont = progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
-        // Execute the `progress` method on the main queue.
-        } else if (async && progress) {
-            // Notice `dispatch_sync` NOT `async`. Wait for the UI to update and
-            // return a result before continuing.
+
+        __block BOOL abort = NO;
+        if (progress) {
             dispatch_sync(dispatch_get_main_queue(), ^{
-                cont = progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
+                abort = !progress((NSUInteger)got, (NSUInteger)[file.fileSize integerValue]);
             });
         }
-        if (!cont) {
+
+        if (abort) {
             libssh2_sftp_close(handle);
             return nil;
         }
     }
-    
+
     libssh2_sftp_close(handle);
-    
+
     if (rc < 0) {
         return nil;
     }
-    
+
     return [data copy];
 }
 
-- (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
-    return [self contentsAtPath:path progress:progress async:NO];
-}
-
 - (void)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(NSData *))success failure:(void (^)(NSError *))failure {
-    dispatch_async(self.queue, ^{
-        NSData *data = [self contentsAtPath:path progress:progress async:YES];
-        if (data && success) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                success(data);
-            });
-        } else if (!data && failure) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                failure(self.session.lastError);
-            });
+    [self.session.queue scheduleBlock:^{
+        NSData *content = [self contentsAtPath:path progress:progress];
+
+        if (content) {
+            RUN_BLOCK_ON_MAIN_THREAD(success, content);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
         }
-    });
-}
-
-- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path {
-    return [self writeContents:contents toFileAtPath:path progress:nil];
-}
-
-- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
-}
-
-- (BOOL)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
-    return [self writeStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path progress:progress];
-}
-
-- (void)writeContents:(NSString *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
-}
-
-- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path {
-    return [self writeFileAtPath:localPath toFileAtPath:path progress:nil];
-}
-
-- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
-}
-
-- (BOOL)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
-    return [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath] toFileAtPath:path progress:progress];
-}
-
-- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
-}
-
-- (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
-    return [self writeStream:inputStream toFileAtPath:path progress:nil];
-}
-
-- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
+    } synchronously:NO];
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress {
@@ -530,12 +457,32 @@
     return success;
 }
 
-- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo
+- (void)writeContents:(NSData *)contents toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self writeStream:[NSInputStream inputStreamWithData:contents]
+         toFileAtPath:path
+             progress:progress
+              success:success
+              failure:failure];
 }
 
-- (BOOL)appendContents:(NSData *)contents toFileAtPath:(NSString *)path {
-    return [self appendStream:[NSInputStream inputStreamWithData:contents] toFileAtPath:path];
+- (void)writeFileAtPath:(NSString *)localPath toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self writeStream:[NSInputStream inputStreamWithFileAtPath:localPath]
+         toFileAtPath:path
+             progress:progress
+              success:success
+              failure:failure];
+}
+
+- (void)writeStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger))progress success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self writeStream:inputStream toFileAtPath:path progress:progress];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
+        }
+    } synchronously:NO];
 }
 
 - (BOOL)appendStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path {
@@ -567,7 +514,7 @@
     libssh2_sftp_seek64(handle, attributes.filesize);
     NMSSHLogDebug(@"Seek to position %ld", (long)attributes.filesize);
 
-    BOOL success = [self writeStream:inputStream toSFTPHandle:handle];
+    BOOL success = [self writeStream:inputStream toSFTPHandle:handle progress:nil];
 
     libssh2_sftp_close(handle);
     [inputStream close];
@@ -575,8 +522,23 @@
     return success;
 }
 
-- (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle {
-    return [self writeStream:inputStream toSFTPHandle:handle progress:nil];
+- (void)appendContents:(NSData *)contents toFileAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self appendStream:[NSInputStream inputStreamWithData:contents]
+          toFileAtPath:path
+               success:success
+               failure:failure];
+}
+
+- (void)appendStream:(NSInputStream *)inputStream toFileAtPath:(NSString *)path success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self appendStream:inputStream toFileAtPath:path];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
+        }
+    } synchronously:NO];
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress {
@@ -590,8 +552,15 @@
         if (bytesRead > 0) {
             rc = libssh2_sftp_write(handle, (const char *)buffer, bytesRead);
             total += rc;
-            if (progress && !progress(total))
-            {
+
+            __block BOOL abort = NO;
+            if (progress) {
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    abort = !progress(total);
+                });
+            }
+
+            if (abort) {
                 return NO;
             }
         }
@@ -604,8 +573,7 @@
     return YES;
 }
 
-- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress
-{
+- (BOOL)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
     // Open handle for reading.
     LIBSSH2_SFTP_HANDLE *fromHandle = [self openFileAtPath:fromPath flags:LIBSSH2_FXF_READ mode:0];
     
@@ -629,7 +597,15 @@
         [data appendBytes:buffer length:rc];
         libssh2_sftp_write(toHandle, (const char *)buffer, (NSInteger)rc);
         copied += rc;
-        if (progress && !progress((NSUInteger)copied, (NSUInteger)[file.fileSize integerValue])) {
+
+        __block BOOL abort = NO;
+        if (progress) {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                abort = !progress((NSUInteger)copied, (NSUInteger)[file.fileSize integerValue]);
+            });
+        }
+
+        if (abort) {
             libssh2_sftp_close(fromHandle);
             libssh2_sftp_close(toHandle);
             return NO;
@@ -642,8 +618,16 @@
     return YES;
 }
 
-- (void)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)(BOOL))success failure:(void (^)(NSError *))failure {
-    // @todo 
+- (void)copyContentsOfPath:(NSString *)fromPath toFileAtPath:(NSString *)toPath progress:(BOOL (^)(NSUInteger, NSUInteger))progress success:(void (^)())success failure:(void (^)(NSError *))failure {
+    [self.session.queue scheduleBlock:^{
+        BOOL result = [self copyContentsOfPath:fromPath toFileAtPath:toPath progress:progress];
+
+        if (result) {
+            RUN_BLOCK_ON_MAIN_THREAD(success);
+        } else {
+            RUN_BLOCK_ON_MAIN_THREAD(failure, self.session.lastError);
+        }
+    } synchronously:NO];
 }
 
 @end

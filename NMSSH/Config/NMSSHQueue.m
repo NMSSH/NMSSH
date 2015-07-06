@@ -60,7 +60,7 @@ static const void *const kNMSSHQueueIdentifier = &kNMSSHQueueIdentifier;
     [self scheduleBlock:^{
         block();
         [self removeSignature:signature];
-    }     synchronously:synchronously];
+    } synchronously:synchronously];
 }
 
 - (BOOL)addSignature:(NSString *)signature {
