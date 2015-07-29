@@ -22,6 +22,33 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		186CC9721B69117D00F674C4 /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = 186CC9711B69117D00F674C4 /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9731B69123900F674C4 /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968117D6AA7B008B76FB /* libssh2_publickey.h */; };
+		186CC9741B69123900F674C4 /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE82188C8195004E05FF /* NMSSH+Protected.h */; };
+		186CC9751B69125400F674C4 /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966D17D6AA51008B76FB /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9761B69125400F674C4 /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9771B69125400F674C4 /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E46F9E1F188AC7010056E5DB /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9781B69125400F674C4 /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966F17D6AA51008B76FB /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9791B69125400F674C4 /* NMSSHConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A197C0191FA77A0004D88E /* NMSSHConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97A1B69125400F674C4 /* NMSSHHostConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A197C2191FA77A0004D88E /* NMSSHHostConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97B1B69125500F674C4 /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968017D6AA7B008B76FB /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97C1B69125500F674C4 /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0968217D6AA7B008B76FB /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97D1B69125500F674C4 /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0967917D6AA64008B76FB /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97E1B69125500F674C4 /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0967A17D6AA64008B76FB /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC97F1B69125500F674C4 /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
+		186CC9801B69125500F674C4 /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 18F1A2D018158D78000635AB /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186CC9811B69127600F674C4 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D017D6AA7B008B76FB /* libcrypto.a */; };
+		186CC9821B69127600F674C4 /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D117D6AA7B008B76FB /* libssh2.a */; };
+		186CC9831B69127600F674C4 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A096D217D6AA7B008B76FB /* libssl.a */; };
+		186CC9841B69142600F674C4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A0972417D6AAA8008B76FB /* libz.dylib */; };
+		186CC9851B69144800F674C4 /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966E17D6AA51008B76FB /* NMSSHChannel.m */; };
+		186CC9861B69144800F674C4 /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966B17D6AA51008B76FB /* NMSFTP.m */; };
+		186CC9871B69144800F674C4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = E46F9E20188AC7010056E5DB /* NMSFTPFile.m */; };
+		186CC9881B69144800F674C4 /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0967017D6AA51008B76FB /* NMSSHSession.m */; };
+		186CC9891B69144800F674C4 /* NMSSHConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A197C1191FA77A0004D88E /* NMSSHConfig.m */; };
+		186CC98A1B69144800F674C4 /* NMSSHHostConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A197C3191FA77A0004D88E /* NMSSHHostConfig.m */; };
+		186CC98B1B69144800F674C4 /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
+		186CC98C1B69144800F674C4 /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 18F1A2D118158D78000635AB /* NMSSHLogger.m */; };
 		18A0966817D6AA3D008B76FB /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966517D6AA3D008B76FB /* socket_helper.h */; };
 		18A0966917D6AA3D008B76FB /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A0966617D6AA3D008B76FB /* socket_helper.m */; };
 		18A0967117D6AA51008B76FB /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A0966A17D6AA51008B76FB /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -51,6 +78,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		186CC9581B69110500F674C4 /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		186CC95B1B69110500F674C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		186CC9711B69117D00F674C4 /* NMSSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMSSH.h; path = "NMSSH-iOS/NMSSH.h"; sourceTree = SOURCE_ROOT; };
 		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
@@ -84,6 +114,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		186CC9541B69110500F674C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186CC9841B69142600F674C4 /* libz.dylib in Frameworks */,
+				186CC9811B69127600F674C4 /* libcrypto.a in Frameworks */,
+				186CC9821B69127600F674C4 /* libssh2.a in Frameworks */,
+				186CC9831B69127600F674C4 /* libssl.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18A0964C17D6A8C4008B76FB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -97,10 +138,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		186CC9591B69110500F674C4 /* NMSSH */ = {
+			isa = PBXGroup;
+			children = (
+				186CC9711B69117D00F674C4 /* NMSSH.h */,
+				186CC95A1B69110500F674C4 /* Supporting Files */,
+			);
+			path = NMSSH;
+			sourceTree = "<group>";
+		};
+		186CC95A1B69110500F674C4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				186CC95B1B69110500F674C4 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		18A0962217D6A85F008B76FB = {
 			isa = PBXGroup;
 			children = (
 				18A0965217D6A8C4008B76FB /* NMSSH */,
+				186CC9591B69110500F674C4 /* NMSSH */,
 				18A0962D17D6A85F008B76FB /* Frameworks */,
 				18A0962C17D6A85F008B76FB /* Products */,
 			);
@@ -110,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				18A0964F17D6A8C4008B76FB /* NMSSH.framework */,
+				186CC9581B69110500F674C4 /* NMSSH.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -217,6 +277,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		186CC9551B69110500F674C4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186CC9721B69117D00F674C4 /* NMSSH.h in Headers */,
+				186CC9751B69125400F674C4 /* NMSSHChannel.h in Headers */,
+				186CC9761B69125400F674C4 /* NMSFTP.h in Headers */,
+				186CC9771B69125400F674C4 /* NMSFTPFile.h in Headers */,
+				186CC9781B69125400F674C4 /* NMSSHSession.h in Headers */,
+				186CC9791B69125400F674C4 /* NMSSHConfig.h in Headers */,
+				186CC97A1B69125400F674C4 /* NMSSHHostConfig.h in Headers */,
+				186CC97B1B69125500F674C4 /* libssh2.h in Headers */,
+				186CC97C1B69125500F674C4 /* libssh2_sftp.h in Headers */,
+				186CC97D1B69125500F674C4 /* NMSSHChannelDelegate.h in Headers */,
+				186CC97E1B69125500F674C4 /* NMSSHSessionDelegate.h in Headers */,
+				186CC9801B69125500F674C4 /* NMSSHLogger.h in Headers */,
+				186CC97F1B69125500F674C4 /* socket_helper.h in Headers */,
+				186CC9731B69123900F674C4 /* libssh2_publickey.h in Headers */,
+				186CC9741B69123900F674C4 /* NMSSH+Protected.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18A0965C17D6A956008B76FB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -242,9 +324,27 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		18A0964E17D6A8C4008B76FB /* NMSSH */ = {
+		186CC9571B69110500F674C4 /* NMSSH */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH" */;
+			buildConfigurationList = 186CC96B1B69110500F674C4 /* Build configuration list for PBXNativeTarget "NMSSH" */;
+			buildPhases = (
+				186CC9531B69110500F674C4 /* Sources */,
+				186CC9541B69110500F674C4 /* Frameworks */,
+				186CC9551B69110500F674C4 /* Headers */,
+				186CC9561B69110500F674C4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NMSSH;
+			productName = NMSSH;
+			productReference = 186CC9581B69110500F674C4 /* NMSSH.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		18A0964E17D6A8C4008B76FB /* NMSSH Static */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH Static" */;
 			buildPhases = (
 				18A0964B17D6A8C4008B76FB /* Sources */,
 				18A0964C17D6A8C4008B76FB /* Frameworks */,
@@ -255,7 +355,7 @@
 			);
 			dependencies = (
 			);
-			name = NMSSH;
+			name = "NMSSH Static";
 			productName = NMSSH;
 			productReference = 18A0964F17D6A8C4008B76FB /* NMSSH.framework */;
 			productType = "com.apple.product-type.bundle";
@@ -269,6 +369,11 @@
 				CLASSPREFIX = NMSSH;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Nine Muses AB";
+				TargetAttributes = {
+					186CC9571B69110500F674C4 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
 			};
 			buildConfigurationList = 18A0962617D6A85F008B76FB /* Build configuration list for PBXProject "NMSSH-iOS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -282,13 +387,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				18A0964E17D6A8C4008B76FB /* NMSSH */,
+				18A0964E17D6A8C4008B76FB /* NMSSH Static */,
 				18A0965D17D6A97C008B76FB /* NMSSH Framework */,
+				186CC9571B69110500F674C4 /* NMSSH */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		186CC9561B69110500F674C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18A0964D17D6A8C4008B76FB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -311,7 +424,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_PROJ=NMSSH-iOS.xcodeproj #replace with your project name\n\nset -e\n\n# Building iphoneos.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos -project \"${FMK_PROJ}\"\n\n# Building iphonesimulator.\nxcodebuild -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator -project \"${FMK_PROJ}\"\n\nset +e";
+			shellScript = "# Sets the target folders and the final framework product.\nTARGET=\"NMSSH Static\"\nPROJECT=\"NMSSH-iOS.xcodeproj\"\n\nset -e\n\n# Building iphoneos.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk iphoneos -project \"${PROJECT}\"\n\n# Building iphonesimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk iphonesimulator -project \"${PROJECT}\"\n\nset +e";
 		};
 		18A0966217D6A994008B76FB /* Lipo Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -325,11 +438,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=NMSSH   # replace with your framework name\nFMK_VERSION=A   # replace with your version\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=\"${SRCROOT}/Products/${FMK_NAME}.framework\"\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=\"build\"\nDEVICE_DIR=\"${WRK_DIR}/Release-iphoneos/${FMK_NAME}.framework\"\nSIMULATOR_DIR=\"${WRK_DIR}/Release-iphonesimulator/${FMK_NAME}.framework\"\n\nset -e\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${FMK_NAME}\"\n\n# Uses the Lipo Tool to merge both binary files into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${FMK_NAME}\" \"${SIMULATOR_DIR}/${FMK_NAME}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"\n\nset +e";
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=\"NMSSH\"\nFMK_VERSION=\"A\"\nTARGET=\"NMSSH Static\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=\"${SRCROOT}/Products/${FMK_NAME}.framework\"\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=\"build\"\nDEVICE_DIR=\"${WRK_DIR}/Release-iphoneos/${TARGET}.framework\"\nSIMULATOR_DIR=\"${WRK_DIR}/Release-iphonesimulator/${TARGET}.framework\"\n\nset -e\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${TARGET}\"\n\n# Uses the Lipo Tool to merge both binary files into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${TARGET}\" \"${SIMULATOR_DIR}/${TARGET}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"\n\nset +e";
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		186CC9531B69110500F674C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186CC9851B69144800F674C4 /* NMSSHChannel.m in Sources */,
+				186CC9861B69144800F674C4 /* NMSFTP.m in Sources */,
+				186CC9871B69144800F674C4 /* NMSFTPFile.m in Sources */,
+				186CC9881B69144800F674C4 /* NMSSHSession.m in Sources */,
+				186CC9891B69144800F674C4 /* NMSSHConfig.m in Sources */,
+				186CC98A1B69144800F674C4 /* NMSSHHostConfig.m in Sources */,
+				186CC98B1B69144800F674C4 /* socket_helper.m in Sources */,
+				186CC98C1B69144800F674C4 /* NMSSHLogger.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18A0964B17D6A8C4008B76FB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -348,6 +476,86 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		186CC96C1B69110500F674C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = NMSSH/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		186CC96D1B69110500F674C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = NMSSH/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		18A0964617D6A85F008B76FB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -473,6 +681,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		186CC96B1B69110500F674C4 /* Build configuration list for PBXNativeTarget "NMSSH" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186CC96C1B69110500F674C4 /* Debug */,
+				186CC96D1B69110500F674C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		18A0962617D6A85F008B76FB /* Build configuration list for PBXProject "NMSSH-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -482,7 +698,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH" */ = {
+		18A0965B17D6A8C4008B76FB /* Build configuration list for PBXNativeTarget "NMSSH Static" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				18A0965917D6A8C4008B76FB /* Debug */,
