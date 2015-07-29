@@ -1,5 +1,7 @@
 Documentation/
 Products/
+Carthage/
+Cartfile*
 build/
 NMSSHTests/Settings/config.yml
 .DS_Store
