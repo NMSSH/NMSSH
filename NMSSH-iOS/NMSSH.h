@@ -10,8 +10,6 @@ FOUNDATION_EXPORT const unsigned char NMSSHVersionString[];
 #import "libssh2.h"
 #import "libssh2_sftp.h"
 
-@class NMSSHSession, NMSSHChannel, NMSFTP, NMSFTPFile;
-
 #import "NMSSHSessionDelegate.h"
 #import "NMSSHChannelDelegate.h"
 
@@ -19,6 +17,8 @@ FOUNDATION_EXPORT const unsigned char NMSSHVersionString[];
 #import "NMSSHChannel.h"
 #import "NMSFTP.h"
 #import "NMSFTPFile.h"
+#import "NMSSHConfig.h"
+#import "NMSSHHostConfig.h"
 
 #import "NMSSHLogger.h"
 
