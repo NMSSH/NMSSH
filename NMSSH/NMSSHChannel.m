@@ -419,6 +419,7 @@
 #if !(OS_OBJECT_USE_OBJC)
         dispatch_release(self.source);
 #endif
+        [self setSource: nil];
     }
 
     if (self.type == NMSSHChannelTypeShell) {
