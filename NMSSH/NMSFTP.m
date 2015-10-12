@@ -5,11 +5,13 @@
 @property (nonatomic, strong) NMSSHSession *session;
 @property (nonatomic, assign) LIBSSH2_SFTP *sftpSession;
 @property (nonatomic, readwrite, getter = isConnected) BOOL connected;
+
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle;
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress;
 @end
 
 @implementation NMSFTP
+
 
 // -----------------------------------------------------------------------------
 #pragma mark - INITIALIZER
@@ -51,6 +53,7 @@
     }
 
     [self setConnected:YES];
+    [self setBufferSize:kNMSSHBufferSize];
 
     return self.isConnected;
 }
@@ -243,7 +246,7 @@
         return nil;
     }
     
-    char buffer[kNMSSHBufferSize];
+    char buffer[self.bufferSize];
     NSMutableData *data = [[NSMutableData alloc] init];
     ssize_t rc;
     off_t got = 0;
@@ -358,20 +361,29 @@
 }
 
 - (BOOL)writeStream:(NSInputStream *)inputStream toSFTPHandle:(LIBSSH2_SFTP_HANDLE *)handle progress:(BOOL (^)(NSUInteger))progress {
-    uint8_t buffer[kNMSSHBufferSize];
+    uint8_t buffer[self.bufferSize];
     NSInteger bytesRead = -1;
     long rc = 0;
     NSUInteger total = 0;
+    
     while (rc >= 0 && [inputStream hasBytesAvailable]) {
-        bytesRead = [inputStream read:buffer maxLength:kNMSSHBufferSize];
-
+        bytesRead = [inputStream read:buffer maxLength:self.bufferSize];
         if (bytesRead > 0) {
-            rc = libssh2_sftp_write(handle, (const char *)buffer, bytesRead);
-            total += rc;
-            if (progress && !progress(total))
-            {
-                return NO;
-            }
+            uint8_t *ptr = buffer;
+            do {
+                rc = libssh2_sftp_write(handle, (const char *)ptr, bytesRead);
+                if(rc < 0){
+                    NMSSHLogWarn(@"libssh2_sftp_write failed (Error %li)", rc);
+                    break;
+                }
+                total += rc;
+                ptr += rc;
+                bytesRead -= rc;
+                if (progress && !progress(total))
+                {
+                    return NO;
+                }
+            }while(bytesRead);
         }
     }
 
@@ -399,18 +411,28 @@
         return NO;
     }
     
-    char buffer[kNMSSHBufferSize];
-    NSMutableData *data = [[NSMutableData alloc] init];
-    ssize_t rc;
+    char buffer[self.bufferSize];
+    ssize_t bytesRead;
     off_t copied = 0;
-    while ((rc = libssh2_sftp_read(fromHandle, buffer, (ssize_t)sizeof(buffer))) > 0) {
-        [data appendBytes:buffer length:rc];
-        libssh2_sftp_write(toHandle, (const char *)buffer, (NSInteger)rc);
-        copied += rc;
-        if (progress && !progress((NSUInteger)copied, (NSUInteger)[file.fileSize integerValue])) {
-            libssh2_sftp_close(fromHandle);
-            libssh2_sftp_close(toHandle);
-            return NO;
+    long rc = 0;
+    while ((bytesRead = libssh2_sftp_read(fromHandle, buffer, (ssize_t)sizeof(buffer))) > 0) {
+        if (bytesRead > 0) {
+            char *ptr = buffer;
+            do {
+                rc = libssh2_sftp_write(toHandle, (const char *)ptr, (NSInteger)bytesRead);
+                if(rc < 0){
+                    NMSSHLogWarn(@"libssh2_sftp_write failed (Error %li)", rc);
+                    break;
+                }
+                copied += rc;
+                ptr += rc;
+                bytesRead -= rc;
+                if (progress && !progress((NSUInteger)copied, (NSUInteger)[file.fileSize integerValue])) {
+                    libssh2_sftp_close(fromHandle);
+                    libssh2_sftp_close(toHandle);
+                    return NO;
+                }
+            }while(bytesRead);
         }
     }
     
