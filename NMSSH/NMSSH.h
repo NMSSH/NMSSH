@@ -1,5 +1,8 @@
 #import <Foundation/Foundation.h>
 
+#ifndef _NMSSH_
+#define _NMSSH_
+
 #import "libssh2.h"
 #import "libssh2_sftp.h"
 
@@ -14,3 +17,5 @@
 #import "NMSSHHostConfig.h"
 
 #import "NMSSHLogger.h"
+
+#endif
