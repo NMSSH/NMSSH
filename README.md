@@ -2,11 +2,9 @@
 
 NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2.
 
-Are you using NMSSH for something cool? [Let me know](mailto:hello@9muses.se).
-
 ## Questions & Issues
 
-If you encounter an issue or have any questions about implementing NMSSH, please post them in [the issue tracker](https://github.com/Lejdborg/NMSSH/issues) – I do not offer free support via email.
+If you encounter an issue or have any questions about implementing NMSSH, please post them in [the issue tracker](https://github.com/NMSSH/NMSSH/issues) – we do not offer free support via email.
 
 ## Installation
 
@@ -18,8 +16,8 @@ If you encounter an issue or have any questions about implementing NMSSH, please
 
 Consult the Wiki for detailed information about how to:
 
-* [Build for OSX](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-OSX-project) or
-* [Build for iOS](https://github.com/Lejdborg/NMSSH/wiki/Build-and-use-in-your-iOS-project).
+* [Build for OSX](https://github.com/NMSSH/NMSSH/wiki/Build-and-use-in-your-OSX-project) or
+* [Build for iOS](https://github.com/NMSSH/NMSSH/wiki/Build-and-use-in-your-iOS-project).
 
 ### Include it in your project
 
@@ -82,8 +80,6 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 * [@touta](https://github.com/touta)
 
 ## License
-
-Copyright © 2015 Nine Muses AB
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
