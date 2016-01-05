@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NMSFTP *sftp;
 @property (nonatomic, strong) NSNumber *port;
 @property (nonatomic, strong) NMSSHHostConfig *hostConfig;
+@property (nonatomic, assign) LIBSSH2_SESSION *sessionToFree;
 @end
 
 @implementation NMSSHSession
@@ -100,6 +101,12 @@
     }
 
     return [NSURL URLWithString:[@"ssh://" stringByAppendingString:host]];
+}
+
+- (void)dealloc {
+    if (self.sessionToFree) {
+        libssh2_session_free(self.sessionToFree);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -352,7 +359,7 @@
 
     if (self.session) {
         libssh2_session_disconnect(self.session, "NMSSH: Disconnect");
-        libssh2_session_free(self.session);
+        [self setSessionToFree:self.session];
         [self setSession:NULL];
     }
 
@@ -362,7 +369,6 @@
         _socket = NULL;
     }
 
-    libssh2_exit();
     NMSSHLogVerbose(@"Disconnected");
     [self setConnected:NO];
 }
