@@ -8,7 +8,7 @@ If you encounter an issue or have any questions about implementing NMSSH, please
 
 ## Installation
 
-### Cocoapods
+### CocoaPods
 
     pod 'NMSSH'
 
