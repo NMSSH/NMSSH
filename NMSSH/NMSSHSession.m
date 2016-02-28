@@ -439,6 +439,37 @@
     return self.isAuthorized;
 }
 
+- (BOOL)authenticateByInMemoryPublicKey:(NSString *)publicKey
+                             privateKey:(NSString *)privateKey
+                            andPassword:(NSString *)password {
+    if (![self supportsAuthenticationMethod:@"publickey"]) {
+        return NO;
+    }
+
+    if (password == nil) {
+        password = @"";
+    }
+
+    // Try to authenticate with key pair and password
+    int error = libssh2_userauth_publickey_frommemory(self.session,
+                                                    [self.username UTF8String],
+                                                    [self.username length],
+                                                    [publicKey UTF8String] ?: nil,
+                                                    [publicKey length] ?: 0,
+                                                    [privateKey UTF8String] ?: nil,
+                                                    [privateKey length] ?: 0,
+                                                    [password UTF8String]);
+
+    if (error) {
+        NMSSHLogError(@"Public key authentication failed with reason %i", error);
+        return NO;
+    }
+
+    NMSSHLogVerbose(@"Public key authentication succeeded.");
+
+    return self.isAuthorized;
+}
+
 - (BOOL)authenticateByKeyboardInteractive {
     return [self authenticateByKeyboardInteractiveUsingBlock:nil];
 }
