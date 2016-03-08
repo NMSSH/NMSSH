@@ -82,7 +82,7 @@
 		186CC95B1B69110500F674C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		186CC9711B69117D00F674C4 /* NMSSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NMSSH.h; path = "NMSSH-iOS/NMSSH.h"; sourceTree = SOURCE_ROOT; };
 		18A0963017D6A85F008B76FB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		18A0964F17D6A8C4008B76FB /* NMSSH.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NMSSH.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A0964F17D6A8C4008B76FB /* NMSSH Static.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NMSSH Static.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A0965817D6A8C4008B76FB /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
 		18A0966517D6AA3D008B76FB /* socket_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_helper.h; sourceTree = "<group>"; };
 		18A0966617D6AA3D008B76FB /* socket_helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socket_helper.m; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 		18A0962C17D6A85F008B76FB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				18A0964F17D6A8C4008B76FB /* NMSSH.framework */,
+				18A0964F17D6A8C4008B76FB /* NMSSH Static.framework */,
 				186CC9581B69110500F674C4 /* NMSSH.framework */,
 			);
 			name = Products;
@@ -357,7 +357,7 @@
 			);
 			name = "NMSSH Static";
 			productName = NMSSH;
-			productReference = 18A0964F17D6A8C4008B76FB /* NMSSH.framework */;
+			productReference = 18A0964F17D6A8C4008B76FB /* NMSSH Static.framework */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -367,7 +367,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NMSSH;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Nine Muses AB";
 				TargetAttributes = {
 					186CC9571B69110500F674C4 = {
@@ -510,6 +510,7 @@
 					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -549,6 +550,7 @@
 					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -688,6 +690,7 @@
 				186CC96D1B69110500F674C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		18A0962617D6A85F008B76FB /* Build configuration list for PBXProject "NMSSH-iOS" */ = {
 			isa = XCConfigurationList;

@@ -1,0 +1,47 @@
+# Defines a valid, password protected server, and options for testing both
+# valid and invalid user/password combinations as well as SCP to both a
+# writable directory and one that is not writable by the user
+valid_password_protected_server:
+  host: "127.0.0.1:22"
+
+  # User config
+  user: "user"
+  password: "password"
+
+  # Shell execution config
+  execute_command: "ls -1 /var/www/nmssh-tests/"
+  execute_expected_response: "invalid\nvalid\n"
+
+  # Directory config
+  writable_dir: "/var/www/nmssh-tests/valid/"
+  non_writable_dir: "/var/www/nmssh-tests/invalid/"
+
+# Defines a valid, public key protected server, and options for testing both
+# valid and invalid user/password combinations as well as SCP to both a
+# writable directory and one that is not writable by the user
+valid_public_key_protected_server:
+  host: "127.0.0.1:22"
+
+  # User config
+  user: "user"
+
+  # Public key path
+  valid_public_key: "~/.ssh/id_rsa.pub"
+  invalid_public_key: "~/.ssh/github_rsa.pub"
+
+  # Public key password
+  password: "password"
+
+# Defines a valid server, that this computer can connect to via an agent.
+valid_agent_server:
+  host: "127.0.0.1:22"
+
+  # User config
+  user: "user"
+
+# Defines an invalid server and authentication credentials that are invalid for
+# all defined test servers
+invalid_server:
+  host: "0.0.0.0:22"
+  user: "user"
+  password: "pass"
