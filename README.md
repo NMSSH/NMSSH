@@ -23,6 +23,10 @@ Consult the Wiki for detailed information about how to:
 
 Add `#import <NMSSH/NMSSH.h>` to your source file.
 
+### OpenSSL and Libssh2 binaries
+
+NMSSH includes a precompiled version of Libssh2 and OpenSSL compiled with [this script](https://github.com/Frugghi/iSSH2). You can easily recompile the libraries and replace the binaries.
+
 ## What does it look like?
 
 ```objc
