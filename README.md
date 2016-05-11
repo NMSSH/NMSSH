@@ -1,4 +1,4 @@
-# NMSSH
+# NMSSH [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 NMSSH is a clean, easy-to-use, unit tested framework for iOS and OSX that wraps libssh2.
 
@@ -11,6 +11,10 @@ If you encounter an issue or have any questions about implementing NMSSH, please
 ### CocoaPods
 
     pod 'NMSSH'
+
+### Carthage
+
+    github "NMSSH/NMSSH"
 
 ### Build from source
 
