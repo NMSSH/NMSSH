@@ -327,6 +327,7 @@
     [self setSource:dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, CFSocketGetNative([self.session socket]),
                                            0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))];
     dispatch_source_set_event_handler(self.source, ^{
+        @synchronized (self){
         NMSSHLogVerbose(@"Data available on the socket!");
         ssize_t rc, erc=0;
         char buffer[self.bufferSize];
@@ -376,6 +377,7 @@
                 return;
             }
         }
+        }
     });
 
     dispatch_source_set_cancel_handler(self.source, ^{
@@ -391,9 +393,11 @@
     int rc = 0;
 
     // Try opening the shell
+     @synchronized (self) {
     while ((rc = libssh2_channel_shell(self.channel)) == LIBSSH2_ERROR_EAGAIN) {
         waitsocket(CFSocketGetNative([self.session socket]), [self.session rawSession]);
     }
+     }
 
     if (rc != 0) {
         NMSSHLogError(@"Shell request error");
@@ -414,6 +418,7 @@
 }
 
 - (void)closeShell {
+     @synchronized (self) {
     if (self.source) {
         dispatch_source_cancel(self.source);
 #if !(OS_OBJECT_USE_OBJC)
@@ -430,6 +435,7 @@
     }
 
     [self closeChannel];
+     }
 }
 
 - (BOOL)write:(NSString *)command error:(NSError *__autoreleasing *)error {
@@ -445,6 +451,7 @@
 }
 
 - (BOOL)writeData:(NSData *)data error:(NSError *__autoreleasing *)error timeout:(NSNumber *)timeout {
+     @synchronized (self) {
     if (self.type != NMSSHChannelTypeShell) {
         NMSSHLogError(@"Shell required");
         return NO;
@@ -485,6 +492,7 @@
     }
 
     return YES;
+     }
 }
 
 - (BOOL)requestSizeWidth:(NSUInteger)width height:(NSUInteger)height {
