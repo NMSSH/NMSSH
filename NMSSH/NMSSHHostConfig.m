@@ -34,7 +34,7 @@
     if (!self.user) {
         [self setUser:other.user];
     }
-    if (!self.port) {
+    if (![self.port boolValue]) {
         [self setPort:other.port];
     }
     [self setIdentityFiles:[self mergedArray:self.identityFiles
