@@ -70,6 +70,7 @@ API documentation for NMSSH is available at [http://cocoadocs.org/docsets/NMSSH/
 
 * [iTerm2](https://github.com/gnachman/iTerm2)
 * [DogeWallet](https://github.com/SlayterDev/DogeWallet)
+* [fastSwift](https://github.com/ColdGrub1384/fastSwift)
 
 ## Developed by
 
