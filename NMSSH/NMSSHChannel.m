@@ -196,7 +196,7 @@
     if (rc != 0) {
         if (error) {
             [userInfo setObject:[[self.session lastError] localizedDescription] forKey:NSLocalizedDescriptionKey];
-            [userInfo setObject:[NSString stringWithFormat:@"%zi", rc] forKey:NSLocalizedFailureReasonErrorKey];
+            [userInfo setObject:[NSString stringWithFormat:@"%i", rc] forKey:NSLocalizedFailureReasonErrorKey];
 
             *error = [NSError errorWithDomain:@"NMSSH"
                                          code:NMSSHChannelExecutionError
