@@ -164,6 +164,17 @@
 - (NSData *)contentsAtPath:(NSString *)path progress:(BOOL (^)(NSUInteger got, NSUInteger totalBytes))progress;
 
 /**
+ Refer to contentsAtPath:
+ 
+ This adds the ability to get periodic updates to bytes received.
+ 
+ @param path An existing file path
+ @param stream Stream to write bytes to
+ @param progress Method called periodically with number of bytes downloaded and total file size. Returns NO to abort.
+ */
+- (void)contentsAtPath:(NSString *)path toStream:(NSOutputStream *)stream progress:(BOOL (^)(NSUInteger, NSUInteger))progress;
+
+/**
  Overwrite the contents of a file
 
  If no file exists, one is created.
