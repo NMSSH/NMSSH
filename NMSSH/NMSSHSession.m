@@ -534,6 +534,10 @@
 }
 
 - (NSArray *)supportedAuthenticationMethods {
+    if (!self.session) {
+        return nil;
+    }
+    
     char *userauthlist = libssh2_userauth_list(self.session, [self.username UTF8String],
                                                (unsigned int)strlen([self.username UTF8String]));
     if (userauthlist == NULL){
