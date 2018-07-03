@@ -390,7 +390,6 @@
 				E4E96D97158E10FD002E6E0A /* Sources */,
 				E4E96D98158E10FD002E6E0A /* Frameworks */,
 				E4E96D99158E10FD002E6E0A /* Resources */,
-				E4E96D9A158E10FD002E6E0A /* ShellScript */,
 				E42815BA1593D12F00CF680C /* CopyFiles */,
 			);
 			buildRules = (
@@ -447,22 +446,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		E4E96D9A158E10FD002E6E0A /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E4E96D7F158E10FD002E6E0A /* Sources */ = {
@@ -656,7 +639,7 @@
 				INFOPLIST_FILE = "NMSSHTests/NMSSHTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
+					"\"$(SRCROOT)/NMSSH-OSX/Libraries/lib\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -677,7 +660,7 @@
 				INFOPLIST_FILE = "NMSSHTests/NMSSHTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/NMSSH/libssh2\"",
+					"\"$(SRCROOT)/NMSSH-OSX/Libraries/lib\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
