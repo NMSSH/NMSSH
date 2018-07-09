@@ -171,8 +171,9 @@
  @param path An existing file path
  @param stream Stream to write bytes to
  @param progress Method called periodically with number of bytes downloaded and total file size. Returns NO to abort.
+ @return File read success
  */
-- (void)contentsAtPath:(nonnull NSString *)path toStream:(nonnull NSOutputStream *)stream progress:(BOOL (^_Nullable)(NSUInteger, NSUInteger))progress;
+- (BOOL)contentsAtPath:(nonnull NSString *)path toStream:(nonnull NSOutputStream *)stream progress:(BOOL (^_Nullable)(NSUInteger, NSUInteger))progress;
 
 /**
  Overwrite the contents of a file
