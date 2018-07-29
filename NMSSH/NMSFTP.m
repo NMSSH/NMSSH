@@ -246,8 +246,8 @@
     }
 }
 
-- (void)contentsAtPath:(NSString *)path toStream:(NSOutputStream *)outputStream progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
-    [self readContentsAtPath:path toStream:outputStream progress:progress];
+- (BOOL)contentsAtPath:(NSString *)path toStream:(NSOutputStream *)outputStream progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
+    return [self readContentsAtPath:path toStream:outputStream progress:progress];
 }
 
 - (BOOL)readContentsAtPath:(NSString *)path toStream:(NSOutputStream *)outputStream progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
