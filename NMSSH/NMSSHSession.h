@@ -230,7 +230,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param password Password for encrypted private key
  @returns Authentication success
  */
-- (BOOL)authenticateByPublicKey:(nonnull NSString *)publicKey
+- (BOOL)authenticateByPublicKey:(nullable NSString *)publicKey
                      privateKey:(nonnull NSString *)privateKey
                     andPassword:(nullable NSString *)password;
 
@@ -244,7 +244,7 @@ typedef NS_ENUM(NSInteger, NMSSHKnownHostStatus) {
  @param password Password for encrypted private key
  @returns Authentication success
  */
-- (BOOL)authenticateByInMemoryPublicKey:(nonnull NSString *)publicKey
+- (BOOL)authenticateByInMemoryPublicKey:(nullable NSString *)publicKey
                              privateKey:(nonnull NSString *)privateKey
                             andPassword:(nullable NSString *)password;
 
