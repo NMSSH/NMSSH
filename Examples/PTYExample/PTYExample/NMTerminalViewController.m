@@ -103,6 +103,7 @@
     dispatch_async(self.sshQueue, ^{
         [self.session disconnect];
     });
+    [[self navigationController] popViewControllerAnimated:true];
 }
 
 - (void)appendToTextView:(NSString *)text {
