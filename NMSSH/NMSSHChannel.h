@@ -94,7 +94,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  @param error Error handler
  @returns Shell command response
  */
-- (nonnull NSString *)execute:(nonnull NSString *)command error:(NSError * _Nullable * _Nullable)error;
+- (nullable NSString *)execute:(nonnull NSString *)command error:(NSError * _Nullable * _Nullable)error;
 
 /**
  Execute a shell command on the server with a given timeout.
