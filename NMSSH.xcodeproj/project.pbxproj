@@ -409,13 +409,14 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1220;
 			};
 			buildConfigurationList = E4E96D7D158E10FD002E6E0A /* Build configuration list for PBXProject "NMSSH" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = E4E96D78158E10FD002E6E0A;
