@@ -28,7 +28,7 @@ mkdir "$OUTPUT_FOLDER"
 xcodebuild archive -project "$PROJECT_IOS" -scheme 'NMSSH' -configuration Release -destination 'generic/platform=iOS' -archivePath "$DEVICE_ARCHIVE" SKIP_INSTALL=NO
 
 # Simulator slice.
-#xcodebuild archive -project "$PROJECT_IOS" -scheme 'NMSSH' -configuration Release -destination 'generic/platform=iOS Simulator' -archivePath "$SIMULATOR_ARCHIVE" SKIP_INSTALL=NO
+xcodebuild archive -project "$PROJECT_IOS" -scheme 'NMSSH' -configuration Release -destination 'generic/platform=iOS Simulator' -archivePath "$SIMULATOR_ARCHIVE" SKIP_INSTALL=NO
 
 # Mac Catalyst slice.
 #xcodebuild archive -project "$PROJECT_IOS" -scheme 'NMSSH' -configuration Release -destination 'generic/platform=macOS,arch=x86_64h' -archivePath "$CATALYST_ARCHIVE" SKIP_INSTALL=NO
