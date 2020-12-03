@@ -41,8 +41,9 @@ xcodebuild archive -project "$PROJECT_IOS" -scheme 'NMSSH' -configuration Releas
 xcodebuild -create-xcframework \
 	-framework "$DEVICE_ARCHIVE/$FRAMEWORK_SUBPATH" \
 	-debug-symbols "$PWD/$DEVICE_ARCHIVE/$DSYM_SUBPATH" \
+    -framework "$SIMULATOR_ARCHIVE/$FRAMEWORK_SUBPATH" \
+    -debug-symbols "$PWD/$SIMULATOR_ARCHIVE/$DSYM_SUBPATH" \
 	-output "$XCFRAMEWORK_PATH"
-
 
 
 # Zip
