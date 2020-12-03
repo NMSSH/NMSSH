@@ -4,6 +4,8 @@
 
 ## Build generated
 build/
+output/
+.swiftpm/
 DerivedData
 
 ## Various settings
