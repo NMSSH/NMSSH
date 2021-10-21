@@ -1,0 +1,796 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		BEFFFAB5272159F000ACB35C /* NMSSH Framework tvOS */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = BEFFFAB6272159F000ACB35C /* Build configuration list for PBXAggregateTarget "NMSSH Framework tvOS" */;
+			buildPhases = (
+				BEFFFADE2721623100ACB35C /* Build Frameworks */,
+				BEFFFAE02721628300ACB35C /* Lipo Frameworks */,
+			);
+			dependencies = (
+			);
+			name = "NMSSH Framework tvOS";
+			productName = "NMSSH Framework tvOS";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		BEFFFA2827214E9000ACB35C /* NMSSH_tvOS.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA2727214E9000ACB35C /* NMSSH_tvOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA4827214F1B00ACB35C /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3027214F1B00ACB35C /* socket_helper.h */; };
+		BEFFFA4927214F1B00ACB35C /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3127214F1B00ACB35C /* NMSSHLogger.m */; };
+		BEFFFA4A27214F1B00ACB35C /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3227214F1B00ACB35C /* socket_helper.m */; };
+		BEFFFA4B27214F1B00ACB35C /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3327214F1B00ACB35C /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA4C27214F1B00ACB35C /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3427214F1B00ACB35C /* NMSSH+Protected.h */; };
+		BEFFFA4D27214F1B00ACB35C /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3527214F1B00ACB35C /* NMSFTPFile.h */; };
+		BEFFFA4E27214F1B00ACB35C /* NMSSHConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3627214F1B00ACB35C /* NMSSHConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5027214F1B00ACB35C /* NMSSHHostConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3827214F1B00ACB35C /* NMSSHHostConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5327214F1B00ACB35C /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3B27214F1B00ACB35C /* NMSFTP.m */; };
+		BEFFFA5427214F1B00ACB35C /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3C27214F1B00ACB35C /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5527214F1B00ACB35C /* NMSSHConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3D27214F1B00ACB35C /* NMSSHConfig.m */; };
+		BEFFFA5627214F1B00ACB35C /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3E27214F1B00ACB35C /* NMSFTPFile.m */; };
+		BEFFFA5727214F1B00ACB35C /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3F27214F1B00ACB35C /* NMSSHChannel.m */; };
+		BEFFFA5827214F1B00ACB35C /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4027214F1B00ACB35C /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5927214F1B00ACB35C /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4127214F1B00ACB35C /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5A27214F1B00ACB35C /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4327214F1B00ACB35C /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5B27214F1B00ACB35C /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4427214F1B00ACB35C /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA5C27214F1B00ACB35C /* NMSSHHostConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA4527214F1B00ACB35C /* NMSSHHostConfig.m */; };
+		BEFFFA6F272150AA00ACB35C /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA68272150AA00ACB35C /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA70272150AA00ACB35C /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA69272150AA00ACB35C /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFA71272150AA00ACB35C /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA6A272150AA00ACB35C /* libssh2_publickey.h */; };
+		BEFFFA72272150AA00ACB35C /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6C272150AA00ACB35C /* libcrypto.a */; };
+		BEFFFA73272150AB00ACB35C /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6D272150AA00ACB35C /* libssl.a */; };
+		BEFFFA74272150AB00ACB35C /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6E272150AA00ACB35C /* libssh2.a */; };
+		BEFFFAC227215E0E00ACB35C /* NMSFTP.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4127214F1B00ACB35C /* NMSFTP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAC327215E1A00ACB35C /* NMSSH.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3927214F1B00ACB35C /* NMSSH.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAC427215E3400ACB35C /* NMSSHChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3C27214F1B00ACB35C /* NMSSHChannel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAC527215E3E00ACB35C /* NMSSHChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3F27214F1B00ACB35C /* NMSSHChannel.m */; };
+		BEFFFAC627215E5300ACB35C /* NMSFTP.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3B27214F1B00ACB35C /* NMSFTP.m */; };
+		BEFFFAC727215E6600ACB35C /* NMSFTPFile.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3527214F1B00ACB35C /* NMSFTPFile.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAC827215E6C00ACB35C /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3E27214F1B00ACB35C /* NMSFTPFile.m */; };
+		BEFFFAC927215E7600ACB35C /* NMSSHSession.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4027214F1B00ACB35C /* NMSSHSession.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFACA27215E7B00ACB35C /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3A27214F1B00ACB35C /* NMSSHSession.m */; };
+		BEFFFACB27215E8700ACB35C /* NMSSHSession.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3A27214F1B00ACB35C /* NMSSHSession.m */; };
+		BEFFFACC27215E9100ACB35C /* NMSSHHostConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3827214F1B00ACB35C /* NMSSHHostConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFACD27215E9600ACB35C /* NMSSHHostConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA4527214F1B00ACB35C /* NMSSHHostConfig.m */; };
+		BEFFFACE27215EA500ACB35C /* NMSSHConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3627214F1B00ACB35C /* NMSSHConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFACF27215EA900ACB35C /* NMSSHConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3D27214F1B00ACB35C /* NMSSHConfig.m */; };
+		BEFFFAD027215EB700ACB35C /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA69272150AA00ACB35C /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAD127215EC100ACB35C /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA6A272150AA00ACB35C /* libssh2_publickey.h */; };
+		BEFFFAD227215ED200ACB35C /* libssh2_sftp.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA68272150AA00ACB35C /* libssh2_sftp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAD327215EDD00ACB35C /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6D272150AA00ACB35C /* libssl.a */; };
+		BEFFFAD427215EDD00ACB35C /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6E272150AA00ACB35C /* libssh2.a */; };
+		BEFFFAD527215EDE00ACB35C /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA6C272150AA00ACB35C /* libcrypto.a */; };
+		BEFFFAD627215EED00ACB35C /* NMSSHChannelDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4327214F1B00ACB35C /* NMSSHChannelDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAD727215EED00ACB35C /* NMSSHSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA4427214F1B00ACB35C /* NMSSHSessionDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFAD827215F2300ACB35C /* socket_helper.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3027214F1B00ACB35C /* socket_helper.h */; };
+		BEFFFAD927215F5200ACB35C /* NMSSHLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3127214F1B00ACB35C /* NMSSHLogger.m */; };
+		BEFFFADA27215FA500ACB35C /* socket_helper.m in Sources */ = {isa = PBXBuildFile; fileRef = BEFFFA3227214F1B00ACB35C /* socket_helper.m */; };
+		BEFFFADB27215FAE00ACB35C /* NMSSHLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3327214F1B00ACB35C /* NMSSHLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BEFFFADC27215FBE00ACB35C /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFFFA3427214F1B00ACB35C /* NMSSH+Protected.h */; };
+		BEFFFADD2721604100ACB35C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BEFFFA76272152CE00ACB35C /* libz.tbd */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BEFFFA2427214E9000ACB35C /* NMSSH_tvOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NMSSH_tvOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEFFFA2727214E9000ACB35C /* NMSSH_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMSSH_tvOS.h; sourceTree = "<group>"; };
+		BEFFFA3027214F1B00ACB35C /* socket_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_helper.h; sourceTree = "<group>"; };
+		BEFFFA3127214F1B00ACB35C /* NMSSHLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHLogger.m; sourceTree = "<group>"; };
+		BEFFFA3227214F1B00ACB35C /* socket_helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = socket_helper.m; sourceTree = "<group>"; };
+		BEFFFA3327214F1B00ACB35C /* NMSSHLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHLogger.h; sourceTree = "<group>"; };
+		BEFFFA3427214F1B00ACB35C /* NMSSH+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH+Protected.h"; sourceTree = "<group>"; };
+		BEFFFA3527214F1B00ACB35C /* NMSFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPFile.h; sourceTree = "<group>"; };
+		BEFFFA3627214F1B00ACB35C /* NMSSHConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHConfig.h; sourceTree = "<group>"; };
+		BEFFFA3827214F1B00ACB35C /* NMSSHHostConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHHostConfig.h; sourceTree = "<group>"; };
+		BEFFFA3927214F1B00ACB35C /* NMSSH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSH.h; sourceTree = "<group>"; };
+		BEFFFA3A27214F1B00ACB35C /* NMSSHSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHSession.m; sourceTree = "<group>"; };
+		BEFFFA3B27214F1B00ACB35C /* NMSFTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTP.m; sourceTree = "<group>"; };
+		BEFFFA3C27214F1B00ACB35C /* NMSSHChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannel.h; sourceTree = "<group>"; };
+		BEFFFA3D27214F1B00ACB35C /* NMSSHConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHConfig.m; sourceTree = "<group>"; };
+		BEFFFA3E27214F1B00ACB35C /* NMSFTPFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFile.m; sourceTree = "<group>"; };
+		BEFFFA3F27214F1B00ACB35C /* NMSSHChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHChannel.m; sourceTree = "<group>"; };
+		BEFFFA4027214F1B00ACB35C /* NMSSHSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSession.h; sourceTree = "<group>"; };
+		BEFFFA4127214F1B00ACB35C /* NMSFTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTP.h; sourceTree = "<group>"; };
+		BEFFFA4327214F1B00ACB35C /* NMSSHChannelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHChannelDelegate.h; sourceTree = "<group>"; };
+		BEFFFA4427214F1B00ACB35C /* NMSSHSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHSessionDelegate.h; sourceTree = "<group>"; };
+		BEFFFA4527214F1B00ACB35C /* NMSSHHostConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHHostConfig.m; sourceTree = "<group>"; };
+		BEFFFA6027214FE100ACB35C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Info.plist; path = NMSSH/Info.plist; sourceTree = SOURCE_ROOT; };
+		BEFFFA632721505C00ACB35C /* NMSSH-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NMSSH-Prefix.pch"; sourceTree = "<group>"; };
+		BEFFFA68272150AA00ACB35C /* libssh2_sftp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_sftp.h; sourceTree = "<group>"; };
+		BEFFFA69272150AA00ACB35C /* libssh2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2.h; sourceTree = "<group>"; };
+		BEFFFA6A272150AA00ACB35C /* libssh2_publickey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libssh2_publickey.h; sourceTree = "<group>"; };
+		BEFFFA6C272150AA00ACB35C /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libcrypto.a; sourceTree = "<group>"; };
+		BEFFFA6D272150AA00ACB35C /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssl.a; sourceTree = "<group>"; };
+		BEFFFA6E272150AA00ACB35C /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libssh2.a; sourceTree = "<group>"; };
+		BEFFFA76272152CE00ACB35C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		BEFFFABD27215D2E00ACB35C /* NMSSH Static.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "NMSSH Static.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BEFFFA2127214E9000ACB35C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFA73272150AB00ACB35C /* libssl.a in Frameworks */,
+				BEFFFADD2721604100ACB35C /* libz.tbd in Frameworks */,
+				BEFFFA72272150AA00ACB35C /* libcrypto.a in Frameworks */,
+				BEFFFA74272150AB00ACB35C /* libssh2.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEFFFABA27215D2E00ACB35C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFAD327215EDD00ACB35C /* libssl.a in Frameworks */,
+				BEFFFAD427215EDD00ACB35C /* libssh2.a in Frameworks */,
+				BEFFFAD527215EDE00ACB35C /* libcrypto.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BEFFFA1A27214E9000ACB35C = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA2E27214F1B00ACB35C /* NMSSH */,
+				BEFFFA2627214E9000ACB35C /* NMSSH-tvOS */,
+				BEFFFA2527214E9000ACB35C /* Products */,
+				BEFFFA75272152CE00ACB35C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BEFFFA2527214E9000ACB35C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA2427214E9000ACB35C /* NMSSH_tvOS.framework */,
+				BEFFFABD27215D2E00ACB35C /* NMSSH Static.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BEFFFA2627214E9000ACB35C /* NMSSH-tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA2727214E9000ACB35C /* NMSSH_tvOS.h */,
+				BEFFFA5F27214F6300ACB35C /* Supporting Files */,
+			);
+			path = "NMSSH-tvOS";
+			sourceTree = "<group>";
+		};
+		BEFFFA2E27214F1B00ACB35C /* NMSSH */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA4127214F1B00ACB35C /* NMSFTP.h */,
+				BEFFFA3B27214F1B00ACB35C /* NMSFTP.m */,
+				BEFFFA3527214F1B00ACB35C /* NMSFTPFile.h */,
+				BEFFFA3E27214F1B00ACB35C /* NMSFTPFile.m */,
+				BEFFFA3927214F1B00ACB35C /* NMSSH.h */,
+				BEFFFA3C27214F1B00ACB35C /* NMSSHChannel.h */,
+				BEFFFA3F27214F1B00ACB35C /* NMSSHChannel.m */,
+				BEFFFA3627214F1B00ACB35C /* NMSSHConfig.h */,
+				BEFFFA3D27214F1B00ACB35C /* NMSSHConfig.m */,
+				BEFFFA3827214F1B00ACB35C /* NMSSHHostConfig.h */,
+				BEFFFA4527214F1B00ACB35C /* NMSSHHostConfig.m */,
+				BEFFFA4027214F1B00ACB35C /* NMSSHSession.h */,
+				BEFFFA3A27214F1B00ACB35C /* NMSSHSession.m */,
+				BEFFFA65272150AA00ACB35C /* Libraries */,
+				BEFFFA4227214F1B00ACB35C /* Protocols */,
+				BEFFFA2F27214F1B00ACB35C /* Config */,
+				BEFFFA622721500600ACB35C /* Supporting Files */,
+			);
+			path = NMSSH;
+			sourceTree = "<group>";
+		};
+		BEFFFA2F27214F1B00ACB35C /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA3427214F1B00ACB35C /* NMSSH+Protected.h */,
+				BEFFFA3327214F1B00ACB35C /* NMSSHLogger.h */,
+				BEFFFA3127214F1B00ACB35C /* NMSSHLogger.m */,
+				BEFFFA3027214F1B00ACB35C /* socket_helper.h */,
+				BEFFFA3227214F1B00ACB35C /* socket_helper.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		BEFFFA4227214F1B00ACB35C /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA4327214F1B00ACB35C /* NMSSHChannelDelegate.h */,
+				BEFFFA4427214F1B00ACB35C /* NMSSHSessionDelegate.h */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		BEFFFA5F27214F6300ACB35C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA6027214FE100ACB35C /* Info.plist */,
+			);
+			name = "Supporting Files";
+			path = ../NMSSH;
+			sourceTree = "<group>";
+		};
+		BEFFFA622721500600ACB35C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA632721505C00ACB35C /* NMSSH-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BEFFFA65272150AA00ACB35C /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA66272150AA00ACB35C /* include */,
+				BEFFFA6B272150AA00ACB35C /* lib */,
+			);
+			name = Libraries;
+			path = "NMSSH-tvOS/Libraries";
+			sourceTree = SOURCE_ROOT;
+		};
+		BEFFFA66272150AA00ACB35C /* include */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA67272150AA00ACB35C /* libssh2 */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		BEFFFA67272150AA00ACB35C /* libssh2 */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA6A272150AA00ACB35C /* libssh2_publickey.h */,
+				BEFFFA68272150AA00ACB35C /* libssh2_sftp.h */,
+				BEFFFA69272150AA00ACB35C /* libssh2.h */,
+			);
+			path = libssh2;
+			sourceTree = "<group>";
+		};
+		BEFFFA6B272150AA00ACB35C /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA6C272150AA00ACB35C /* libcrypto.a */,
+				BEFFFA6D272150AA00ACB35C /* libssl.a */,
+				BEFFFA6E272150AA00ACB35C /* libssh2.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		BEFFFA75272152CE00ACB35C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BEFFFA76272152CE00ACB35C /* libz.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		BEFFFA1F27214E9000ACB35C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFA5B27214F1B00ACB35C /* NMSSHSessionDelegate.h in Headers */,
+				BEFFFA6F272150AA00ACB35C /* libssh2_sftp.h in Headers */,
+				BEFFFA5827214F1B00ACB35C /* NMSSHSession.h in Headers */,
+				BEFFFA2827214E9000ACB35C /* NMSSH_tvOS.h in Headers */,
+				BEFFFA5927214F1B00ACB35C /* NMSFTP.h in Headers */,
+				BEFFFA4C27214F1B00ACB35C /* NMSSH+Protected.h in Headers */,
+				BEFFFA4E27214F1B00ACB35C /* NMSSHConfig.h in Headers */,
+				BEFFFA71272150AA00ACB35C /* libssh2_publickey.h in Headers */,
+				BEFFFA5027214F1B00ACB35C /* NMSSHHostConfig.h in Headers */,
+				BEFFFA4B27214F1B00ACB35C /* NMSSHLogger.h in Headers */,
+				BEFFFA5A27214F1B00ACB35C /* NMSSHChannelDelegate.h in Headers */,
+				BEFFFA4827214F1B00ACB35C /* socket_helper.h in Headers */,
+				BEFFFA5427214F1B00ACB35C /* NMSSHChannel.h in Headers */,
+				BEFFFA4D27214F1B00ACB35C /* NMSFTPFile.h in Headers */,
+				BEFFFA70272150AA00ACB35C /* libssh2.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEFFFAC127215E0900ACB35C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFAC427215E3400ACB35C /* NMSSHChannel.h in Headers */,
+				BEFFFAD827215F2300ACB35C /* socket_helper.h in Headers */,
+				BEFFFADB27215FAE00ACB35C /* NMSSHLogger.h in Headers */,
+				BEFFFAD627215EED00ACB35C /* NMSSHChannelDelegate.h in Headers */,
+				BEFFFAC927215E7600ACB35C /* NMSSHSession.h in Headers */,
+				BEFFFACE27215EA500ACB35C /* NMSSHConfig.h in Headers */,
+				BEFFFAD727215EED00ACB35C /* NMSSHSessionDelegate.h in Headers */,
+				BEFFFADC27215FBE00ACB35C /* NMSSH+Protected.h in Headers */,
+				BEFFFACC27215E9100ACB35C /* NMSSHHostConfig.h in Headers */,
+				BEFFFAC327215E1A00ACB35C /* NMSSH.h in Headers */,
+				BEFFFAC727215E6600ACB35C /* NMSFTPFile.h in Headers */,
+				BEFFFAD127215EC100ACB35C /* libssh2_publickey.h in Headers */,
+				BEFFFAD227215ED200ACB35C /* libssh2_sftp.h in Headers */,
+				BEFFFAD027215EB700ACB35C /* libssh2.h in Headers */,
+				BEFFFAC227215E0E00ACB35C /* NMSFTP.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		BEFFFA2327214E9000ACB35C /* NMSSH-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEFFFA2B27214E9000ACB35C /* Build configuration list for PBXNativeTarget "NMSSH-tvOS" */;
+			buildPhases = (
+				BEFFFA1F27214E9000ACB35C /* Headers */,
+				BEFFFA2027214E9000ACB35C /* Sources */,
+				BEFFFA2127214E9000ACB35C /* Frameworks */,
+				BEFFFA2227214E9000ACB35C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NMSSH-tvOS";
+			productName = "NMSSH-tvOS";
+			productReference = BEFFFA2427214E9000ACB35C /* NMSSH_tvOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		BEFFFABC27215D2E00ACB35C /* NMSSH Static */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEFFFABE27215D2E00ACB35C /* Build configuration list for PBXNativeTarget "NMSSH Static" */;
+			buildPhases = (
+				BEFFFAC127215E0900ACB35C /* Headers */,
+				BEFFFAB927215D2E00ACB35C /* Sources */,
+				BEFFFABA27215D2E00ACB35C /* Frameworks */,
+				BEFFFABB27215D2E00ACB35C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NMSSH Static";
+			productName = "NMSSH Static";
+			productReference = BEFFFABD27215D2E00ACB35C /* NMSSH Static.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BEFFFA1B27214E9000ACB35C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1300;
+				TargetAttributes = {
+					BEFFFA2327214E9000ACB35C = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					BEFFFAB5272159F000ACB35C = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					BEFFFABC27215D2E00ACB35C = {
+						CreatedOnToolsVersion = 13.0;
+					};
+				};
+			};
+			buildConfigurationList = BEFFFA1E27214E9000ACB35C /* Build configuration list for PBXProject "NMSSH-tvOS" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BEFFFA1A27214E9000ACB35C;
+			productRefGroup = BEFFFA2527214E9000ACB35C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BEFFFA2327214E9000ACB35C /* NMSSH-tvOS */,
+				BEFFFAB5272159F000ACB35C /* NMSSH Framework tvOS */,
+				BEFFFABC27215D2E00ACB35C /* NMSSH Static */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BEFFFA2227214E9000ACB35C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEFFFABB27215D2E00ACB35C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BEFFFADE2721623100ACB35C /* Build Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\nTARGET=\"NMSSH Static\"\nPROJECT=\"NMSSH-tvOS.xcodeproj\"\n\nset -e\n\n# Building tvsimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvsimulator -project \"${PROJECT}\"\n# Building iphonesimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvsimulator -project \"${PROJECT}\"\n\nset +e\n";
+		};
+		BEFFFAE02721628300ACB35C /* Lipo Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Lipo Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=\"NMSSH tvOS\"\nFMK_VERSION=\"A\"\nTARGET=\"NMSSH Static tvOS\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nINSTALL_DIR=\"${SRCROOT}/Products/${FMK_NAME}.framework\"\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=\"build\"\nDEVICE_DIR=\"${WRK_DIR}/Release-appletvos/${TARGET}.framework\"\nSIMULATOR_DIR=\"${WRK_DIR}/Release-appletvsimulator/${TARGET}.framework\"\n\nset -e\n\n# Cleaning the oldest.\nif [ -d \"${INSTALL_DIR}\" ]\nthen\nrm -rf \"${INSTALL_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${DEVICE_DIR}/Headers/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -R \"${DEVICE_DIR}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Removes the binary and header from the resources folder.\nrm -r \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/Headers\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/${TARGET}\"\n\n# Uses the Lipo Tool to merge both binary files into one Universal final product.\nlipo -create \"${DEVICE_DIR}/${TARGET}\" \"${SIMULATOR_DIR}/${TARGET}\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\nrm -r \"${WRK_DIR}\"\n\nset +e\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BEFFFA2027214E9000ACB35C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFA4A27214F1B00ACB35C /* socket_helper.m in Sources */,
+				BEFFFA5C27214F1B00ACB35C /* NMSSHHostConfig.m in Sources */,
+				BEFFFA5627214F1B00ACB35C /* NMSFTPFile.m in Sources */,
+				BEFFFA4927214F1B00ACB35C /* NMSSHLogger.m in Sources */,
+				BEFFFA5527214F1B00ACB35C /* NMSSHConfig.m in Sources */,
+				BEFFFA5727214F1B00ACB35C /* NMSSHChannel.m in Sources */,
+				BEFFFACB27215E8700ACB35C /* NMSSHSession.m in Sources */,
+				BEFFFA5327214F1B00ACB35C /* NMSFTP.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BEFFFAB927215D2E00ACB35C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BEFFFAC527215E3E00ACB35C /* NMSSHChannel.m in Sources */,
+				BEFFFACD27215E9600ACB35C /* NMSSHHostConfig.m in Sources */,
+				BEFFFADA27215FA500ACB35C /* socket_helper.m in Sources */,
+				BEFFFAC827215E6C00ACB35C /* NMSFTPFile.m in Sources */,
+				BEFFFAD927215F5200ACB35C /* NMSSHLogger.m in Sources */,
+				BEFFFACA27215E7B00ACB35C /* NMSSHSession.m in Sources */,
+				BEFFFAC627215E5300ACB35C /* NMSFTP.m in Sources */,
+				BEFFFACF27215EA900ACB35C /* NMSSHConfig.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BEFFFA2927214E9000ACB35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = appletvos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		BEFFFA2A27214E9000ACB35C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = appletvos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TVOS_DEPLOYMENT_TARGET = 10.0;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		BEFFFA2C27214E9000ACB35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NMSSH/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-tvOS/Libraries/lib",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.NMSSH.NMSSH-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		BEFFFA2D27214E9000ACB35C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NMSSH/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-tvOS/Libraries/lib",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.NMSSH.NMSSH-tvOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		BEFFFAB7272159F000ACB35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B7289BUCBC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BEFFFAB8272159F000ACB35C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = B7289BUCBC;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		BEFFFABF27215D2E00ACB35C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-tvOS/Libraries/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.NMSSH.NMSSH-Static";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		BEFFFAC027215D2E00ACB35C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSPrincipalClass = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/NMSSH-tvOS/Libraries/lib",
+				);
+				MACOSX_DEPLOYMENT_TARGET = "";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.NMSSH.NMSSH-Static";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BEFFFA1E27214E9000ACB35C /* Build configuration list for PBXProject "NMSSH-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEFFFA2927214E9000ACB35C /* Debug */,
+				BEFFFA2A27214E9000ACB35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEFFFA2B27214E9000ACB35C /* Build configuration list for PBXNativeTarget "NMSSH-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEFFFA2C27214E9000ACB35C /* Debug */,
+				BEFFFA2D27214E9000ACB35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEFFFAB6272159F000ACB35C /* Build configuration list for PBXAggregateTarget "NMSSH Framework tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEFFFAB7272159F000ACB35C /* Debug */,
+				BEFFFAB8272159F000ACB35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEFFFABE27215D2E00ACB35C /* Build configuration list for PBXNativeTarget "NMSSH Static" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEFFFABF27215D2E00ACB35C /* Debug */,
+				BEFFFAC027215D2E00ACB35C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BEFFFA1B27214E9000ACB35C /* Project object */;
+}

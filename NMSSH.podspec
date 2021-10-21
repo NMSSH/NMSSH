@@ -10,6 +10,7 @@ Pod::Spec.new do |spec|
 
   spec.requires_arc = true
   spec.platform = :ios
+  spec.platform = :tvos
   spec.platform = :osx
 
   spec.source_files = 'NMSSH', 'NMSSH/**/*.{h,m}'
@@ -22,6 +23,11 @@ Pod::Spec.new do |spec|
   spec.ios.vendored_libraries = 'NMSSH-iOS/Libraries/lib/libssh2.a', 'NMSSH-iOS/Libraries/lib/libssl.a', 'NMSSH-iOS/Libraries/lib/libcrypto.a'
   spec.ios.source_files       = 'NMSSH-iOS', 'NMSSH-iOS/Libraries/**/*.h'
   spec.ios.public_header_files  = 'NMSSH-iOS/Libraries/**/*.h'
+
+  spec.tvos.deployment_target  = '10.0'
+  spec.tvos.vendored_libraries = 'NMSSH-tvOS/Libraries/lib/libssh2.a', 'NMSSH-tvOS/Libraries/lib/libssl.a', 'NMSSH-tvOS/Libraries/lib/libcrypto.a'
+  spec.tvos.source_files       = 'NMSSH-tvOS', 'NMSSH-tvOS/Libraries/**/*.h'
+  spec.tvos.public_header_files  = 'NMSSH-tvOS/Libraries/**/*.h'
 
   spec.osx.deployment_target  = '10.8'
   spec.osx.vendored_libraries = 'NMSSH-OSX/Libraries/lib/libssh2.a', 'NMSSH-OSX/Libraries/lib/libssl.a', 'NMSSH-OSX/Libraries/lib/libcrypto.a'
