@@ -433,7 +433,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nTARGET=\"NMSSH Static\"\nPROJECT=\"NMSSH-tvOS.xcodeproj\"\n\nset -e\n\n# Building tvsimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvsimulator -project \"${PROJECT}\"\n# Building iphonesimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvsimulator -project \"${PROJECT}\"\n\nset +e\n";
+			shellScript = "# Sets the target folders and the final framework product.\nTARGET=\"NMSSH Static\"\nPROJECT=\"NMSSH-tvOS.xcodeproj\"\n\nset -e\n\n# Building appletvos.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvos -project \"${PROJECT}\"\n\n# Building appletvossimulator.\nxcodebuild -configuration \"Release\" -target \"${TARGET}\" -sdk appletvsimulator -project \"${PROJECT}\"\n\nset +e\n";
 		};
 		BEFFFAE02721628300ACB35C /* Lipo Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
