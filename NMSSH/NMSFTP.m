@@ -250,7 +250,20 @@
     return [self readContentsAtPath:path toStream:outputStream progress:progress];
 }
 
+static BOOL stopReading = false;
+
+-(void)stopReading {
+    stopReading = true;
+}
+
+
 - (BOOL)readContentsAtPath:(NSString *)path toStream:(NSOutputStream *)outputStream progress:(BOOL (^)(NSUInteger, NSUInteger))progress {
+    
+    stopReading = false;
+        
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopReading) name:@"stopReading" object:nil];
+        
+    
     LIBSSH2_SFTP_HANDLE *handle = [self openFileAtPath:path flags:LIBSSH2_FXF_READ mode:0];
     
     if (!handle) {
@@ -290,6 +303,13 @@
             [outputStream close];
             return NO;
         }
+        
+        if (stopReading) {
+            libssh2_sftp_close(handle);
+            [outputStream close];
+            return NO;
+        }
+        
     }
     
     libssh2_sftp_close(handle);
