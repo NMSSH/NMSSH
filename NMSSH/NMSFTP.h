@@ -136,6 +136,14 @@
              withDestinationPath:(nonnull NSString *)destPath;
 
 /**
+ Get canonized resolved absolute filename of the file at the given path
+
+ @param path Input path
+ @returns Canonized and resolved path
+ */
+-(nullable NSString *) realpath:(nonnull NSString *)path;
+
+/**
  Remove file at path
 
  @param path Path to existing file
