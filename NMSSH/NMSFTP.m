@@ -226,6 +226,27 @@
     return rc == 0;
 }
 
+-(nullable NSString *) realpath:(NSString *)path {
+    
+    NSMutableData* data = [NSMutableData dataWithLength: 64];
+    char* result = [data mutableBytes];
+    
+    while(true) {
+        int rc = libssh2_sftp_realpath(self.sftpSession, [path UTF8String], result, (unsigned int)[data length]);
+        
+        if(rc < 0) {
+            if(rc == LIBSSH2_ERROR_BUFFER_TOO_SMALL) {
+                [data setLength: [data length] * 2];
+                result = [data mutableBytes];
+                continue;
+            }
+            return NULL;
+        } else {
+            return [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
+        }
+    }
+}
+
 - (BOOL)removeFileAtPath:(NSString *)path {
     return libssh2_sftp_unlink(self.sftpSession, [path UTF8String]) == 0;
 }
