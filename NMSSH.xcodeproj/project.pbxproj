@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		188B5E3B1C7CB7D0003A6AFD /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 188B5E391C7CB7D0003A6AFD /* libcrypto.a */; };
-		188B5E3C1C7CB7D0003A6AFD /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 188B5E3A1C7CB7D0003A6AFD /* libssl.a */; };
 		18B4FE85188C87F3004E05FF /* NMSSH+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE84188C87F3004E05FF /* NMSSH+Protected.h */; };
 		18B4FE8E188CB2BB004E05FF /* libssh2.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE89188CB2BB004E05FF /* libssh2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		18B4FE8F188CB2BB004E05FF /* libssh2_publickey.h in Headers */ = {isa = PBXBuildFile; fileRef = 18B4FE8A188CB2BB004E05FF /* libssh2_publickey.h */; };
@@ -21,6 +20,11 @@
 		6EB9E8061887F52C003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
 		6EB9E8071887F533003A9BE4 /* NMSFTPFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */; };
 		6EE908A5188D597300997E11 /* NMSFTPFileTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EE908A4188D597300997E11 /* NMSFTPFileTests.m */; };
+		75F607532BA70D1E00F98F1B /* libcrypto-iOS-Sim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 75F6074E2BA70D1E00F98F1B /* libcrypto-iOS-Sim.a */; };
+		75F607542BA70D1E00F98F1B /* libssl-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 75F6074F2BA70D1E00F98F1B /* libssl-iOS.a */; };
+		75F607552BA70D1E00F98F1B /* libcrypto-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 75F607502BA70D1E00F98F1B /* libcrypto-iOS.a */; };
+		75F607562BA70D1E00F98F1B /* libssh2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 75F607512BA70D1E00F98F1B /* libssh2.a */; };
+		75F607572BA70D1E00F98F1B /* libssl-iOS-Sim.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 75F607522BA70D1E00F98F1B /* libssl-iOS-Sim.a */; };
 		A6AE1EBB191C7B5800780C19 /* NMSSHConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = A6AE1EB9191C7B5800780C19 /* NMSSHConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A6AE1EBC191C7B5800780C19 /* NMSSHConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = A6AE1EBA191C7B5800780C19 /* NMSSHConfig.m */; };
 		A6AE1EBE191C835900780C19 /* NMSSHConfigTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A6AE1EBD191C835900780C19 /* NMSSHConfigTests.m */; };
@@ -94,6 +98,11 @@
 		6EB9E8031887F52C003A9BE4 /* NMSFTPFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSFTPFile.h; sourceTree = "<group>"; };
 		6EB9E8041887F52C003A9BE4 /* NMSFTPFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFile.m; sourceTree = "<group>"; };
 		6EE908A4188D597300997E11 /* NMSFTPFileTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSFTPFileTests.m; sourceTree = "<group>"; };
+		75F6074E2BA70D1E00F98F1B /* libcrypto-iOS-Sim.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcrypto-iOS-Sim.a"; path = "NMSSH-iOS/Libraries/lib/libcrypto-iOS-Sim.a"; sourceTree = "<group>"; };
+		75F6074F2BA70D1E00F98F1B /* libssl-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libssl-iOS.a"; path = "NMSSH-iOS/Libraries/lib/libssl-iOS.a"; sourceTree = "<group>"; };
+		75F607502BA70D1E00F98F1B /* libcrypto-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcrypto-iOS.a"; path = "NMSSH-iOS/Libraries/lib/libcrypto-iOS.a"; sourceTree = "<group>"; };
+		75F607512BA70D1E00F98F1B /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = "NMSSH-iOS/Libraries/lib/libssh2.a"; sourceTree = "<group>"; };
+		75F607522BA70D1E00F98F1B /* libssl-iOS-Sim.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libssl-iOS-Sim.a"; path = "NMSSH-iOS/Libraries/lib/libssl-iOS-Sim.a"; sourceTree = "<group>"; };
 		A6AE1EB9191C7B5800780C19 /* NMSSHConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMSSHConfig.h; sourceTree = "<group>"; };
 		A6AE1EBA191C7B5800780C19 /* NMSSHConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHConfig.m; sourceTree = "<group>"; };
 		A6AE1EBD191C835900780C19 /* NMSSHConfigTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMSSHConfigTests.m; sourceTree = "<group>"; };
@@ -139,7 +148,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				188B5E3C1C7CB7D0003A6AFD /* libssl.a in Frameworks */,
+				75F607532BA70D1E00F98F1B /* libcrypto-iOS-Sim.a in Frameworks */,
+				75F607542BA70D1E00F98F1B /* libssl-iOS.a in Frameworks */,
+				75F607552BA70D1E00F98F1B /* libcrypto-iOS.a in Frameworks */,
+				75F607562BA70D1E00F98F1B /* libssh2.a in Frameworks */,
+				75F607572BA70D1E00F98F1B /* libssl-iOS-Sim.a in Frameworks */,
 				E4E96D88158E10FD002E6E0A /* Cocoa.framework in Frameworks */,
 				E4D99AA415DE15B300EB5615 /* libz.dylib in Frameworks */,
 				188B5E3B1C7CB7D0003A6AFD /* libcrypto.a in Frameworks */,
@@ -229,6 +242,11 @@
 		E4E96D86158E10FD002E6E0A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				75F6074E2BA70D1E00F98F1B /* libcrypto-iOS-Sim.a */,
+				75F607502BA70D1E00F98F1B /* libcrypto-iOS.a */,
+				75F607512BA70D1E00F98F1B /* libssh2.a */,
+				75F607522BA70D1E00F98F1B /* libssl-iOS-Sim.a */,
+				75F6074F2BA70D1E00F98F1B /* libssl-iOS.a */,
 				E4E96D87158E10FD002E6E0A /* Cocoa.framework */,
 				E4D99AA315DE15B300EB5615 /* libz.dylib */,
 				E4D99AA115DE15A600EB5615 /* libcrypto.dylib */,
@@ -416,6 +434,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = E4E96D78158E10FD002E6E0A;
@@ -594,6 +613,7 @@
 					"$(SDKROOT)/usr/lib/system",
 					"$(SRCROOT)/NMSSH-OSX/Libraries/lib",
 					"$(PROJECT_DIR)/NMSSH-OSX/Libraries/lib",
+					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -618,6 +638,7 @@
 					"$(SDKROOT)/usr/lib/system",
 					"$(SRCROOT)/NMSSH-OSX/Libraries/lib",
 					"$(PROJECT_DIR)/NMSSH-OSX/Libraries/lib",
+					"$(PROJECT_DIR)/NMSSH-iOS/Libraries/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ninemuses.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
