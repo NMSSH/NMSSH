@@ -567,6 +567,7 @@
             if (rc < 0) {
                 NMSSHLogError(@"Failed writing file");
                 [self closeChannel];
+                fclose(local);
                 return NO;
             }
             else {
