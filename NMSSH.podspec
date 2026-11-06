@@ -33,8 +33,8 @@ Pod::Spec.new do |s|
         'HEADER_SEARCH_PATHS' => '"$(PODS_XCFRAMEWORKS_BUILD_DIR)/ssh2/ssh2.framework/Headers"',
     }
     
-    s.ios.source_files = ["NMSSH-iOS", "NMSSH-iOS/Libraries/**/*.h"]
-    s.ios.public_header_files = "NMSSH-iOS/Libraries/**/*.h"
+    s.ios.source_files = ["NMSSH-iOS", "NMSSH-iOS/Libraries/include/**/*.h"]
+    s.ios.public_header_files = "NMSSH-iOS/Libraries/include/**/*.h"
     
     s.osx.source_files = ["NMSSH-OSX", "NMSSH-OSX/Libraries/**/*.h"]
     s.osx.public_header_files = "NMSSH-OSX/Libraries/**/*.h"
