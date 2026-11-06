@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
     # double-free crash in libssh2 1.9.0 packet handling).
     # XCFrameworks are retained by CocoaPods and resolved per platform
     # (device arm64 / simulator x86_64+arm64) automatically.
-    s.ios.vendored_xcframeworks = [
+    s.vendored_xcframeworks = [
         "NMSSH-iOS/Libraries/xcfs/ssh2.xcframework",
         "NMSSH-iOS/Libraries/xcfs/ssl.xcframework",
         "NMSSH-iOS/Libraries/xcfs/crypto.xcframework",
