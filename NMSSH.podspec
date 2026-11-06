@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
     s.homepage     = "https://github.com/NMSSH/NMSSH"
     s.license      = { :type => 'MIT', :file => 'LICENSE.md' }
     s.author       = { "Christoffer Lejdborg" => "hello@9muses.se", "Tommaso Madonia" => "tommaso@madonia.me" }
-    s.source       = { :git => "https://github.com/speam/NMSSH.git", :branch => "master" }
+    s.source       = { :git => "https://github.com/pavlo-kravchenko/NMSSH.git", :branch => "modern-libssh2" }
     s.requires_arc = true
     
     s.ios.deployment_target = "15.0"
