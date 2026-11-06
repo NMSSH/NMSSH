@@ -14,7 +14,13 @@ Pod::Spec.new do |s|
     
     # Fresh libssh2 1.11.1 + OpenSSL 3.5.9 static libraries (fixes the
     # double-free crash in libssh2 1.9.0 packet handling).
-    # Libraries are copied into the checkout by Podfile post_install hook.
+    # XCFrameworks are retained by CocoaPods and resolved per platform
+    # (device arm64 / simulator x86_64+arm64) automatically.
+    s.ios.vendored_xcframeworks = [
+        "NMSSH-iOS/Libraries/xcfs/ssh2.xcframework",
+        "NMSSH-iOS/Libraries/xcfs/ssl.xcframework",
+        "NMSSH-iOS/Libraries/xcfs/crypto.xcframework",
+    ]
     
     s.source_files       = ["NMSSH", "NMSSH/**/*.{h,m}"]
     s.public_header_files = ["NMSSH/*.h", "NMSSH/Protocols/*.h", "NMSSH/Config/NMSSHLogger.h"]
@@ -22,14 +28,9 @@ Pod::Spec.new do |s|
     
     s.frameworks = "CFNetwork"
     
-    # Simulator resolves libraries from lib-sim/, device from lib/ (vendored above)
     s.pod_target_xcconfig = {
-        'OTHER_LDFLAGS' => '-ObjC',
-        'OTHER_LDFLAGS[sdk=iphoneos*]' => '-ObjC -lssh2 -lssl -lcrypto -lz',
-        'OTHER_LDFLAGS[sdk=iphonesimulator*]' => '-ObjC -lssh2 -lssl -lcrypto -lz',
-        'LIBRARY_SEARCH_PATHS[sdk=iphoneos*]' => '"$(PODS_TARGET_SRCROOT)/NMSSH-iOS/Libraries/lib"',
-        'LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]' => '"$(PODS_TARGET_SRCROOT)/NMSSH-iOS/Libraries/lib-sim"',
-        'HEADER_SEARCH_PATHS' => '"$(PODS_TARGET_SRCROOT)/NMSSH-iOS/Libraries/include"',
+        'OTHER_LDFLAGS' => '-ObjC -lz',
+        'HEADER_SEARCH_PATHS' => '"$(PODS_XCFRAMEWORKS_BUILD_DIR)/ssh2/ssh2.framework/Headers"',
     }
     
     s.ios.source_files = ["NMSSH-iOS", "NMSSH-iOS/Libraries/**/*.h"]
